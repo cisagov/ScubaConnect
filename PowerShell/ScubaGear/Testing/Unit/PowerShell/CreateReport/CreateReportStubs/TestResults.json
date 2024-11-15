@@ -1,0 +1,3577 @@
+﻿[
+    {
+        "ActualValue":  [],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedUser"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.7.3v1",
+        "ReportDetails":  "5 admin(s) that are not cloud-only found:\u003cbr/\u003e",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/Not-Implemented",
+        "PolicyId":  "MS.AAD.3.5v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/aad.md#msaad35v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/Not-Implemented",
+        "PolicyId":  "MS.AAD.4.1v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/aad.md#msaad41v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/Not-Implemented",
+        "PolicyId":  "MS.AAD.6.1v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/aad.md#msaad61v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.AAD.2.2v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/aad.md#msaad22v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.AAD.3.3v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/aad.md#msaad33v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.AAD.8.3v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/aad.md#msaad83v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "preMigration"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaPolicyAuthenticationMethodPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.3.4v1",
+        "ReportDetails":  "Requirement not met",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  {
+                            "AdditionalProperties":  {
+                                                         "IsApplicable":  "true",
+                                                         "count":  "138",
+                                                         "implementationStatus":  "You have 138 users with least privileged administrative roles.",
+                                                         "lastSynced":  "2023-08-20T09:14:13Z",
+                                                         "scoreInPercentage":  100,
+                                                         "source":  "ingestion"
+                                                     },
+                            "ControlCategory":  "Identity",
+                            "ControlName":  "RoleOverlap",
+                            "Description":  "Ensure that your administrators can accomplish their work with the least amount of privilege assigned to their account. Assigning users roles like Password Administrator or Exchange Online Administrator, instead of Global Administrator, reduces the likelihood of a global administrative privileged account being breached.",
+                            "Score":  1
+                        },
+        "Commandlet":  [
+                           "Get-MgBetaSecuritySecureScore"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.7.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  {
+                            "all_allow_invite_values":  [
+                                                            {
+                                                                "AllowInvitesFromValue":  "adminsAndGuestInviters",
+                                                                "PolicyId":  "authorizationPolicy"
+                                                            }
+                                                        ]
+                        },
+        "Commandlet":  [
+                           "Get-MgBetaPolicyAuthorizationPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.AAD.8.2v1",
+        "ReportDetails":  "Permission level set to \"adminsAndGuestInviters\" (authorizationPolicy)",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  {
+                            "all_allowed_create_values":  [
+                                                              {
+                                                                  "DefaultUser_AllowedToCreateApps":  false,
+                                                                  "PolicyId":  "authorizationPolicy"
+                                                              }
+                                                          ]
+                        },
+        "Commandlet":  [
+                           "Get-MgBetaPolicyAuthorizationPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.5.1v1",
+        "ReportDetails":  "0 authorization policies found that allow non-admin users to register third-party applications",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  {
+                            "all_consent_policies":  [
+                                                         {
+                                                             "IsEnabled":  true,
+                                                             "PolicyId":  null
+                                                         }
+                                                     ]
+                        },
+        "Commandlet":  [
+                           "Get-MgBetaPolicyAdminConsentRequestPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.5.3v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  {
+                            "all_grant_policy_values":  [
+                                                            {
+                                                                "DefaultUser_DefaultGrantPolicy":  [
+
+                                                                                                   ],
+                                                                "PolicyId":  "authorizationPolicy"
+                                                            }
+                                                        ]
+                        },
+        "Commandlet":  [
+                           "Get-MgBetaPolicyAuthorizationPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.5.2v1",
+        "ReportDetails":  "0 authorization policies found that allow non-admin users to consent to third-party applications",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  {
+                            "all_roleid_values":  [
+                                                      {
+                                                          "GuestUserRoleId":  "10dae51f-b6af-4016-8d66-8c2a99b929b3",
+                                                          "GuestUserRoleIdString":  "Limited access",
+                                                          "Id":  "authorizationPolicy"
+                                                      }
+                                                  ]
+                        },
+        "Commandlet":  [
+                           "Get-MgBetaPolicyAuthorizationPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.AAD.8.1v1",
+        "ReportDetails":  "Permission level set to \"Limited access\" (authorizationPolicy)",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.1.1v1",
+        "ReportDetails":  "0 conditional access policy(s) found that meet(s) all requirements. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.2.1v1",
+        "ReportDetails":  "0 conditional access policy(s) found that meet(s) all requirements. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.3.1v1",
+        "ReportDetails":  "0 conditional access policy(s) found that meet(s) all requirements. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.3.2v1",
+        "ReportDetails":  "0 conditional access policy(s) found that meet(s) all requirements. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.AAD.3.7v1",
+        "ReportDetails":  "0 conditional access policy(s) found that meet(s) all requirements. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.AAD.3.8v1",
+        "ReportDetails":  "0 conditional access policy(s) found that meet(s) all requirements. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedUser"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.7.1v1",
+        "ReportDetails":  "15 global admin(s) found:\u003cbr/\u003eAddam Schroll, Alden Hilton - CTR, David Bui - CTR, David Evensky - CTR, Elijah Agbayani - CTR, Grant Brown - CTR, Grant Dasher - GOV - AZ, Jacob Davis - CTR, Nanda Katikaneni - CTR, Richard Mangual, Roger Mamika, Shanti Satyapal, Theodore Kolovos - CTR - AZ, Troy Stevens - CTR - AZ, Victor Echeverria - CTR",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Application Administrator",
+                            "Cloud Application Administrator",
+                            "Exchange Administrator",
+                            "Global Administrator",
+                            "Privileged Role Administrator",
+                            "SharePoint Administrator",
+                            "User Administrator"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedRole"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.7.4v1",
+        "ReportDetails":  "7 role(s) that contain users with permanent active assignment:\u003cbr/\u003eApplication Administrator, Cloud Application Administrator, Exchange Administrator, Global Administrator, Privileged Role Administrator, SharePoint Administrator, User Administrator",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Application Administrator",
+                            "Cloud Application Administrator",
+                            "Exchange Administrator",
+                            "Global Administrator",
+                            "Privileged Role Administrator",
+                            "SharePoint Administrator",
+                            "User Administrator"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedRole"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.7.5v1",
+        "ReportDetails":  "7 role(s) assigned to users outside of PIM:\u003cbr/\u003eApplication Administrator, Cloud Application Administrator, Exchange Administrator, Global Administrator, Privileged Role Administrator, SharePoint Administrator, User Administrator",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Application Administrator",
+                            "Cloud Application Administrator",
+                            "Hybrid Identity Administrator",
+                            "Privileged Role Administrator",
+                            "User Administrator"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedRole"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.AAD.7.6v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Cloud Application Administrator",
+                            "Exchange Administrator",
+                            "Global Administrator",
+                            "Hybrid Identity Administrator",
+                            "Privileged Role Administrator",
+                            "SharePoint Administrator"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedRole"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.7.7v1",
+        "ReportDetails":  "6 role(s) without notification e-mail configured for role assignments found:\u003cbr/\u003eCloud Application Administrator, Exchange Administrator, Global Administrator, Hybrid Identity Administrator, Privileged Role Administrator, SharePoint Administrator",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Cloud Application Administrator",
+                            "Exchange Administrator",
+                            "Hybrid Identity Administrator",
+                            "Privileged Role Administrator",
+                            "SharePoint Administrator"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedRole"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.7.8v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Cloud Application Administrator",
+                            "Exchange Administrator",
+                            "Hybrid Identity Administrator",
+                            "Privileged Role Administrator",
+                            "SharePoint Administrator"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedRole"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.AAD.7.9v1",
+        "ReportDetails":  "5 role(s) without notification e-mail configured for role activations found:\u003cbr/\u003eCloud Application Administrator, Exchange Administrator, Hybrid Identity Administrator, Privileged Role Administrator, SharePoint Administrator",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Live - High Risk Sign-ins SHALL be Blocked"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.2.3v1",
+        "ReportDetails":  "1 conditional access policy(s) found that meet(s) all requirements:\u003cbr/\u003eLive - High Risk Sign-ins SHALL be Blocked. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Live - MFA SHALL be required for Highly Privileged Roles"
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaSubscribedSku",
+                           "Get-PrivilegedRole",
+                           "Get-MgBetaIdentityConditionalAccessPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.3.6v1",
+        "ReportDetails":  "1 conditional access policy(s) found that meet(s) all requirements:\u003cbr/\u003eLive - MFA SHALL be required for Highly Privileged Roles. \u003ca href=\u0027#caps\u0027\u003eView all CA policies\u003c/a\u003e.",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Name":  "EnableGroupSpecificConsent",
+                                "SettingsGroup":  "Consent Policy Settings",
+                                "Value":  "false"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-MgBetaDirectorySetting"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.AAD.5.4v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHALL be enabled: \"?\" for unauthenticated senders for spoof default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHALL be enabled: \"via\" tag default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHALL be enabled: domain impersonation default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHALL be enabled: user impersonation default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHALL be enabled: user impersonation unusual characters default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.5.8v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Zero-hour auto purge (ZAP) SHALL be enabled for phishing: default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Zero-hour auto purge (ZAP) SHALL be enabled for spam messages: default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.6.7v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.6.6v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  6,
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.6.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  30,
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.6.5v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "MoveToJmf",
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.6.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Message action SHALL be set to quarantine if the message is detected as impersonated: domains default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Message action SHALL be set to quarantine if the message is detected as impersonated: mailbox default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.5.6v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.5.7v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "High confidence phishing SHALL be quarantined: default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "High confidence spam SHALL be moved to either the junk email folder or the quarantine folder: default policy",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.6.3v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "Quarantine",
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.6.4v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/Not-Implemented",
+        "PolicyId":  "MS.DEFENDER.10.2v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/defender.md#msdefender102v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/Not-Implemented",
+        "PolicyId":  "MS.DEFENDER.10.3v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/defender.md#msdefender103v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.DEFENDER.2.5v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/defender.md#msdefender25v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.DEFENDER.2.6v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/defender.md#msdefender26v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.DEFENDER.9.2v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/defender.md#msdefender92v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHOULD be enabled: \"?\" for unauthenticated senders for spoof non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHOULD be enabled: \"via\" tag non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHOULD be enabled: domain impersonation non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHOULD be enabled: user impersonation non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "All safety tips SHOULD be enabled: user impersonation unusual characters non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Mail classified as spoofed SHOULD be quarantined: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Message action SHOULD be set to quarantine if the message is detected as impersonated: domains non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Message action SHOULD be set to quarantine if the message is detected as impersonated: mailbox non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Message action SHOULD be set to quarantine if the message is detected as impersonated: users non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-DLPCompliancePolicy"
+                       ],
+        "Control":  "Defender 2.2",
+        "Criticality":  "Should",
+        "ReportDetails":  "No policy found that applies to OneDrive.",
+        "Requirement":  "The custom policy SHOULD be applied in OneDrive",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Allowed senders MAY be added but allowed domains SHOULD NOT be added: non-default",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Bulk email SHOULD be moved to either the junk email folder or the quarantine folder: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "High confidence phishing SHOULD be quarantined: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "High confidence spam SHOULD be moved to either the junk email folder or the quarantine folder: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Phishing SHOULD be quarantined: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Spam SHOULD be moved to either the junk email folder or the quarantine folder: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Spam in quarantine SHOULD be retained for at least 30 days: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Spam safety tips SHOULD be turned on: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "The bulk complaint level (BCL) threshold SHOULD be set to six or lower: non-default policies",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Zero-hour auto purge (ZAP) SHOULD be enabled for Spam: non-default",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Zero-hour auto purge (ZAP) SHOULD be enabled for phishing: non-default",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Control":  "Defender 2.6",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Zero-hour auto purge (ZAP) SHOULD be enabled: non-default",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-HostedContentFilterPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.6.8v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MalwareFilterPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.3.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-MalwareFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.4.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Baseline Rule",
+                            "High volume of content detected agency DLP Policy for PII",
+                            "Low volume of content detected agency DLP Policy for PII",
+                            "PII Check"
+                        ],
+        "Commandlet":  [
+                           "Get-DlpComplianceRule"
+                       ],
+        "Control":  "Defender 2.2",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "A custom policy SHALL be configured to protect PII and sensitive information, as defined by the agency: Credit Card Number",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Baseline Rule",
+                            "PII Check"
+                        ],
+        "Commandlet":  [
+                           "Get-DlpComplianceRule"
+                       ],
+        "Control":  "Defender 2.2",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "A custom policy SHALL be configured to protect PII and sensitive information, as defined by the agency: U.S. Individual Taxpayer Identification Number (ITIN)",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Baseline Rule",
+                            "PII Check"
+                        ],
+        "Commandlet":  [
+                           "Get-DlpComplianceRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.2.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.3v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.4v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.5v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.6v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.7v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.8v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "agency Safe Links Policy"
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksPolicy",
+                           "Get-SafeLinksRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.9v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Default",
+                            "Standard Preset Security Policy1659535435292"
+                        ],
+        "Commandlet":  [
+                           "Get-MalwareFilterPolicy"
+                       ],
+        "Control":  "Defender 2.3",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Disallowed file types SHALL be determined and set. At a minimum, click-to-run files SHOULD be blocked: cmd files",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Default",
+                            "Standard Preset Security Policy1659535435292"
+                        ],
+        "Commandlet":  [
+                           "Get-MalwareFilterPolicy"
+                       ],
+        "Control":  "Defender 2.3",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "Disallowed file types SHALL be determined and set. At a minimum, click-to-run files SHOULD be blocked: vbe files",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Default",
+                            "Standard Preset Security Policy1659535435292"
+                        ],
+        "Commandlet":  [
+                           "Get-MalwareFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.3.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Enabled"
+                        ],
+        "Commandlet":  [
+                           "Get-EOPProtectionPolicyRule"
+                       ],
+        "Control":  "Defender 2.1",
+        "Criticality":  "Should",
+        "ReportDetails":  "The Strict Preset Security Policy is present and not disabled",
+        "Requirement":  "Strict Preset security profiles SHOULD NOT be used",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Enabled"
+                        ],
+        "Commandlet":  [
+                           "Get-EOPProtectionPolicyRule"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.1.1v1",
+        "ReportDetails":  "The Standard Preset Security Policy is present and not disabled",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "High volume of content detected agency DLP Policy for PII",
+                            "Low volume of content detected agency DLP Policy for PII"
+                        ],
+        "Commandlet":  [
+                           "Get-DlpComplianceRule"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.2.3v1",
+        "ReportDetails":  "2 rule(s) found that do(es) not block access or associated policy not set to enforce block action: High volume of content detected agency DLP Policy for PII, Low volume of content detected agency DLP Policy for PII",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Malware campaign detected after delivery",
+                            "Unusual increase in email reported as phish"
+                        ],
+        "Commandlet":  [
+                           "Get-ProtectionAlert"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.9.1v1",
+        "ReportDetails":  "2 disabled required alert(s) found: Malware campaign detected after delivery, Unusual increase in email reported as phish",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "PII Check"
+                        ],
+        "Commandlet":  [
+                           "Get-DlpComplianceRule"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.2.4v1",
+        "ReportDetails":  "1 rule(s) found that do(es) not notify at least one user: PII Check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Strict Preset Security Policy1681329955447"
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Control":  "Defender 2.5",
+        "Criticality":  "Should",
+        "ReportDetails":  "1 custom anti phish policy(ies) found where first contact safety tips are not enabled: Strict Preset Security Policy1681329955447",
+        "Requirement":  "All safety tips SHOULD be enabled: first contact non-default policies",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Action":  "Block",
+                                "Enable":  true,
+                                "Identity":  "Block unknown malware",
+                                "RedirectAddress":  "someone@somewhere.org"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-SafeAttachmentPolicy",
+                           "Get-SafeAttachmentRule",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.8.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Action":  "MoveToJmf",
+                                "IntelligenceProtection":  true,
+                                "Name":  "Standard Preset Security Policy1659535429826"
+                            },
+                            {
+                                "Action":  "Quarantine",
+                                "IntelligenceProtection":  true,
+                                "Name":  "Office365 AntiPhish Default"
+                            },
+                            {
+                                "Action":  "Quarantine",
+                                "IntelligenceProtection":  true,
+                                "Name":  "Strict Preset Security Policy1681329955447"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.5.5v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Action":  "Quarantine",
+                                "CustomDomains":  [
+                                                  ],
+                                "Name":  "Office365 AntiPhish Default"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.5.3v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Action":  "Quarantine",
+                                "Name":  "Office365 AntiPhish Default",
+                                "OrgDomains":  true
+                            },
+                            {
+                                "Action":  "Quarantine",
+                                "Name":  "Standard Preset Security Policy1659535429826",
+                                "OrgDomains":  true
+                            },
+                            {
+                                "Action":  "Quarantine",
+                                "Name":  "Strict Preset Security Policy1681329955447",
+                                "OrgDomains":  true
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.5.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Action":  "Quarantine",
+                                "Name":  "Office365 AntiPhish Default",
+                                "Users":  [
+                                          ]
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-AntiPhishPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.5.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "EnableATPForSPOTeamsODB":  true,
+                                "Identity":  "Default"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-AtpPolicyForO365"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.8.4v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Identity":  "Admin Audit Log Settings",
+                                "UnifiedAuditLogIngestionEnabled":  true
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-AdminAuditLogConfig"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.10.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Identity":  "Block unknown malware",
+                                "RedirectAddress":  "someone@somewhere.org"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-SafeAttachmentPolicy",
+                           "Get-SafeAttachmentRule",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.8.3v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Identity":  "agency Safe Links Policy",
+                                "RecipientDomains":  [
+                                                     ]
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-SafeLinksRule",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.7.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "agency DLP Policy for PII",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams"
+                            },
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "Default Office 365 DLP policy",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams, EndpointDevices, OnPremisesScanner"
+                            },
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "MS.DEFENDER.4.1v1 Test",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams, EndpointDevices, OnPremisesScanner"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-DLPCompliancePolicy"
+                       ],
+        "Control":  "Defender 2.2",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "The custom policy SHOULD be applied in SharePoint",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "agency DLP Policy for PII",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams"
+                            },
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "Default Office 365 DLP policy",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams, EndpointDevices, OnPremisesScanner"
+                            },
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "MS.DEFENDER.4.1v1 Test",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams, EndpointDevices, OnPremisesScanner"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-DLPCompliancePolicy"
+                       ],
+        "Control":  "Defender 2.2",
+        "Criticality":  "Should",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "The custom policy SHOULD be applied in Teams",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "agency DLP Policy for PII",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams"
+                            },
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "Default Office 365 DLP policy",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams, EndpointDevices, OnPremisesScanner"
+                            },
+                            {
+                                "Locations":  [
+                                                  "All"
+                                              ],
+                                "Name":  "MS.DEFENDER.4.1v1 Test",
+                                "Workload":  "Exchange, SharePoint, OneDriveForBusiness, Teams, EndpointDevices, OnPremisesScanner"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-DLPCompliancePolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.DEFENDER.2.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "RecipientDomains":  [
+                                                     ],
+                                "SafeAttachmentPolicy":  "Block unknown malware"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-SafeAttachmentRule",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.DEFENDER.8.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.10.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.10.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.14.1v2",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.14.4v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.14.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.14.3v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.16.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.17.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.17.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.17.3v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.8.1v2",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.8.2v2",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.8.3v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.8.4v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.9.1v2",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.EXO.9.3v2",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.9.4v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.9.5v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.10.3v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.11.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.11.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.11.3v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.15.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.15.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.15.3v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.16.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.EXO.9.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "NotInOrganization",
+                            "NotInOrganization"
+                        ],
+        "Commandlet":  [
+                           "Get-TransportRule"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.7.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            [
+                                {
+                                    "domain":  "agency.org",
+                                    "log":  [
+                                                "@{query_method=traditional; query_name=selector1._domainkey.agency.org; query_result=Query returned 2 txt records}"
+                                            ],
+                                    "rdata":  [
+                                                  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwFSu1nMh65jJ8aErOaJVvpebHMom45tQKfNK6/nQUgCg9ne8qFE0DyA0SdqtT3r4/uOzhFVxEYFT6rxqcD54BWVQ1hhdEeNbOhHiOjn+W8rLbNnejVUbk5tpjF9yHBkqrpRuJJKTOQTl+6Myqx2IqYA1PTM9Md94iOZNmxKyFlYzLr8QITRXtyQjtOlBE+7lf",
+                                                  "tsNTAQwnl34zfPZZPAhczn0UfeAYW4hcYO6BP0OHlcwyLOXRcHIdKZ6mNOog0wExCK98ryPQuNFqzDxSMOg3vjmrQiTJzDOgKBqZ3+/Zjvhfyh0iLxWIDxeUNBgbMEx5tCuyUuO2JI+vK/VeG1mGQIDAQAB;"
+                                              ]
+                                },
+                                {
+                                    "domain":  "test365.agency.org",
+                                    "log":  [
+                                                "@{query_method=traditional; query_name=selector1._domainkey.test365.agency.org; query_result=Query returned NXDomain}",
+                                                "@{query_method=DoH; query_name=selector1._domainkey.test365.agency.org; query_result=Query returned NXDomain}",
+                                                "@{query_method=traditional; query_name=selector2._domainkey.test365.agency.org; query_result=Query returned 2 txt records}"
+                                            ],
+                                    "rdata":  [
+                                                  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwVCM2ZRZbi+HfMpoGMmEuv+0x+Fc7++ObO11SXDvyrm5OhMGDzyR6lMJPRhovYu4y4WxgKvYtalHtORzIzbcs5+m07uee/bmz6vZJqsSc/52O0UJGHYpBAPWktBb5Trjaj4Hr26FkTIJCPxy4z8m4Wsx9/+jimn5cdb4zbQhnwccBii6wptEekvATQu6cX8vo",
+                                                  "gy8NDFr6wcSxcM923EQSUout2OrUGmkJnQvrkKvCCj4Gjt8ZNoGGaLpd+vzKVbvyHaLOMbVreIWTm6fg5vM0DDmhVwIAfHUhoOlLOQ5GiGM4pK+z6MMzvAJE3bTLEvuoAji96GDSlLU+Kj+6rOWMQIDAQAB;"
+                                              ]
+                                },
+                                {
+                                    "domain":  "agency.mail.onmicrosoft.com",
+                                    "log":  [
+                                                "@{query_method=traditional; query_name=selector1._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=DoH; query_name=selector1._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=traditional; query_name=selector2._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=DoH; query_name=selector2._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=traditional; query_name=selector1-agency-mail-onmicrosoft-com._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=DoH; query_name=selector1-agency-mail-onmicrosoft-com._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=traditional; query_name=selector2-agency-mail-onmicrosoft-com._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=DoH; query_name=selector2-agency-mail-onmicrosoft-com._domainkey.agency.mail.onmicrosoft.com; query_result=Query returned NXDomain}"
+                                            ],
+                                    "rdata":  [
+
+                                              ]
+                                },
+                                {
+                                    "domain":  "agency.onmicrosoft.com",
+                                    "log":  [
+                                                "@{query_method=traditional; query_name=selector1._domainkey.agency.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=DoH; query_name=selector1._domainkey.agency.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=traditional; query_name=selector2._domainkey.agency.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=DoH; query_name=selector2._domainkey.agency.onmicrosoft.com; query_result=Query returned NXDomain}",
+                                                "@{query_method=traditional; query_name=selector1-agency-onmicrosoft-com._domainkey.agency.onmicrosoft.com; query_result=Query returned 2 txt records}"
+                                            ],
+                                    "rdata":  [
+                                                  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAohoPDhGToRO8y7acaWL2w15wsCmwabxgTwODro2c1BeRYXfnUMStICo3w4ZrYDtGZDSA7hm0x7OHujF1CoQnXiBmrQ154wtomPyx3Op/VC6+b9di4z15XBvhXh/fLBUdEJ6wsybMLmQ+WPQA6vsM3UN5Cv5rl2SylFoM//eLmw5R6NmMIj3GQg9b+vQl2cKNX",
+                                                  "qII2gZrB07P6xt2wW1VA/LPjdRFUEys9YzBgOqM53VaODWDXDIvUH/nPRVAtOEsV19u66jyzZnzcz9a7ATxizix7DnySzI3koVlOGi/+dLx8FYIAZ/75wkH1O/gH8/n4C66uwRm/PMW+4JzVwLY+QIDAQAB;"
+                                              ]
+                                }
+                            ],
+                            [
+                                {
+                                    "AdminDisplayName":  "",
+                                    "Algorithm":  "RsaSHA256",
+                                    "BodyCanonicalization":  "Relaxed",
+                                    "DistinguishedName":  "CN=agency.org,CN=Dkim Signing config,CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                    "Domain":  "agency.org",
+                                    "Enabled":  true,
+                                    "ExchangeObjectId":  "7218f0b3-d9ad-4964-be49-b7b1c0b635e4",
+                                    "ExchangeVersion":  "0.20 (15.0.0.0)",
+                                    "Guid":  "7218f0b3-d9ad-4964-be49-b7b1c0b635e4",
+                                    "HeaderCanonicalization":  "Relaxed",
+                                    "Id":  "agency.org",
+                                    "Identity":  "agency.org",
+                                    "IncludeKeyExpiration":  false,
+                                    "IncludeSignatureCreationTime":  true,
+                                    "IsDefault":  false,
+                                    "IsValid":  true,
+                                    "KeyCreationTime":  "/Date(1626472130517)/",
+                                    "LastChecked":  "/Date(1626472130517)/",
+                                    "Name":  "agency.org",
+                                    "NumberOfBytesToSign":  "All",
+                                    "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Hosted-Content-Filter-Config",
+                                    "ObjectClass":  [
+                                                        "top",
+                                                        "msExchHostedContentFilterConfig"
+                                                    ],
+                                    "ObjectState":  "Unchanged",
+                                    "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                    "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                    "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                    "RotateOnDate":  "/Date(1626817730517)/",
+                                    "Selector1CNAME":  "selector1-agency._domainkey.agency.onmicrosoft.com",
+                                    "Selector1KeySize":  2048,
+                                    "Selector1PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwFSu1nMh65jJ8aErOaJVvpebHMom45tQKfNK6/nQUgCg9ne8qFE0DyA0SdqtT3r4/uOzhFVxEYFT6rxqcD54BWVQ1hhdEeNbOhHiOjn+W8rLbNnejVUbk5tpjF9yHBkqrpRuJJKTOQTl+6Myqx2IqYA1PTM9Md94iOZNmxKyFlYzLr8QITRXtyQjtOlBE+7lftsNTAQwnl34zfPZZPAhczn0UfeAYW4hcYO6BP0OHlcwyLOXRcHIdKZ6mNOog0wExCK98ryPQuNFqzDxSMOg3vjmrQiTJzDOgKBqZ3+/Zjvhfyh0iLxWIDxeUNBgbMEx5tCuyUuO2JI+vK/VeG1mGQIDAQAB;",
+                                    "Selector2CNAME":  "selector2-agency._domainkey.agency.onmicrosoft.com",
+                                    "Selector2KeySize":  2048,
+                                    "Selector2PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmn5LZHYWK9CebUh/P+sris0fCvFhbwTQCGv9U/0QMtDygpX6AG8PUI4wAUURCQ3jESsh7OKARvukQ7T5E30FOA9GrEkRgLgQt//7KftdvWSakpCcNUUQ7IJllUEOKgxo04wZDY8gC66nMy7KvM63ja6+YhxbVJDbqextHYH5gTGGVQbM93Txt8WNQ0ws/IZljDlPv4/Cp+jPf1cnmdCngEWadlm8vT1gsD/eR1GcLL+VsnD1NoyRYwEPTsWTHEJVwki1KADdv1VvrUUWcZ6ofFoElbLydUCeDtDoELeqhUqvG8vFGce2cjGd+WkJ9l0YXeIsU9eY1HS+Dmq0A0gKhQIDAQAB;",
+                                    "SelectorAfterRotateOnDate":  "selector2",
+                                    "SelectorBeforeRotateOnDate":  "selector1",
+                                    "Status":  "Valid",
+                                    "WhenChanged":  "/Date(1626472136000)/",
+                                    "WhenChangedUTC":  "/Date(1626472136000)/",
+                                    "WhenCreated":  "/Date(1626471047000)/",
+                                    "WhenCreatedUTC":  "/Date(1626471047000)/"
+                                },
+                                {
+                                    "AdminDisplayName":  "",
+                                    "Algorithm":  "RsaSHA256",
+                                    "BodyCanonicalization":  "Relaxed",
+                                    "DistinguishedName":  "CN=associates.agency.org,CN=Dkim Signing config,CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                    "Domain":  "associates.agency.org",
+                                    "Enabled":  true,
+                                    "ExchangeObjectId":  "5c088a4c-3ef4-4413-8095-c8e15d2e9e48",
+                                    "ExchangeVersion":  "0.20 (15.0.0.0)",
+                                    "Guid":  "5c088a4c-3ef4-4413-8095-c8e15d2e9e48",
+                                    "HeaderCanonicalization":  "Relaxed",
+                                    "Id":  "associates.agency.org",
+                                    "Identity":  "associates.agency.org",
+                                    "IncludeKeyExpiration":  false,
+                                    "IncludeSignatureCreationTime":  true,
+                                    "IsDefault":  false,
+                                    "IsValid":  true,
+                                    "KeyCreationTime":  "/Date(1651609815797)/",
+                                    "LastChecked":  "/Date(1651609815797)/",
+                                    "Name":  "associates.agency.org",
+                                    "NumberOfBytesToSign":  "All",
+                                    "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Hosted-Content-Filter-Config",
+                                    "ObjectClass":  [
+                                                        "top",
+                                                        "msExchHostedContentFilterConfig"
+                                                    ],
+                                    "ObjectState":  "Unchanged",
+                                    "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                    "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                    "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                    "RotateOnDate":  "/Date(1651955415797)/",
+                                    "Selector1CNAME":  "selector1-associates-agency._domainkey.agency.onmicrosoft.com",
+                                    "Selector1KeySize":  2048,
+                                    "Selector1PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwiJqFoGnKm/i107OGE0xPgaozjujMVN6EAqaJ4RqCqDaHoErrFbuev5u2D1ZlDAAn3aEJ2KvObey6sLl/OcsULS2rO9ooUAOL0tMUR+1bfFiNz8ypH3eJfL7UN5v2bS+xcauTMusMw9lq88mrC1loS78K1sYiqjnUiEIvExO6wEEKXO0mFPpJRkG4pN+TmiByAAabzx+XxnmYdu1ZbRkAlxNxUAcPykhdIJ0UuQmFeQwYBmOhhu8dTaS51bt+SkxQMq9fm1UYcAGaHKKMceGD+agOgI7lPLBoByK/3PwnxGUptJQmZnk6TJ9a1kMbLzllXSneqRkLCv0SCa6SXa2/QIDAQAB;",
+                                    "Selector2CNAME":  "selector2-associates-agency._domainkey.agency.onmicrosoft.com",
+                                    "Selector2KeySize":  2048,
+                                    "Selector2PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA05Me3QPcAtSW6CMtxZq7y89zmpvq8QY/4srelDXznTvo/wpMPLLsrsd+lDsbKjX8t7KE+AhNBByRBogbJe9UPAIC2qqAQRgW3cEO89Vt9IJbYxIfzvLEZCiJlo+ixw+K7WvsMlC2M7pwfgWB5YHTcDjkN6Ix8q4FDFNWjReCqJpuaAgeC+2dqprKYVF2XgDk17+4JxuPBQqje8T/9mixIxKEnBHF+LHXDYJaTYZBZbfEwbg7s7ArqqqBYxToPrkbUJbpsF7c/xS+S12uUtxw7sHR5jXU4V15yJT9ed61flsDKTG/nQlSOpyfYgtlfXUm7SfUD532PoIxnuWvv1TJEQIDAQAB;",
+                                    "SelectorAfterRotateOnDate":  "selector1",
+                                    "SelectorBeforeRotateOnDate":  "selector2",
+                                    "Status":  "Valid",
+                                    "WhenChanged":  "/Date(1651609818000)/",
+                                    "WhenChangedUTC":  "/Date(1651609818000)/",
+                                    "WhenCreated":  "/Date(1626471070000)/",
+                                    "WhenCreatedUTC":  "/Date(1626471070000)/"
+                                },
+                                {
+                                    "AdminDisplayName":  "",
+                                    "Algorithm":  "RsaSHA256",
+                                    "BodyCanonicalization":  "Relaxed",
+                                    "DistinguishedName":  "CN=test365.agency.org,CN=Dkim Signing config,CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                    "Domain":  "test365.agency.org",
+                                    "Enabled":  true,
+                                    "ExchangeObjectId":  "e64ef9c1-9920-474d-aad3-b3d1b7cd606e",
+                                    "ExchangeVersion":  "0.20 (15.0.0.0)",
+                                    "Guid":  "e64ef9c1-9920-474d-aad3-b3d1b7cd606e",
+                                    "HeaderCanonicalization":  "Relaxed",
+                                    "Id":  "test365.agency.org",
+                                    "Identity":  "test365.agency.org",
+                                    "IncludeKeyExpiration":  false,
+                                    "IncludeSignatureCreationTime":  true,
+                                    "IsDefault":  false,
+                                    "IsValid":  true,
+                                    "KeyCreationTime":  "/Date(1653603314013)/",
+                                    "LastChecked":  "/Date(1653603314013)/",
+                                    "Name":  "test365.agency.org",
+                                    "NumberOfBytesToSign":  "All",
+                                    "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Hosted-Content-Filter-Config",
+                                    "ObjectClass":  [
+                                                        "top",
+                                                        "msExchHostedContentFilterConfig"
+                                                    ],
+                                    "ObjectState":  "Unchanged",
+                                    "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                    "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                    "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                    "RotateOnDate":  "/Date(1653948914013)/",
+                                    "Selector1CNAME":  "selector1-test365-agency._domainkey.agency.onmicrosoft.com",
+                                    "Selector1KeySize":  2048,
+                                    "Selector1PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5C8aVe0pDvH1I6/e4sC1IJhNu/OdO9TANT6YG5Q61XQrc4hSyJsW75f3qENcXZAMmsCUZhn7hYdtTv6tcpP/cebcFzmoEatBaVoVWl6R+Gy9/6uPjIrg8s/83le+KXK+TFgR5fighyMlwM937FS9Ii8HQVVzoFU08w6lfDjewLXCwBIk0Y5P0NjW510iaWxTMsnjZ/hrL/REnRRsYB2x8Ll/SHC9nltlGIP3IgcmGPS4DWSdNXTGu10Hz3zML9tRruU96K0TTWs2lRoQoNAn0eu2YLQ5RR8JaLiQ5EYn5lY3ZhDK/4FlAG52AdvkrdbQelwlJiZpBbTUjMk5PvtNUQIDAQAB;",
+                                    "Selector2CNAME":  "selector2-test365-agency._domainkey.agency.onmicrosoft.com",
+                                    "Selector2KeySize":  2048,
+                                    "Selector2PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwVCM2ZRZbi+HfMpoGMmEuv+0x+Fc7++ObO11SXDvyrm5OhMGDzyR6lMJPRhovYu4y4WxgKvYtalHtORzIzbcs5+m07uee/bmz6vZJqsSc/52O0UJGHYpBAPWktBb5Trjaj4Hr26FkTIJCPxy4z8m4Wsx9/+jimn5cdb4zbQhnwccBii6wptEekvATQu6cX8vogy8NDFr6wcSxcM923EQSUout2OrUGmkJnQvrkKvCCj4Gjt8ZNoGGaLpd+vzKVbvyHaLOMbVreIWTm6fg5vM0DDmhVwIAfHUhoOlLOQ5GiGM4pK+z6MMzvAJE3bTLEvuoAji96GDSlLU+Kj+6rOWMQIDAQAB;",
+                                    "SelectorAfterRotateOnDate":  "selector2",
+                                    "SelectorBeforeRotateOnDate":  "selector1",
+                                    "Status":  "Valid",
+                                    "WhenChanged":  "/Date(1653603321000)/",
+                                    "WhenChangedUTC":  "/Date(1653603321000)/",
+                                    "WhenCreated":  "/Date(1651689371000)/",
+                                    "WhenCreatedUTC":  "/Date(1651689371000)/"
+                                },
+                                {
+                                    "AdminDisplayName":  "",
+                                    "Algorithm":  "RsaSHA256",
+                                    "BodyCanonicalization":  "Relaxed",
+                                    "DistinguishedName":  "CN=agency.onmicrosoft.com,CN=Dkim Signing config,CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                    "Domain":  "agency.onmicrosoft.com",
+                                    "Enabled":  true,
+                                    "ExchangeObjectId":  "ea1866b3-b7fa-4dbe-b9c9-48087391a536",
+                                    "ExchangeVersion":  "0.20 (15.0.0.0)",
+                                    "Guid":  "476371c0-bf15-4101-84a7-a3a03b4266f1",
+                                    "HeaderCanonicalization":  "Relaxed",
+                                    "Id":  "agency.onmicrosoft.com",
+                                    "Identity":  "agency.onmicrosoft.com",
+                                    "IncludeKeyExpiration":  false,
+                                    "IncludeSignatureCreationTime":  true,
+                                    "IsDefault":  true,
+                                    "IsValid":  true,
+                                    "KeyCreationTime":  "/Date(1653603718610)/",
+                                    "LastChecked":  "/Date(1653603718610)/",
+                                    "Name":  "agency.onmicrosoft.com",
+                                    "NumberOfBytesToSign":  "All",
+                                    "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Hosted-Content-Filter-Config",
+                                    "ObjectClass":  [
+                                                        "top",
+                                                        "msExchHostedContentFilterConfig"
+                                                    ],
+                                    "ObjectState":  "Unchanged",
+                                    "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                    "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                    "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                    "RotateOnDate":  "/Date(1653949318610)/",
+                                    "Selector1CNAME":  "selector1-agency-onmicrosoft-com._domainkey.agency.onmicrosoft.com",
+                                    "Selector1KeySize":  2048,
+                                    "Selector1PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAohoPDhGToRO8y7acaWL2w15wsCmwabxgTwODro2c1BeRYXfnUMStICo3w4ZrYDtGZDSA7hm0x7OHujF1CoQnXiBmrQ154wtomPyx3Op/VC6+b9di4z15XBvhXh/fLBUdEJ6wsybMLmQ+WPQA6vsM3UN5Cv5rl2SylFoM//eLmw5R6NmMIj3GQg9b+vQl2cKNXqII2gZrB07P6xt2wW1VA/LPjdRFUEys9YzBgOqM53VaODWDXDIvUH/nPRVAtOEsV19u66jyzZnzcz9a7ATxizix7DnySzI3koVlOGi/+dLx8FYIAZ/75wkH1O/gH8/n4C66uwRm/PMW+4JzVwLY+QIDAQAB;",
+                                    "Selector2CNAME":  "selector2-agency-onmicrosoft-com._domainkey.agency.onmicrosoft.com",
+                                    "Selector2KeySize":  2048,
+                                    "Selector2PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0N9/MWtBA7REPZSGKz9hfYIgF5jm5uri7RVSkaptlnvK0AI6jmJ4TvZ4beFzrfJDh6cIt5gX0UqnTzF9/0UZeyfRuUQAUew/sXU8FZXEnt+Bxr9k8PkAaqr2ksYhY/n46DxrWu1X/Cz7tye5FBnsTbyI6PnaBCfcgzwFnULaojUtdqSQGF7dt4HcyZGnUX1YLNwhp4Lyi9g1bZF6EdNMYHuKXFIsRo5qmEMagIsi557jGlGNTqTKJ9aZWGiCgjFJ14mTUN/itKXb5RqBAfG9KeZQXk6hWGTe7H9lVOshMZgV4t0FyaisrGg5GselbKZukxcA8xsOnCLpjSRUJiUmAQIDAQAB;",
+                                    "SelectorAfterRotateOnDate":  "selector2",
+                                    "SelectorBeforeRotateOnDate":  "selector1",
+                                    "Status":  "Valid",
+                                    "WhenChanged":  "/Date(1653603723000)/",
+                                    "WhenChangedUTC":  "/Date(1653603723000)/",
+                                    "WhenCreated":  "/Date(1619484596000)/",
+                                    "WhenCreatedUTC":  "/Date(1619484596000)/"
+                                },
+                                {
+                                    "AdminDisplayName":  "",
+                                    "Algorithm":  "RsaSHA256",
+                                    "BodyCanonicalization":  "Relaxed",
+                                    "DistinguishedName":  "CN=agency.net,CN=Dkim Signing config,CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                    "Domain":  "agency.net",
+                                    "Enabled":  true,
+                                    "ExchangeObjectId":  "28c37edc-ac62-41ce-933e-0f02f1af767c",
+                                    "ExchangeVersion":  "0.20 (15.0.0.0)",
+                                    "Guid":  "8e977acc-dd79-4c83-be46-f792a515ab97",
+                                    "HeaderCanonicalization":  "Relaxed",
+                                    "Id":  "agency.net",
+                                    "Identity":  "agency.net",
+                                    "IncludeKeyExpiration":  false,
+                                    "IncludeSignatureCreationTime":  true,
+                                    "IsDefault":  false,
+                                    "IsValid":  true,
+                                    "KeyCreationTime":  "/Date(1618337906904)/",
+                                    "LastChecked":  "/Date(1618339026879)/",
+                                    "Name":  "agency.net",
+                                    "NumberOfBytesToSign":  "All",
+                                    "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Hosted-Content-Filter-Config",
+                                    "ObjectClass":  [
+                                                        "top",
+                                                        "msExchHostedContentFilterConfig"
+                                                    ],
+                                    "ObjectState":  "Unchanged",
+                                    "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                    "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                    "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                    "RotateOnDate":  "/Date(1618337906904)/",
+                                    "Selector1CNAME":  "selector1-agency-net._domainkey.agency.onmicrosoft.com",
+                                    "Selector1KeySize":  2048,
+                                    "Selector1PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxV9ibpvnJt6CCoHMtsiGp1D0JPqsPMjI5aP+vDzVtrRSz34yMTvVXQ0UhCjVLoOJL9SSWobjhFnK+26+sOMSbWf1ARUhcVItUjOutZ/8RBW/LYyCTrPVZBsFcgjfK+ugBx7ygPWyvLsAryNL4aMGOe1YKHTvTaPoXImUtq4FyjUNkzVL+N1m2nkpj2PtRja8iHVvXe0v59KhJeFpEI7XHsNYk14RZHflP5zpUi8wqER9RokPpWVRJRwqPBqh4krm0WWmlfGksUzJI2MqmE1rOzTKedri6F2o0vZY1m6XCPi3StTXVFXH09NgxlLbI3i+98qGGvkJPaKwLGP+ajjYpQIDAQAB;",
+                                    "Selector2CNAME":  "selector2-agency-net._domainkey.agency.onmicrosoft.com",
+                                    "Selector2KeySize":  2048,
+                                    "Selector2PublicKey":  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtoKjm+o74krUkXM2gDW7kLHVA29qVN2pX3gTWS8ahdOahUphlg2EYS4nuIeiGljPbBWJpyRXLIxWsd9FctUgw75fj7MCa1jZz/rHqiHOnT0kNOLkMadSk6aTJvgPVpknV4T0TLhrz9rdIsOX6TjyB0n1MIpKNZTVrwDpGRfO2x/KkzaAvqevGu8i0NBj9dyFk2i7rmpV4SYt5j3QyONuW5M+s+XzkNmPUZuFt/9qP1Jm7A11Wnu9z/9WuiAPJsVCNZh2ZizXE6IQzBMrb1qJtbnjqqnOeJUJ057lcUzwjADV3JJi9Oj7GPN+AChlbiFx+82F9Fwf4md2N7UlrzbZgQIDAQAB;",
+                                    "SelectorAfterRotateOnDate":  "selector1",
+                                    "SelectorBeforeRotateOnDate":  "selector2",
+                                    "Status":  "Valid",
+                                    "WhenChanged":  "/Date(1619484611000)/",
+                                    "WhenChangedUTC":  "/Date(1619484611000)/",
+                                    "WhenCreated":  "/Date(1619484597000)/",
+                                    "WhenCreatedUTC":  "/Date(1619484597000)/"
+                                }
+                            ]
+                        ],
+        "Commandlet":  [
+                           "Get-DkimSigningConfig",
+                           "Get-ScubaDkimRecords",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.EXO.3.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "AddressBookPolicyRoutingEnabled":  false,
+                                "AdminDisplayName":  "",
+                                "AgentGeneratedMessageLoopDetectionInSmtpEnabled":  true,
+                                "AgentGeneratedMessageLoopDetectionInSubmissionEnabled":  true,
+                                "AllowLegacyTLSClients":  null,
+                                "AnonymousSenderToRecipientRatePerHour":  1800,
+                                "AttributionRejectBeforeMServRequest":  false,
+                                "AttributionRejectConsumerMessages":  false,
+                                "ClearCategories":  true,
+                                "ConvertDisclaimerWrapperToEml":  false,
+                                "ConvertReportToMessage":  false,
+                                "CurrentTransportSystemState":  "Green",
+                                "DSNConversionMode":  "PreserveDSNBody",
+                                "DiagnosticsAggregationServicePort":  9710,
+                                "DistinguishedName":  "CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                "EnableExternalHTTPMailDelivery":  false,
+                                "ExchangeObjectId":  "7ef195bd-4f88-46bc-97e6-db6c7665321b",
+                                "ExchangeVersion":  "0.1 (8.0.535.0)",
+                                "ExternalDelayDsnEnabled":  true,
+                                "ExternalDsnDefaultLanguage":  null,
+                                "ExternalDsnLanguageDetectionEnabled":  true,
+                                "ExternalDsnMaxMessageAttachSize":  "10 MB (10,485,760 bytes)",
+                                "ExternalDsnReportingAuthority":  null,
+                                "ExternalDsnSendHtml":  true,
+                                "ExternalPostmasterAddress":  null,
+                                "GenerateCopyOfDSNFor":  [
+
+                                                         ],
+                                "Guid":  "01d25010-40a8-4d0a-9419-fb1d775b4d16",
+                                "HeaderPromotionModeSetting":  "NoCreate",
+                                "HygieneSuite":  "Premium",
+                                "Id":  "Transport Settings",
+                                "Identity":  "Transport Settings",
+                                "InternalDelayDsnEnabled":  true,
+                                "InternalDsnDefaultLanguage":  null,
+                                "InternalDsnLanguageDetectionEnabled":  true,
+                                "InternalDsnMaxMessageAttachSize":  "10 MB (10,485,760 bytes)",
+                                "InternalDsnReportingAuthority":  null,
+                                "InternalDsnSendHtml":  true,
+                                "InternalSMTPServers":  [
+
+                                                        ],
+                                "IsValid":  true,
+                                "JournalArchivingEnabled":  false,
+                                "JournalMessageExpirationDays":  0,
+                                "JournalReportDLMemberSubstitutionEnabled":  false,
+                                "JournalingReportNdrTo":  "u003cu003e",
+                                "LegacyArchiveJournalingEnabled":  false,
+                                "LegacyArchiveLiveJournalingEnabled":  false,
+                                "LegacyJournalingMigrationEnabled":  false,
+                                "MaxAllowedAgentGeneratedMessageDepth":  3,
+                                "MaxAllowedAgentGeneratedMessageDepthPerAgent":  2,
+                                "MaxDumpsterSizePerDatabase":  "18 MB (18,874,368 bytes)",
+                                "MaxDumpsterTime":  "7.00:00:00",
+                                "MaxReceiveSize":  "Unlimited",
+                                "MaxRecipientEnvelopeLimit":  "Unlimited",
+                                "MaxSendSize":  "Unlimited",
+                                "MessageExpiration":  "1.00:00:00",
+                                "MigrationEnabled":  true,
+                                "Name":  "Transport Settings",
+                                "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Transport-Settings",
+                                "ObjectClass":  [
+                                                    "top",
+                                                    "container",
+                                                    "msExchTransportSettings"
+                                                ],
+                                "ObjectState":  "Unchanged",
+                                "OpenDomainRoutingEnabled":  false,
+                                "OrganizationFederatedMailbox":  "FederatedEmail.4c1f4d8b-8179-4148-93bf-00a95fa1e042@agency.onmicrosoft.com",
+                                "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                "OtherWellKnownObjects":  [
+
+                                                          ],
+                                "PreserveReportBodypart":  true,
+                                "QueueDiagnosticsAggregationInterval":  "00:01:00",
+                                "RedirectDLMessagesForLegacyArchiveJournaling":  false,
+                                "RedirectUnprovisionedUserMessagesForLegacyArchiveJournaling":  false,
+                                "ReplyAllStormBlockDurationHours":  6,
+                                "ReplyAllStormDetectionMinimumRecipients":  2500,
+                                "ReplyAllStormDetectionMinimumReplies":  10,
+                                "ReplyAllStormProtectionEnabled":  true,
+                                "Rfc2231EncodingEnabled":  false,
+                                "SafetyNetHoldTime":  "7.00:00:00",
+                                "SmtpClientAuthenticationDisabled":  true,
+                                "SupervisionTags":  [
+                                                        "Reject",
+                                                        "Allow"
+                                                    ],
+                                "TLSReceiveDomainSecureList":  [
+
+                                                               ],
+                                "TLSSendDomainSecureList":  [
+
+                                                            ],
+                                "TransportRuleAttachmentTextScanLimit":  "1 MB (1,048,576 bytes)",
+                                "TransportRuleCollectionAddedRecipientsLimit":  100,
+                                "TransportRuleCollectionRegexCharsLimit":  "20 KB (20,480 bytes)",
+                                "TransportRuleConfig":  [
+                                                            "TransportRuleMinProductVersion:14.0.0.0",
+                                                            "TransportRuleRegexValidationTimeout:00:00:00.3000000",
+                                                            "TransportRuleAttachmentTextScanLimit:1 MB (1,048,576 bytes)",
+                                                            "TransportRuleSizeLimit:8 KB (8,192 bytes)",
+                                                            "TransportRuleCollectionRegexCharsLimit:20 KB (20,480 bytes)",
+                                                            "TransportRuleLimit:300",
+                                                            "TransportRuleCollectionAddedRecipientsLimit:100"
+                                                        ],
+                                "TransportRuleLimit":  300,
+                                "TransportRuleMinProductVersion":  {
+                                                                       "Build":  0,
+                                                                       "Major":  14,
+                                                                       "MajorRevision":  0,
+                                                                       "Minor":  0,
+                                                                       "MinorRevision":  0,
+                                                                       "Revision":  0
+                                                                   },
+                                "TransportRuleRegexValidationTimeout":  "00:00:00.3000000",
+                                "TransportRuleSizeLimit":  "8 KB (8,192 bytes)",
+                                "TransportSystemState":  "",
+                                "VerifySecureSubmitEnabled":  false,
+                                "VoicemailJournalingEnabled":  true,
+                                "WhenChanged":  "/Date(1654713404000)/",
+                                "WhenChangedUTC":  "/Date(1654713404000)/",
+                                "WhenCreated":  "/Date(1619484398000)/",
+                                "WhenCreatedUTC":  "/Date(1619484398000)/",
+                                "Xexch50Enabled":  true
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-TransportConfig"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.5.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "AdminDisplayName":  "",
+                                "Default":  true,
+                                "DistinguishedName":  "CN=Default Sharing Policy,CN=Federation,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                "Domains":  [
+                                                "Anonymous:0"
+                                            ],
+                                "Enabled":  false,
+                                "ExchangeObjectId":  "2d52a1ae-4c17-42e0-925e-919b2bf68a18",
+                                "ExchangeVersion":  "0.10 (14.0.100.0)",
+                                "Guid":  "137df5c0-4fe4-49bb-923c-e2bdfd89f448",
+                                "Id":  "Default Sharing Policy",
+                                "Identity":  "Default Sharing Policy",
+                                "IsValid":  true,
+                                "Name":  "Default Sharing Policy",
+                                "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Sharing-Policy",
+                                "ObjectClass":  [
+                                                    "top",
+                                                    "msExchSharingPolicy"
+                                                ],
+                                "ObjectState":  "Changed",
+                                "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                "WhenChanged":  "/Date(1691164284000)/",
+                                "WhenChangedUTC":  "/Date(1691164284000)/",
+                                "WhenCreated":  "/Date(1619484547000)/",
+                                "WhenCreatedUTC":  "/Date(1619484547000)/"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-SharingPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.6.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "AdminDisplayName":  "",
+                                "Default":  true,
+                                "DistinguishedName":  "CN=Default Sharing Policy,CN=Federation,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                "Domains":  [
+                                                "Anonymous:0"
+                                            ],
+                                "Enabled":  false,
+                                "ExchangeObjectId":  "2d52a1ae-4c17-42e0-925e-919b2bf68a18",
+                                "ExchangeVersion":  "0.10 (14.0.100.0)",
+                                "Guid":  "137df5c0-4fe4-49bb-923c-e2bdfd89f448",
+                                "Id":  "Default Sharing Policy",
+                                "Identity":  "Default Sharing Policy",
+                                "IsValid":  true,
+                                "Name":  "Default Sharing Policy",
+                                "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Sharing-Policy",
+                                "ObjectClass":  [
+                                                    "top",
+                                                    "msExchSharingPolicy"
+                                                ],
+                                "ObjectState":  "Changed",
+                                "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                "WhenChanged":  "/Date(1691164284000)/",
+                                "WhenChangedUTC":  "/Date(1691164284000)/",
+                                "WhenCreated":  "/Date(1619484547000)/",
+                                "WhenCreatedUTC":  "/Date(1619484547000)/"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-SharingPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.6.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "AdminDisplayName":  "",
+                                "DirectoryBasedEdgeBlockMode":  "Default",
+                                "DistinguishedName":  "CN=Default,CN=Hosted Connection Filter,CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                "EnableSafeList":  false,
+                                "ExchangeObjectId":  "7021b7cf-b9fa-4280-94ff-fba468dbb0ab",
+                                "ExchangeVersion":  "0.20 (15.0.0.0)",
+                                "Guid":  "ddb99cb3-211b-47ee-bc9c-86e6c8d0e692",
+                                "IPAllowList":  [
+
+                                                ],
+                                "IPBlockList":  [
+
+                                                ],
+                                "Id":  "Default",
+                                "Identity":  "Default",
+                                "IsDefault":  true,
+                                "IsValid":  true,
+                                "Name":  "Default",
+                                "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Hosted-Connection-Filter-Policy",
+                                "ObjectClass":  [
+                                                    "top",
+                                                    "msExchHostedConnectionFilterPolicy"
+                                                ],
+                                "ObjectState":  "Unchanged",
+                                "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                "WhenChanged":  "/Date(1619484593000)/",
+                                "WhenChangedUTC":  "/Date(1619484593000)/",
+                                "WhenCreated":  "/Date(1619484586000)/",
+                                "WhenCreatedUTC":  "/Date(1619484586000)/"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-HostedConnectionFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.EXO.12.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "AdminDisplayName":  "",
+                                "DirectoryBasedEdgeBlockMode":  "Default",
+                                "DistinguishedName":  "CN=Default,CN=Hosted Connection Filter,CN=Transport Settings,CN=Configuration,CN=agency.onmicrosoft.com,CN=ConfigurationUnits,DC=NAMPR09A006,DC=PROD,DC=OUTLOOK,DC=COM",
+                                "EnableSafeList":  false,
+                                "ExchangeObjectId":  "7021b7cf-b9fa-4280-94ff-fba468dbb0ab",
+                                "ExchangeVersion":  "0.20 (15.0.0.0)",
+                                "Guid":  "ddb99cb3-211b-47ee-bc9c-86e6c8d0e692",
+                                "IPAllowList":  [
+
+                                                ],
+                                "IPBlockList":  [
+
+                                                ],
+                                "Id":  "Default",
+                                "Identity":  "Default",
+                                "IsDefault":  true,
+                                "IsValid":  true,
+                                "Name":  "Default",
+                                "ObjectCategory":  "NAMPR09A006.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Hosted-Connection-Filter-Policy",
+                                "ObjectClass":  [
+                                                    "top",
+                                                    "msExchHostedConnectionFilterPolicy"
+                                                ],
+                                "ObjectState":  "Unchanged",
+                                "OrganizationId":  "NAMPR09A006.PROD.OUTLOOK.COM/Microsoft Exchange Hosted Organizations/agency.onmicrosoft.com - NAMPR09A006.PROD.OUTLOOK.COM/ConfigurationUnits/agency.onmicrosoft.com/Configuration",
+                                "OrganizationalUnitRoot":  "agency.onmicrosoft.com",
+                                "OriginatingServer":  "MWHPR09A006DC07.NAMPR09A006.PROD.OUTLOOK.COM",
+                                "WhenChanged":  "/Date(1619484593000)/",
+                                "WhenChangedUTC":  "/Date(1619484593000)/",
+                                "WhenCreated":  "/Date(1619484586000)/",
+                                "WhenCreatedUTC":  "/Date(1619484586000)/"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-HostedConnectionFilterPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.EXO.12.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "AuditDisabled":  false,
+                                "DisplayName":  "Cybersecurity and Infrastructure Security Agency",
+                                "Name":  "agency.onmicrosoft.com"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-OrganizationConfig"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.13.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "domain":  "agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.org",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; sp=none;"
+                                          ]
+                            },
+                            {
+                                "domain":  "test365.agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; pct=100; rua=mailto:DMARC@hq.agency,  mailto:reports@dmarc.cyber.agency"
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.mail.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-ScubaDmarcRecords",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.4.1v1",
+        "ReportDetails":  "2 of 4 agency domain(s) found in violation: agency.mail.onmicrosoft.com, agency.onmicrosoft.com",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "domain":  "agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.org",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; sp=none;"
+                                          ]
+                            },
+                            {
+                                "domain":  "test365.agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; pct=100; rua=mailto:DMARC@hq.agency,  mailto:reports@dmarc.cyber.agency"
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.mail.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-ScubaDmarcRecords",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.4.2v1",
+        "ReportDetails":  "2 of 4 agency domain(s) found in violation: agency.mail.onmicrosoft.com, agency.onmicrosoft.com",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "domain":  "agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.org",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; sp=none;"
+                                          ]
+                            },
+                            {
+                                "domain":  "test365.agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; pct=100; rua=mailto:DMARC@hq.agency,  mailto:reports@dmarc.cyber.agency"
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.mail.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-ScubaDmarcRecords",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.4.3v1",
+        "ReportDetails":  "3 of 4 agency domain(s) found in violation: agency.mail.onmicrosoft.com, agency.onmicrosoft.com, agency.org",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "domain":  "agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.org",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; sp=none;"
+                                          ]
+                            },
+                            {
+                                "domain":  "test365.agency.org",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.test365.agency.org",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency",
+                                                "query_result":  "Query returned 1 txt records"
+                                            }
+                                        ],
+                                "rdata":  [
+                                              "v=DMARC1; p=reject; pct=100; rua=mailto:DMARC@hq.agency,  mailto:reports@dmarc.cyber.agency"
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.mail.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.mail.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            },
+                            {
+                                "domain":  "agency.onmicrosoft.com",
+                                "log":  [
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.agency.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "traditional",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            },
+                                            {
+                                                "query_method":  "DoH",
+                                                "query_name":  "_dmarc.onmicrosoft.com",
+                                                "query_result":  "Query returned NXDomain"
+                                            }
+                                        ],
+                                "rdata":  [
+
+                                          ]
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-ScubaDmarcRecords",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.EXO.4.4v1",
+        "ReportDetails":  "3 of 4 agency domain(s) found in violation: agency.mail.onmicrosoft.com, agency.onmicrosoft.com, agency.org",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-RemoteDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.1.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-ScubaSpfRecords",
+                           "Get-AcceptedDomain"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.EXO.2.2v2",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-PowerAppTenantIsolationPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.POWERPLATFORM.3.1v1",
+        "ReportDetails":  "Requirement not met",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-TenantSettings"
+                       ],
+        "Control":  "Power Platform 2.1",
+        "Criticality":  "Shall",
+        "ReportDetails":  "Requirement met",
+        "Requirement":  "The ability to create trial environments SHALL be restricted to admins",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-TenantSettings"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.POWERPLATFORM.1.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/Not-Implemented",
+        "PolicyId":  "MS.POWERPLATFORM.4.1v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/powerplatform.md#mspowerplatform41v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.POWERPLATFORM.3.2v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/powerplatform.md#mspowerplatform32v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.POWERPLATFORM.3.3v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/powerplatform.md#mspowerplatform33v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-DlpPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.POWERPLATFORM.2.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "/providers/Microsoft.PowerApps/apis/shared_arcgis",
+                            "/providers/Microsoft.PowerApps/apis/shared_arcgispaas"
+                        ],
+        "Commandlet":  [
+                           "Get-DlpPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.POWERPLATFORM.2.3v1",
+        "ReportDetails":  "2 Connectors are allowed that should be blocked: /providers/Microsoft.PowerApps/apis/shared_arcgis, /providers/Microsoft.PowerApps/apis/shared_arcgispaas",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            {
+                                "PolicyName":  "DefaultEnvironmentPolicy"
+                            }
+                        ],
+        "Commandlet":  [
+                           "Get-DlpPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.POWERPLATFORM.2.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/Not-Implemented",
+        "PolicyId":  "MS.SHAREPOINT.4.1v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/sharepoint.md#mssharepoint41v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/Not-Implemented",
+        "PolicyId":  "MS.SHAREPOINT.1.4v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/sharepoint.md#mssharepoint14v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            true
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.SHAREPOINT.1.5v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            1
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.SHAREPOINT.1.3v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            2
+                        ],
+        "Commandlet":  [
+                           "Get-SPOSite",
+                           "Get-PnPTenantSite"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.SHAREPOINT.4.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            2
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.SHAREPOINT.2.1v1",
+        "ReportDetails":  "Requirement not met",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            2
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.SHAREPOINT.2.2v1",
+        "ReportDetails":  "Requirement not met",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            2
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.SHAREPOINT.1.1v1",
+        "ReportDetails":  "Requirement not met",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            2
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.SHAREPOINT.1.2v1",
+        "ReportDetails":  "Requirement not met",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            2,
+                            true,
+                            100
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.SHAREPOINT.3.3v1",
+        "ReportDetails":  "Requirement not met: Expiration timer for \u0027People who use a verification code\u0027 NOT set to 30 days",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            2,
+                            -1
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.SHAREPOINT.3.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            2,
+                            2
+                        ],
+        "Commandlet":  [
+                           "Get-SPOTenant",
+                           "Get-PnPTenant"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.SHAREPOINT.3.2v1",
+        "ReportDetails":  "Requirement not met: both files and folders are not limited to view for Anyone",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  true,
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.9.1v1",
+        "ReportDetails":  "Requirement not met",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  "EveryoneInCompanyExcludingGuests",
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.3.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  "UserOverride",
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingBroadcastPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.10.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.TEAMS.11.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.TEAMS.11.4v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Shall/3rd Party",
+        "PolicyId":  "MS.TEAMS.8.3v1",
+        "ReportDetails":  "Not currently checked automatically. See \u003ca href=\"https://github.com/cisagov/ScubaGear/blob/0.3.0/baselines/teams.md#msteams83v1\" target=\"_blank\"\u003eSecure Configuration Baseline policy\u003c/a\u003e for instructions on manual check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.TEAMS.11.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.TEAMS.12.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.TEAMS.12.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.TEAMS.13.1v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.TEAMS.13.2v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+
+                       ],
+        "Criticality":  "Should/3rd Party",
+        "PolicyId":  "MS.TEAMS.13.3v1",
+        "ReportDetails":  "Custom implementation allowed. If you are using Defender to fulfill this requirement, run the Defender version of this script. Otherwise, use a 3rd party tool OR manually check",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "EveryoneInCompanyExcludingGuests",
+                            false
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.3.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  {
+                            "AssignedPlans":  "MCOEV, Teams_GCC, MCOProfessional, MCOMEETADD",
+                            "ClientConfig":  [
+                                                 {
+                                                     "AllowBox":  true,
+                                                     "AllowDropBox":  true,
+                                                     "AllowEgnyte":  true,
+                                                     "AllowEmailIntoChannel":  true,
+                                                     "AllowGoogleDrive":  true,
+                                                     "AllowGuestUser":  true,
+                                                     "AllowOrganizationTab":  true,
+                                                     "AllowResourceAccountSendMessage":  true,
+                                                     "AllowRoleBasedChatPermissions":  false,
+                                                     "AllowScopedPeopleSearchandAccess":  false,
+                                                     "AllowShareFile":  true,
+                                                     "AllowSkypeBusinessInterop":  true,
+                                                     "ContentPin":  "RequiredOutsideScheduleMeeting",
+                                                     "DataSource":  null,
+                                                     "Identity":  "Global",
+                                                     "Key":  {
+                                                                 "AuthorityId":  "Class=Tenant;InstanceId=3c19c757-3b55-411f-b03f-2bcc514a598d;XmlRoot=",
+                                                                 "DefaultXml":  "SchemaId=;Data=;ConfigObject=;Signature=00000000-0000-0000-0000-000000000000;IsModified=True",
+                                                                 "SchemaId":  "XName=",
+                                                                 "ScopeClass":  "Global",
+                                                                 "XmlRoot":  "name={urn:schema:Microsoft.Rtc.Management.ScopeFramework.2008}AnchoredXmlKey"
+                                                             },
+                                                     "ResourceAccountContentAccess":  "NoAccess",
+                                                     "RestrictedSenderList":  null
+                                                 }
+                                             ]
+                        },
+        "Commandlet":  [
+                           "Get-CsTeamsClientConfiguration",
+                           "Get-CsTenant"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.TEAMS.7.1v1",
+        "ReportDetails":  "N/A: Feature is unavailable in GCC environments",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsAppPermissionPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.8.2av1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingPolicy"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.TEAMS.2.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.1.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-CsTenantFederationConfiguration"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.TEAMS.4.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-CsTenantFederationConfiguration"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.TEAMS.5.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-CsTenantFederationConfiguration"
+                       ],
+        "Criticality":  "Shall",
+        "PolicyId":  "MS.TEAMS.6.1v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+
+                        ],
+        "Commandlet":  [
+                           "Get-CsTenantFederationConfiguration"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.5.2v1",
+        "ReportDetails":  "Requirement met",
+        "RequirementMet":  true
+    },
+    {
+        "ActualValue":  [
+                            "Global"
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsAppPermissionPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.8.1v1",
+        "ReportDetails":  "1 meeting policy(ies) found that block Microsoft Apps by default: Global",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Global"
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsAppPermissionPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.8.2v1",
+        "ReportDetails":  "1 meeting policy(ies) found that allow third-party apps by default: Global",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Tag:Custom Policy 1"
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingPolicy"
+                       ],
+        "Control":  "Teams 2.4",
+        "Criticality":  "Should",
+        "ReportDetails":  "1 meeting policy(ies) found that don\u0027t allow anonymous users to join meetings: Tag:Custom Policy 1",
+        "Requirement":  "Anonymous users SHOULD be enabled to join meetings",
+        "RequirementMet":  false
+    },
+    {
+        "ActualValue":  [
+                            "Tag:Custom Policy 1"
+                        ],
+        "Commandlet":  [
+                           "Get-CsTeamsMeetingPolicy"
+                       ],
+        "Criticality":  "Should",
+        "PolicyId":  "MS.TEAMS.9.3v1",
+        "ReportDetails":  "1 meeting policy(ies) found that allow cloud recording and storage outside of the tenant\u0027s region: Tag:Custom Policy 1",
+        "RequirementMet":  false
+    }
+]

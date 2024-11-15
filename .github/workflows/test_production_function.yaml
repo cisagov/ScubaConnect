@@ -1,0 +1,181 @@
+# Purpose: Run the product functional tests every night
+
+# The testing params are stored as a string in a CSV-like format.
+# Pipes separate products, and commas separate key/value pairs.
+# key1=value1,key2=value2|key3=value3,key4=value4...
+
+name: Functional Tests
+
+on:
+  # Run this workflow at 12:15 am
+  # on every Sun to Thr (b/c GMT -5)
+  schedule:
+    - cron: "15 4 * * 0-4"
+  workflow_dispatch:
+    inputs:
+      # checkov:skip=CKV_GHA_7:Manual inputs are desired.
+      EmailOnFailure:
+        description: Check to send an email on failure
+        type: boolean
+        required: true
+        default: false
+  # For testing only
+  # push:
+  #   paths:
+  #     - ".github/workflows/test_production_function.yaml"
+  #     - ".github/workflows/function_test_teams.yaml"
+  #     - ".github/workflows/publish_private_package.yaml"
+  #     - ".github/workflows/function_test_defender.yaml"
+  #     - ".github/workflows/function_test_entra.yaml"
+  #     - ".github/workflows/function_test_exchange.yaml"
+  #     - ".github/workflows/function_test_powerplatform.yaml"
+  #     - ".github/workflows/function_test_sharepoint.yaml"
+  #     - ".github/workflows/function_test_teams.yaml"
+  #     - ".github/actions/extract-email/action.yaml"
+  #     - ".github/actions/get-thumbprint/action.yaml"
+  #     - ".github/actions/import-pfx/action.yaml"
+  #     - ".github/actions/test-product/action.yaml"
+
+permissions: read-all
+
+env:
+  GalleryName: PrivateScubaGearGallery
+
+jobs:
+  publish:
+    name: Publish Package
+    uses: ./.github/workflows/publish_private_package.yaml
+    permissions:
+      contents: write
+      id-token: write
+    secrets:
+      ClientId: ${{ secrets.AZURE_CLIENT_ID }}
+      TenantId: ${{ secrets.AZURE_TENANT_ID }}
+      SubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      KeyVaultInfo: ${{ secrets.SCUBA_KEY_VAULT_PROD}}
+
+  test_defender:
+    name: Test Defender
+    uses: ./.github/workflows/function_test_defender.yaml
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      # Default to true when running on a schedule and the input is missing
+      EmailOnFailure: ${{ !contains(inputs.EmailOnFailure, 'false') }}
+      GitHubEventSchedule: ${{ github.event.schedule }}
+      GitHubEventName: ${{ github.event_name }}
+    secrets:
+      PfxBase64: ${{ secrets.NIGHTLY_TEST_BUILD_PFX }}
+      PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
+      TestParams: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS }}
+      TestParamsDev: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS_DEV }}
+      NotifierUsername: ${{ secrets.NOTIFIER_EMAIL_USERNAME }}
+      NotifierPassword: ${{ secrets.NOTIFIER_EMAIL_PASSWORD }}
+    needs:
+      - publish
+
+  test_entra:
+    name: Test Entra
+    uses: ./.github/workflows/function_test_entra.yaml
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      # Default to true when running on a schedule and the input is missing
+      EmailOnFailure: ${{ !contains(inputs.EmailOnFailure, 'false') }}
+      GitHubEventSchedule: ${{ github.event.schedule }}
+      GitHubEventName: ${{ github.event_name }}
+    secrets:
+      PfxBase64: ${{ secrets.NIGHTLY_TEST_BUILD_PFX }}
+      PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
+      TestParams: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS }}
+      TestParamsDev: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS_DEV }}
+      NotifierUsername: ${{ secrets.NOTIFIER_EMAIL_USERNAME }}
+      NotifierPassword: ${{ secrets.NOTIFIER_EMAIL_PASSWORD }}
+    needs:
+      - publish
+
+  test_exchange:
+    name: Test Exchange
+    uses: ./.github/workflows/function_test_exchange.yaml
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      # Default to true when running on a schedule and the input is missing
+      EmailOnFailure: ${{ !contains(inputs.EmailOnFailure, 'false') }}
+      GitHubEventSchedule: ${{ github.event.schedule }}
+      GitHubEventName: ${{ github.event_name }}
+    secrets:
+      PfxBase64: ${{ secrets.NIGHTLY_TEST_BUILD_PFX }}
+      PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
+      TestParams: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS }}
+      TestParamsDev: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS_DEV }}
+      NotifierUsername: ${{ secrets.NOTIFIER_EMAIL_USERNAME }}
+      NotifierPassword: ${{ secrets.NOTIFIER_EMAIL_PASSWORD }}
+    needs:
+      - publish
+
+  test_power_platform:
+    name: Test Power Platform
+    uses: ./.github/workflows/function_test_powerplatform.yaml
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      # Default to true when running on a schedule and the input is missing
+      EmailOnFailure: ${{ !contains(inputs.EmailOnFailure, 'false') }}
+      GitHubEventSchedule: ${{ github.event.schedule }}
+      GitHubEventName: ${{ github.event_name }}
+    secrets:
+      PfxBase64: ${{ secrets.NIGHTLY_TEST_BUILD_PFX }}
+      PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
+      TestParams: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS }}
+      TestParamsDev: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS_DEV }}
+      NotifierUsername: ${{ secrets.NOTIFIER_EMAIL_USERNAME }}
+      NotifierPassword: ${{ secrets.NOTIFIER_EMAIL_PASSWORD }}
+    needs:
+      - publish
+
+  test_sharepoint:
+    name: Test Sharepoint
+    uses: ./.github/workflows/function_test_sharepoint.yaml
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      # Default to true when running on a schedule and the input is missing
+      EmailOnFailure: ${{ !contains(inputs.EmailOnFailure, 'false') }}
+      GitHubEventSchedule: ${{ github.event.schedule }}
+      GitHubEventName: ${{ github.event_name }}
+    secrets:
+      PfxBase64: ${{ secrets.NIGHTLY_TEST_BUILD_PFX }}
+      PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
+      TestParams: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS }}
+      TestParamsDev: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS_DEV }}
+      NotifierUsername: ${{ secrets.NOTIFIER_EMAIL_USERNAME }}
+      NotifierPassword: ${{ secrets.NOTIFIER_EMAIL_PASSWORD }}
+    needs:
+      - publish
+
+  test_teams:
+    name: Test Teams
+    uses: ./.github/workflows/function_test_teams.yaml
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      # Default to true when running on a schedule and the input is missing
+      EmailOnFailure: ${{ !contains(inputs.EmailOnFailure, 'false') }}
+      GitHubEventSchedule: ${{ github.event.schedule }}
+      GitHubEventName: ${{ github.event_name }}
+    secrets:
+      PfxBase64: ${{ secrets.NIGHTLY_TEST_BUILD_PFX }}
+      PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
+      TestParams: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS }}
+      TestParamsDev: ${{ secrets.NIGHTLY_TEST_BUILD_PARAMS_DEV }}
+      NotifierUsername: ${{ secrets.NOTIFIER_EMAIL_USERNAME }}
+      NotifierPassword: ${{ secrets.NOTIFIER_EMAIL_PASSWORD }}
+    needs:
+      - publish
