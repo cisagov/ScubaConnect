@@ -1,3 +1,5 @@
+Import-Module -Name .\ScubaGear\PowerShell\ScubaGear
+
 Write-Output "Installing cert"
 # install certificate by decoding env variable
 $PFX_FILE = '.\certificate.pfx'
@@ -5,8 +7,6 @@ $BYTES = [Convert]::FromBase64String($Env:PFX_B64)
 [IO.File]::WriteAllBytes($PFX_FILE, $BYTES)
 $CertificateThumbPrint = (Import-PfxCertificate -FilePath $PFX_FILE -CertStoreLocation cert:\CurrentUser\My).Thumbprint
 Write-Output "  CERT: $CertificateThumbPrint"
-
-$META_FIELDS = $Env:RUN_METADATA_FIELDS.Split("#")
 
 # Set up az copy using env vars
 $Env:AZCOPY_SPA_CERT_PASSWORD = ""
@@ -39,12 +39,6 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Appending metadata"
         $JsonResults = Get-Content -Path ".\reports\$($org)\*\ScubaResults.json" | ConvertFrom-Json
-        if ($META_FIELDS.count -gt 0) {
-            $Config = Get-Content -Raw -Path $tenantConfig.FullName | ConvertFrom-Yaml
-            Foreach ($field in $META_FIELDS) {
-                $JsonResults.MetaData | add-member -NotePropertyName $field -NotePropertyValue $Config.$field
-            }
-        }
         $JsonResults.MetaData | add-member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 ".\reports\$($org)\ScubaResults.json"
 
