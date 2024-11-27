@@ -1,5 +1,3 @@
-Import-Module -Name .\ScubaGear\PowerShell\ScubaGear
-
 Write-Output "Installing cert"
 # install certificate by decoding env variable
 $PFX_FILE = '.\certificate.pfx'
