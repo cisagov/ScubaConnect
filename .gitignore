@@ -1,0 +1,12 @@
+.DS_Store
+**/.terraform/*
+.terraform
+*.tfstate
+*.tfstate.*
+*.secrets
+*.pfx
+*.pem
+*.tfvars
+!example.tfvars
+**/tenants/*
+!**/tenants/myorg.onmicrosoft.com.yaml
