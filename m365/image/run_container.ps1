@@ -1,5 +1,5 @@
 Write-Output "Installing cert"
-# install certificate by decoding env variable
+# Install certificate by decoding env variable
 $PFX_FILE = '.\certificate.pfx'
 $BYTES = [Convert]::FromBase64String($Env:PFX_B64)
 [IO.File]::WriteAllBytes($PFX_FILE, $BYTES)
@@ -16,7 +16,7 @@ $Env:AZCOPY_SPA_CERT_PATH=$PFX_FILE
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version
 
-Write-Output "Grabbing tenants json file"
+Write-Output "Grabbing tenant config files"
 .\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
 
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
@@ -31,18 +31,18 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             OutPath = ".\reports\$($org)"; # The folder path where the output will be stored
             ConfigFilePath = $tenantConfig.FullName
             Quiet = $true;
-            MergeJson = $true;
         }
         Invoke-SCuBA @params
 
         Write-Output "  Appending metadata"
-        $JsonResults = Get-Content -Path ".\reports\$($org)\*\ScubaResults.json" | ConvertFrom-Json
+        $ResultsFile = Get-ChildItem -Path ".\reports\$($org)\*\ScubaResults*.json"
+        $JsonResults = Get-Content -Path $ResultsFile.FullName | ConvertFrom-Json
         $JsonResults.MetaData | add-member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
-        $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 ".\reports\$($org)\ScubaResults.json"
+        $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
 
         Write-Output "  Starting Upload"
-        $OutPath = "$($Env:REPORT_OUTPUT)/ScubaResults-$($org)-$(Get-Date -Format "yyyy_MM_dd_HH_mm_ss").json"
-        .\azcopy copy ".\reports\$($org)\ScubaResults.json" $OutPath --output-level quiet
+        $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
+        .\azcopy copy $ResultsFile.FullName $OutPath --output-level quiet
         Write-Output "  Finished Upload to $OutPath"
     
     } catch {
@@ -52,5 +52,3 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 }
 
 Write-Output "Finished running on all tenants"
-
-
