@@ -1,6 +1,6 @@
 # Azure Storage Account used by the ScubaGear container
 resource "azurerm_storage_account" "storage" {
-  count = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
+  count               = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
   name                = "${replace(var.resource_prefix, "-", "")}sa"
   resource_group_name = var.resource_group.name
   location            = var.resource_group.location
