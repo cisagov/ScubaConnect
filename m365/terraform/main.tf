@@ -60,4 +60,6 @@ module "container" {
   allowed_access_ips      = var.vnet.allowed_access_ip_list
   subnet_ids              = [module.networking.aci_subnet_id]
   schedule_interval       = var.schedule_interval
+  output_storage_container_id = var.output_storage_container_id
+  input_storage_container_id = var.input_storage_container_id
 }

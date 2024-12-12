@@ -28,10 +28,16 @@ variable "schedule_interval" {
   }
 }
 
+variable "input_storage_container_id" {
+  default     = null
+  type        = string
+  description = "If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container."
+}
+
 variable "output_storage_container_id" {
   default     = null
   type        = string
-  description = "If not null, output account to put results in (must give permissions to service account). Otherwise by default will create storage."
+  description = "If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container."
 }
 
 variable "tenants_dir_path" {

@@ -1,5 +1,6 @@
 # Azure Storage Account used by the ScubaGear container
 resource "azurerm_storage_account" "storage" {
+  count = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
   name                = "${replace(var.resource_prefix, "-", "")}sa"
   resource_group_name = var.resource_group.name
   location            = var.resource_group.location
@@ -31,22 +32,23 @@ resource "azurerm_storage_account" "storage" {
 resource "azurerm_storage_container" "output" {
   count                 = var.output_storage_container_id == null ? 1 : 0
   name                  = "${var.resource_prefix}-output"
-  storage_account_name  = azurerm_storage_account.storage.name
+  storage_account_name  = azurerm_storage_account.storage[0].name
   container_access_type = "private"
 }
 
 # Allows the app registration used by the ScubaGear container to read/write to the storage account
 resource "azurerm_role_assignment" "app_storage_role" {
   count                = var.output_storage_container_id == null ? 1 : 0
-  scope                = azurerm_storage_account.storage.id
+  scope                = azurerm_storage_account.storage[0].id
   role_definition_name = "Storage Blob Data Owner"
   principal_id         = var.application_object_id
 }
 
 # Container to store configuration needed by ScubaGear
 resource "azurerm_storage_container" "input" {
+  count                 = var.output_storage_container_id == null ? 1 : 0
   name                  = "${var.resource_prefix}-input"
-  storage_account_name  = azurerm_storage_account.storage.name
+  storage_account_name  = azurerm_storage_account.storage[0].name
   container_access_type = "private"
 }
 
@@ -54,8 +56,8 @@ resource "azurerm_storage_container" "input" {
 resource "azurerm_storage_blob" "tenants" {
   for_each               = fileset(var.tenants_dir_path, "*")
   name                   = each.key
-  storage_account_name   = azurerm_storage_account.storage.name
-  storage_container_name = azurerm_storage_container.input.name
+  storage_account_name   = azurerm_storage_account.storage[0].name
+  storage_container_name = azurerm_storage_container.input[0].name
   type                   = "Block"
   source                 = "${var.tenants_dir_path}/${each.key}"
 

@@ -36,11 +36,11 @@ resource "azurerm_container_group" "aci" {
     cpu    = "0.5"
     memory = "3"
     environment_variables = {
-      "RUN_TYPE"                         = "${each.key}"
+      "RUN_TYPE"                         = each.key
       "TENANT_ID"                        = data.azurerm_client_config.current.tenant_id
       "APP_ID"                           = var.application_client_id
       "REPORT_OUTPUT"                    = var.output_storage_container_id == null ? azurerm_storage_container.output[0].id : var.output_storage_container_id
-      "TENANT_INPUT"                     = "${azurerm_storage_container.input.id}"
+      "TENANT_INPUT"                     = var.input_storage_container_id == null ? azurerm_storage_container.input[0].id : var.input_storage_container_id
       "AZCOPY_ACTIVE_DIRECTORY_ENDPOINT" = local.aad_endpoint
     }
     secure_environment_variables = {
