@@ -6,7 +6,5 @@
 *.secrets
 *.pfx
 *.pem
-*.tfvars
-!example.tfvars
-**/tenants/*
-!**/tenants/myorg.onmicrosoft.com.yaml
+**/env/*
+!**/env/example

@@ -57,9 +57,15 @@ resource "azurerm_key_vault" "vault" {
   }
 }
 
+# note this requires terraform to be run regularly
+resource "time_rotating" "cert_rotation" {
+  rotation_days = var.certificate_rotation_period_days
+}
+
 # Generate the app registration certificate
 resource "azurerm_key_vault_certificate" "cert" {
-  name         = "${var.app_name}-app-cert"
+  # Name change forces recreating certificate
+  name         = "${var.resource_prefix}-app-cert-${formatdate("YYYY-MM-DD", time_rotating.cert_rotation.rfc3339)}"
   key_vault_id = azurerm_key_vault.vault.id
 
   certificate_policy {
@@ -80,7 +86,7 @@ resource "azurerm_key_vault_certificate" "cert" {
       }
 
       trigger {
-        days_before_expiry = 30
+        days_before_expiry = max(3, ceil(var.certificate_rotation_period_days / 6))
       }
     }
 
@@ -98,7 +104,8 @@ resource "azurerm_key_vault_certificate" "cert" {
       ]
 
       subject            = "CN=${var.app_name}"
-      validity_in_months = 24
+      # min 1 month; approx. twice length of rotation period
+      validity_in_months = max(1, ceil(var.certificate_rotation_period_days * 2 / 30))
     }
   }
 }
