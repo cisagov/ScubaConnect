@@ -14,7 +14,7 @@ resource "azuread_application" "app" {
   count            = var.create_app ? 1 : 0
   display_name     = var.app_name
   logo_image       = filebase64(var.image_path)
-  sign_in_audience = "AzureADMultipleOrgs"
+  sign_in_audience = var.app_multi_tenant ? "AzureADMultipleOrgs" : "AzureADMyOrg"
   web {
     redirect_uris = ["https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview"]
   }

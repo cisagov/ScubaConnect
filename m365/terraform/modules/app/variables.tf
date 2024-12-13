@@ -43,6 +43,12 @@ variable "create_app" {
   description = "If true, the app will be created. If false, the app will be imported"
 }
 
+variable "app_multi_tenant" {
+  type        = bool
+  default     = false
+  description = "If true, the app will be able to be installed in multiple tenants. By default, it is only available in this tenant"
+}
+
 variable "allowed_access_ips" {
   type        = list(string)
   description = "List of IP addresses/subnets in CIDR format that should be able to access keyvault"

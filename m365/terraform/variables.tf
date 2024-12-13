@@ -10,6 +10,12 @@ variable "image_path" {
   description = "Path to image used for app logo. Displayed in Azure console on installed tenants"
 }
 
+variable "app_multi_tenant" {
+  type        = bool
+  default     = false
+  description = "If true, the app will be able to be installed in multiple tenants. By default, it is only available in this tenant"
+}
+
 variable "create_app" {
   default     = true
   type        = bool

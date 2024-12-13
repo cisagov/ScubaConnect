@@ -1,6 +1,7 @@
 module "scuba_connect" {
   source                      = "../.."
   app_name                    = var.app_name
+  app_multi_tenant = var.app_multi_tenant
   image_path                  = var.image_path
   contact_email               = var.contact_email
   resource_group_name         = var.resource_group_name
