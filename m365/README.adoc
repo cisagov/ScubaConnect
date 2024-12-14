@@ -15,10 +15,10 @@ ScubaGear configuration files and results files are read from and written to Azu
 GearConnect can be used to run ScubaGear against the tenant it is deployed in or it can be used in a multi-tenant setting to run ScubaGear against multiple other tenants.
 
 .GearConnect Single-Tenant Architecture
-image::../docs/diagrams-m365-single.png[]
+image::../docs/diagrams-m365-single.png[width=500]
 
 .GearConnect Multi-Tenant Architecture
-image::../docs/diagrams-m365.png[]
+image::../docs/diagrams-m365.png[width=1000]
 
 
 == Installation
