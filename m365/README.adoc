@@ -15,10 +15,10 @@ ScubaGear configuration files and results files are read from and written to Azu
 GearConnect can be used to run ScubaGear against the tenant it is deployed in or it can be used in a multi-tenant setting to run ScubaGear against multiple other tenants.
 
 .GearConnect Single-Tenant Architecture
-image::../docs/diagrams-m365-single.png[width=500]
+image::../graphics/diagrams-m365-single.png[width=500]
 
 .GearConnect Multi-Tenant Architecture
-image::../docs/diagrams-m365.png[width=1000]
+image::../graphics/diagrams-m365.png[width=1000]
 
 
 == Installation
@@ -103,5 +103,4 @@ No action is required for container updates as Azure Container Instances will gr
 GearConnect creates two nearly identical container instances named `scheduled` and `adhoc`.
 When either container is run, they output their respective name to a field in the `ScubaResults` file: `MetaData/RunType`.
 The runbook triggers the `scheduled` container instances and the `adhoc` container instance is intended for manual runs.
-
 Azure does not allow changing input variables to a container instance, so this is why both are created.
