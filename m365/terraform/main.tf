@@ -35,7 +35,7 @@ module "app" {
   contact_email                    = var.contact_email
   allowed_access_ips               = var.vnet.allowed_access_ip_list
   certificate_rotation_period_days = var.certificate_rotation_period_days
-  app_multi_tenant = var.app_multi_tenant
+  app_multi_tenant                 = var.app_multi_tenant
 }
 
 module "networking" {

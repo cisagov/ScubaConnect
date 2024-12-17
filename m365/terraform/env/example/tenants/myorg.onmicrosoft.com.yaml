@@ -1,3 +1,8 @@
+# For details on creating this file see:
+# https://github.com/cisagov/ScubaGear/blob/main/docs/configuration/configuration.md#scubagear-configuration-file
+#
+# Note: filename must be <tenant_fqdn>.yaml
+
 OrgName: My Org
 OrgUnitName: Division 1
 ProductNames: ['*']

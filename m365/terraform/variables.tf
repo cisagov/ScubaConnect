@@ -1,46 +1,8 @@
-variable "app_name" {
-  default     = "ScubaConnect"
-  type        = string
-  description = "App name. Displayed in Azure console on installed tenants"
-}
-
-variable "image_path" {
-  default     = "./cisa_logo.png"
-  type        = string
-  description = "Path to image used for app logo. Displayed in Azure console on installed tenants"
-}
-
-variable "app_multi_tenant" {
-  type        = bool
-  default     = false
-  description = "If true, the app will be able to be installed in multiple tenants. By default, it is only available in this tenant"
-}
-
-variable "create_app" {
-  default     = true
-  type        = bool
-  description = "If true, the app will be created. If false, the app will be imported"
-}
-
-variable "prefix_override" {
-  default     = null
-  type        = string
-  description = "Prefix for resource names. If null, one will be generated from app_name"
-}
+### REQUIRED ###
 
 variable "contact_email" {
   description = "Email to notify before certificate expiry"
   type        = string
-}
-
-variable "certificate_rotation_period_days" {
-  type        = number
-  description = "How many days between when the certificate key should be rotated. Note: rotation requires running terraform"
-  default     = 30
-  validation {
-    condition     = var.certificate_rotation_period_days <= 60 && var.certificate_rotation_period_days >= 3
-    error_message = "Rotation period must be between 3 and 60 days"
-  }
 }
 
 variable "resource_group_name" {
@@ -48,11 +10,7 @@ variable "resource_group_name" {
   description = "Resource group to create and build resources in"
 }
 
-variable "serial_number" {
-  default     = "01"
-  type        = string
-  description = "Increment by 1 when re-provisioning with the same resource group name"
-}
+### OPTIONAL ###
 
 variable "location" {
   default     = "East US"
@@ -70,19 +28,20 @@ variable "schedule_interval" {
   }
 }
 
-variable "input_storage_container_id" {
-  default     = null
+variable "app_name" {
+  default     = "ScubaConnect"
   type        = string
-  description = "If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container."
+  description = "App name. Displayed in Azure console on installed tenants"
 }
 
-variable "output_storage_container_id" {
-  default     = null
-  type        = string
-  description = "If not null, output account to put results in (must give permissions to service account). Otherwise by default will create storage container."
+variable "app_multi_tenant" {
+  type        = bool
+  default     = false
+  description = "If true, the app will be able to be installed in multiple tenants. By default, it is only available in this tenant"
 }
 
 variable "vnet" {
+  default = null
   type = object({
     address_space          = string
     aci_subnet             = string
@@ -102,6 +61,60 @@ variable "firewall" {
   description = "Configuration for an Azure Firewall; if not null, traffic will be routed through this firewall"
 }
 
+variable "serial_number" {
+  default     = "01"
+  type        = string
+  description = "Increment by 1 when re-provisioning with the same resource group name"
+}
+
+variable "image_path" {
+  default     = "./cisa_logo.png"
+  type        = string
+  description = "Path to image used for app logo. Displayed in Azure console on installed tenants"
+}
+
+### ADVANCED ###
+
+variable "certificate_rotation_period_days" {
+  type        = number
+  description = "How many days between when the certificate key should be rotated. Note: rotation requires running terraform"
+  default     = 30
+  validation {
+    condition     = var.certificate_rotation_period_days <= 60 && var.certificate_rotation_period_days >= 3
+    error_message = "Rotation period must be between 3 and 60 days"
+  }
+}
+
+variable "create_app" {
+  default     = true
+  type        = bool
+  description = "If true, the app will be created. If false, the app will be imported"
+}
+
+variable "prefix_override" {
+  default     = null
+  type        = string
+  description = "Prefix for resource names. If null, one will be generated from app_name"
+}
+
+variable "input_storage_container_id" {
+  default     = null
+  type        = string
+  description = "If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container."
+}
+
+variable "output_storage_container_id" {
+  default     = null
+  type        = string
+  description = "If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container."
+}
+
+variable "tenants_dir_path" {
+  default     = "./tenants"
+  type        = string
+  description = "Relative path to directory containing tenant configuration files in yaml"
+}
+
 variable "container_registry" {
   type = object({
     server   = string
@@ -118,10 +131,4 @@ variable "container_image" {
   type        = string
   default     = "ghcr.io/cisagov/scubaconnect-m365:latest"
   description = "Docker image to use for running ScubaGear."
-}
-
-variable "tenants_dir_path" {
-  default     = "./tenants"
-  type        = string
-  description = "Relative path to directory containing tenant configuration files in yaml"
 }

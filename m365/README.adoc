@@ -23,6 +23,11 @@ image::../docs/diagrams-m365.png[width=1000]
 
 == Installation
 
+GearConnect requires two primary steps to install and use.
+
+. Deploying resources to host tenant with terraform
+. Onboarding tenants via uploading configuration files and running install script
+
 === Requirements
 
 Before deploying GearConnect, the following will need to be installed on your machine:
@@ -36,16 +41,66 @@ Before deploying GearConnect, the following will need to be installed on your ma
 . Clone or download this repository
 . Change directories to `m365/terraform/env`
 . Create a copy of the `example` directory with a name of your choice
-. Modify the `.tfvars` file to configure the deployment for your needs. See <<_terraform_variables>> for configuration options
+. Modify the `.tfvars` file to configure the deployment for your needs. 
+.. Set `contact_email` to an administrator's email and set `resource_group_name` to the resource group to create and deploy infrastructure in
+.. Review the defaults used for optional variables in <<_terraform_variables>>
 .. Optionally modify `provider.tf` to configure Terraform to store state in Azure. See external https://developer.hashicorp.com/terraform/language/backend/azurerm[documentation].
 . Run `terraform apply -var-file=<myfile>.tfvars`. Confirm changes meet your expectations then type "yes"
 
 ==== Terraform Variables
+This section provides the description for all terraform variables sorted by their likelihood of being changed.
+For a typical deployment, set `contact_email` and `resource_group_name` then review the defaults for the optional variables and override in the `tfvars` file as needed.
+
+
+Required::
+`contact_email` (string) ::: Email to notify before certificate expiry
+`resource_group_name` (string) ::: Resource group to create and build resources in
+Optional::
+`location` (string) [default=East US]::: Region to build resources in
+`schedule_interval` (string) [default=Week]::: The interval to run the scheduled job on.
+`app_name` (string) [default=ScubaConnect]::: App name. Displayed in Azure console on installed tenants
+`app_multi_tenant` (bool) [default=False]::: If true, the app will be able to be installed in multiple tenants. By default, it is only available in this tenant
+`vnet` (object) [default=None]::: Configuration for the vnet, including the address space, ACI subnet, and a list of allowed IP ranges. All strings in CIDR format
+`firewall` (object) [default=None]::: Configuration for an Azure Firewall; if not null, traffic will be routed through this firewall
+`serial_number` (string) [default=01]::: Increment by 1 when re-provisioning with the same resource group name
+`image_path` (string) [default=./cisa_logo.png]::: Path to image used for app logo. Displayed in Azure console on installed tenants
+Advanced::
+`certificate_rotation_period_days` (number) [default=30]::: How many days between when the certificate key should be rotated. Note: rotation requires running terraform
+`create_app` (bool) [default=True]::: If true, the app will be created. If false, the app will be imported
+`prefix_override` (string) [default=None]::: Prefix for resource names. If null, one will be generated from app_name
+`input_storage_container_id` (string) [default=None]::: If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container.
+`output_storage_container_id` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container.
+`tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
+`container_registry` (object) [default={'server': 'ghcr.io'}]::: Credentials for logging into registry with container image
+`container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.
+
 
 === Onboarding a Tenant
 
+To onboard a tenant, open powershell and run `./Install-GearConnect.ps1 -AppId <app_id>` where `app_id` is output by Terraform.
+This script must be run even in a single-tenant architecture to actually install the app.
+
+Once completed, upload a ScubaGear configuration file to the `input_storage_container_id` named `<tenant_fqdn>.yaml` (e.g., `myorg.onmicrosoft.com.yaml`).
+You may upload the file directly to Azure, or place it in `env/<your_env>/tenants/` and run `terraform apply`.
+Refer to the https://github.com/cisagov/ScubaGear/blob/main/docs/configuration/configuration.md#scuba-compliance-use[ScubaGear Configuration File documentation] for details on creating the configuration file.
+
+Repeat these steps for each tenant in a multi-tenant architecture.
+
 === Maintenance
 
-== Troubleshooting
+GearConnect's architecture (limited by Managed Identity support in Windows containers) requires exporting the app's certificate as a secret variable in the container.
+To mitigate this, the certificate is short-lived.
+Terraform is set up to automatically generate a new certificate every `certificate_rotation_period_days` (defaults to 30).
+To utilize this mechanism, run `terraform apply` on a regular basis (e.g., weekly) using CI/CD.
+This will ensure the certificate is always valid.
+
+// TODO: updates to ScubaGear/container vs this code
 
 == Additional Code Information
+
+`scheduled` vs `adhoc` container instances::
+GearConnect creates two nearly identical container instances named `scheduled` and `adhoc`.
+When either container is run, they output their respective name to a field in the `ScubaResults` file: `MetaData/RunType`.
+The runbook triggers the `scheduled` container instances and the `adhoc` container instance is intended for manual runs.
+
+Azure does not allow changing input variables to a container instance, so this is why both are created.

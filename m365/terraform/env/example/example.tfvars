@@ -1,7 +1,5 @@
-app_name            = "ScubaConnect"
-image_path          = "./cisa_logo.png"
 contact_email       = "me@example.com"
 resource_group_name = "myresourcegroup"
-serial_number       = "01"
 location            = "East US"
 schedule_interval   = "Week"
+app_name            = "ScubaConnect"
