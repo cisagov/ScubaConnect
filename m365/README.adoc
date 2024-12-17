@@ -94,7 +94,8 @@ Terraform is set up to automatically generate a new certificate every `certifica
 To utilize this mechanism, run `terraform apply` on a regular basis (e.g., weekly) using CI/CD.
 This will ensure the certificate is always valid.
 
-// TODO: updates to ScubaGear/container vs this code
+The container will be regularly rebuilt and updated overtime to support new versions of ScubaGear.
+No action is required for container updates as Azure Container Instances will grab the latest image by default.
 
 == Additional Code Information
 
