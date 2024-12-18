@@ -1,3 +1,7 @@
+# increase output width to avoid wrapping in LAW
+$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (500, 25)
+
+
 Write-Output "Installing cert"
 # Install certificate by decoding env variable
 $PFX_FILE = '.\certificate.pfx'
