@@ -33,7 +33,7 @@ resource "azurerm_container_group" "aci" {
   container {
     name   = "${var.resource_prefix}-container"
     image  = var.container_image
-    cpu    = "0.5"
+    cpu    = "1"
     memory = "3"
     environment_variables = {
       "RUN_TYPE"                         = each.key
@@ -52,3 +52,5 @@ resource "azurerm_container_group" "aci" {
     ignore_changes = [tags]
   }
 }
+
+

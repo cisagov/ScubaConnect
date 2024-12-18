@@ -19,7 +19,11 @@ Invoke-SCuBA -Version
 Write-Output "Grabbing tenant config files"
 .\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
 
+total_count = 0
+$error_count = 0
+
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
+    $total_count += 1
     try {
         $org = $tenantConfig.BaseName
         Write-Output "Running ScubaGear on $($org)"
@@ -46,9 +50,14 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "  Finished Upload to $OutPath"
     
     } catch {
+        $error_count += 1
         Write-Output "Error occurred while running on $($org)"
         Write-Output $_
     }
 }
 
-Write-Output "Finished running on all tenants"
+Write-Output "Finished running on $total_count tenants. Encountered $error_count errors"
+if ($error_count -gt 0) {
+    exit 1
+}
+exit 0
