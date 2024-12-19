@@ -1,7 +1,7 @@
 ### REQUIRED ###
 
 variable "contact_email" {
-  description = "Email to notify before certificate expiry"
+  description = "Email to notify for alerts and before certificate expiry"
   type        = string
 }
 

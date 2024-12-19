@@ -55,12 +55,9 @@ variable "resource_group" {
   description = "Resource group resources should be created in"
 }
 
-variable "log_analytics_workspace" {
-  type = object({
-    workspace_id       = string
-    primary_shared_key = string
-  })
-  description = "Log Analytics Workspace container should write logs to"
+variable "contact_email" {
+  description = "Email to notify when container has non-zero exit"
+  type        = string
 }
 
 variable "allowed_access_ips" {
