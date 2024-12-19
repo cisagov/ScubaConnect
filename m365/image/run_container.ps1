@@ -23,7 +23,7 @@ Invoke-SCuBA -Version
 Write-Output "Grabbing tenant config files"
 .\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
 
-total_count = 0
+$total_count = 0
 $error_count = 0
 
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
