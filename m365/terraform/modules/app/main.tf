@@ -86,7 +86,7 @@ resource "azurerm_key_vault_certificate" "cert" {
       }
 
       trigger {
-        days_before_expiry = max(3, ceil(var.certificate_rotation_period_days / 6))
+        days_before_expiry = 7
       }
     }
 

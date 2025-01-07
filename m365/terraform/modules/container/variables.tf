@@ -60,6 +60,15 @@ variable "contact_email" {
   type        = string
 }
 
+variable "log_analytics_workspace" {
+  type = object({
+    id              = string
+    workspace_id       = string
+    primary_shared_key = string
+  })
+  description = "Log Analytics Workspace container should write logs to"
+}
+
 variable "allowed_access_ips" {
   type        = list(string)
   description = "List of IP addresses/subnets in CIDR format that should be able to access storage"

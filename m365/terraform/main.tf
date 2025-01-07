@@ -11,6 +11,18 @@ locals {
   name = var.prefix_override != null ? var.prefix_override : replace(lower(var.app_name), " ", "-")
 }
 
+resource "azurerm_log_analytics_workspace" "monitor_law" {
+  name                = "${local.name}-monitor-loganalytics"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 90
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
 # Creates the app registration, or reads an existing one, which is used by the ScubaGear container
 module "app" {
   source                           = "./modules/app"
@@ -51,4 +63,5 @@ module "container" {
   output_storage_container_id = var.output_storage_container_id
   input_storage_container_id  = var.input_storage_container_id
   contact_email               = var.contact_email
+  log_analytics_workspace = azurerm_log_analytics_workspace.monitor_law
 }

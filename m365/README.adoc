@@ -53,7 +53,7 @@ For a typical deployment, set `contact_email` and `resource_group_name` then rev
 
 
 Required::
-`contact_email` (string) ::: Email to notify before certificate expiry
+`contact_email` (string) ::: Email to notify for alerts and before certificate expiry
 `resource_group_name` (string) ::: Resource group to create and build resources in
 Optional::
 `location` (string) [default=East US]::: Region to build resources in
@@ -86,13 +86,26 @@ Refer to the https://github.com/cisagov/ScubaGear/blob/main/docs/configuration/c
 
 Repeat these steps for each tenant in a multi-tenant architecture.
 
+=== Logging / Alerts
+
+Terraform will create a Log Analytics Workspace (`scubaconnect-monitor-loganalytics`) which will hold logs from the container.
+There will be two pre-created searches available: `scubaconnect Container Logs (7d)` and `scubaconnect Last Run Output`.
+These allow you to quickly view output from the container. 
+
+The container will exit with a non-zero code if it fails to run ScubaGear on any tenant.
+A log-based alert is pre-configured to send an email to `contact_email` when this occurs.
+Looks into the "Last Run Output" logs to determine the cause.
+
+
 === Maintenance
 
 GearConnect's architecture (limited by Managed Identity support in Windows containers) requires exporting the app's certificate as a secret variable in the container.
 To mitigate this, the certificate is short-lived.
 Terraform is set up to automatically generate a new certificate every `certificate_rotation_period_days` (defaults to 30).
-To utilize this mechanism, run `terraform apply` on a regular basis (e.g., weekly) using CI/CD.
+To utilize this mechanism, you must run `terraform apply` on a regular basis.
+This can be done through scheduled CI/CD or manually (an email will be sent one week prior to expiration).
 This will ensure the certificate is always valid.
+
 
 The container will be regularly rebuilt and updated overtime to support new versions of ScubaGear.
 No action is required for container updates as Azure Container Instances will grab the latest image by default.

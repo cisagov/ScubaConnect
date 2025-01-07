@@ -25,8 +25,8 @@ resource "azurerm_container_group" "aci" {
 
   diagnostics {
     log_analytics {
-      workspace_id  = azurerm_log_analytics_workspace.monitor_law.workspace_id
-      workspace_key = azurerm_log_analytics_workspace.monitor_law.primary_shared_key
+      workspace_id  = var.log_analytics_workspace.workspace_id
+      workspace_key = var.log_analytics_workspace.primary_shared_key
     }
   }
 
