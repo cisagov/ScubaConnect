@@ -1,8 +1,8 @@
 ### REQUIRED ###
 
-variable "contact_email" {
-  description = "Email to notify for alerts and before certificate expiry"
-  type        = string
+variable "contact_emails" {
+  description = "Emails to notify for alerts and before certificate expiry"
+  type        = list(string)
 }
 
 variable "resource_group_name" {

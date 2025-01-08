@@ -32,7 +32,7 @@ module "app" {
   app_name                         = var.app_name
   image_path                       = var.image_path
   create_app                       = var.create_app
-  contact_email                    = var.contact_email
+  contact_emails                   = var.contact_emails
   allowed_access_ips               = var.vnet.allowed_access_ip_list
   certificate_rotation_period_days = var.certificate_rotation_period_days
   app_multi_tenant                 = var.app_multi_tenant
@@ -62,6 +62,6 @@ module "container" {
   schedule_interval           = var.schedule_interval
   output_storage_container_id = var.output_storage_container_id
   input_storage_container_id  = var.input_storage_container_id
-  contact_email               = var.contact_email
-  log_analytics_workspace = azurerm_log_analytics_workspace.monitor_law
+  contact_emails              = var.contact_emails
+  log_analytics_workspace     = azurerm_log_analytics_workspace.monitor_law
 }

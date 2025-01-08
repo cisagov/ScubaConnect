@@ -2,11 +2,13 @@ resource "azurerm_monitor_action_group" "action_group" {
   name                = "${var.resource_prefix} Container Alerts"
   resource_group_name = var.resource_group.name
   short_name          = substr(var.resource_prefix, 0, 12)
-  email_receiver {
-    name          = "email"
-    email_address = var.contact_email
+  dynamic "email_receiver" {
+    for_each = var.contact_emails
+    content {
+      name          = "email ${email_receiver.value}"
+      email_address = email_receiver.value
+    }
   }
-
 }
 
 resource "azurerm_log_analytics_saved_search" "last_run_search" {

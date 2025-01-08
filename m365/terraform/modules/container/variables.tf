@@ -55,14 +55,14 @@ variable "resource_group" {
   description = "Resource group resources should be created in"
 }
 
-variable "contact_email" {
-  description = "Email to notify when container has non-zero exit"
-  type        = string
+variable "contact_emails" {
+  description = "Emails to notify when container has non-zero exit"
+  type        = list(string)
 }
 
 variable "log_analytics_workspace" {
   type = object({
-    id              = string
+    id                 = string
     workspace_id       = string
     primary_shared_key = string
   })

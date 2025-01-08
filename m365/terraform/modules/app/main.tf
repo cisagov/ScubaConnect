@@ -14,8 +14,12 @@ resource "azurerm_key_vault" "vault" {
   enabled_for_disk_encryption     = false
   enabled_for_template_deployment = false
   enable_rbac_authorization       = false
-  contact {
-    email = var.contact_email
+
+  dynamic "contact" {
+    for_each = var.contact_emails
+    content {
+      email = contact.value
+    }
   }
 
   network_acls {

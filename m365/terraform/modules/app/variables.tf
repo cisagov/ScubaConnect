@@ -18,9 +18,9 @@ variable "location" {
   description = "Location for resource"
 }
 
-variable "contact_email" {
-  description = "Email to notify before certificate expiry"
-  type        = string
+variable "contact_emails" {
+  description = "Emails to notify before certificate expiry"
+  type        = list(string)
 }
 
 variable "certificate_rotation_period_days" {

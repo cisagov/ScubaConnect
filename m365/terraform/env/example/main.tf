@@ -3,7 +3,7 @@ module "scuba_connect" {
   app_name                         = var.app_name
   app_multi_tenant                 = var.app_multi_tenant
   image_path                       = var.image_path
-  contact_email                    = var.contact_email
+  contact_emails                   = var.contact_emails
   resource_group_name              = var.resource_group_name
   serial_number                    = var.serial_number
   location                         = var.location
