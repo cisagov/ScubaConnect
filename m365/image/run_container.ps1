@@ -29,7 +29,7 @@ $error_count = 0
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     $total_count += 1
     try {
-        $org = $tenantConfig.BaseName
+        $org = $tenantConfig.BaseName.split("_")[0]
         Write-Output "Running ScubaGear on $($org)"
 
         $params = @{
