@@ -1,10 +1,5 @@
 name: M365 Image Build
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 on:
   schedule:
     - cron: '16 11 * * 1'
@@ -16,13 +11,16 @@ on:
     branches: [ "main" ]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}-m365
 
-
 jobs:
   build:
+    strategy:
+      matrix:
+        version: 
+          # to maintain multiple versions, list here refs for this repo
+          - ref: main
 
     runs-on: windows-latest
     permissions:
@@ -35,6 +33,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.version.ref }}
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -60,10 +60,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
+          context: git
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+            type=semver,pattern={{major}}.{{minor}}
 
       # Build and push Docker image
       - name: Build and push Docker image
@@ -75,21 +78,22 @@ jobs:
           IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         shell: powershell
         run: |
-          $cmd="docker build"
+          $docker_args = New-Object System.Collections.ArrayList
           $Env:TAGS.Split([Environment]::NewLine) | Where-Object { $_ -ne "" } | ForEach {
-            $cmd += " --tag `"$_`""
+            $docker_args.Add("--tag")
+            $docker_args.Add($_)
           }
           $Env:LABELS.Split([Environment]::NewLine) | Where-Object { $_ -ne "" } | ForEach {
-            $cmd += " --label `"$_`""
+            $docker_args.Add("--label")
+            $docker_args.Add($_)
           }
-          $cmd += " m365/image"
-          Write-Host $cmd
-          Invoke-Expression $cmd
+
+          docker build $docker_args m365/image
           echo "digest=$(docker images --no-trunc --quiet $Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
           if ($Env:PUSH) {
             docker push $Env:IMAGE.ToLower() --all-tags
           }
-          exit 0
+          exit $LASTEXITCODE
     
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
