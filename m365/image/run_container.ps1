@@ -22,6 +22,9 @@ Invoke-SCuBA -Version
 
 Write-Output "Grabbing tenant config files"
 .\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
+if ($LASTEXITCODE -gt 0) {
+    throw "Error reading config files"
+}
 
 $total_count = 0
 $error_count = 0
