@@ -14,6 +14,8 @@ ScubaGear configuration files and results files are read from and written to Azu
 
 GearConnect can be used to run ScubaGear against the tenant it is deployed in or it can be used in a multi-tenant setting to run ScubaGear against multiple other tenants.
 
+NOTE: GCC High environments are separated from commercial and GCC. Deploy GearConnect in the same environment as the tenants you intend to run on. (Commercial and GCC can communicate between each other.)
+
 .GearConnect Single-Tenant Architecture
 image::../graphics/diagrams-m365-single.png[width=500]
 
