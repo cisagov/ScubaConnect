@@ -51,6 +51,9 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "  Starting Upload"
         $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
         .\azcopy copy $ResultsFile.FullName $OutPath --output-level quiet
+        if ($LASTEXITCODE -gt 0) {
+            throw "Error transferring files"
+        }
         Write-Output "  Finished Upload to $OutPath"
     
     } catch {
