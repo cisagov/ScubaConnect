@@ -134,7 +134,7 @@ $RoleParams = @{
 	RoleDefinitionId = $GLOBAL_READER_ROLE_ID
 }
 New-MgRoleManagementDirectoryRoleAssignment -BodyParameter $RoleParams | Out-Null
-Write-Output "Checking Global Reader role. If added you should see one row output below without errors"
+Write-Output "Checking Global Reader role. If added you should see one row of output below without errors"
 Get-MgRoleManagementDirectoryRoleAssignment -Filter "RoleDefinitionId eq '$GLOBAL_READER_ROLE_ID' and PrincipalId eq '$AppSpId'"
 Write-Output $("#"*50)
 

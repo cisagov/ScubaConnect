@@ -24,15 +24,7 @@ resource "azuread_application" "app" {
     resource_app_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
 
     resource_access {
-      id   = data.azuread_service_principal.msgraph.app_role_ids["Application.Read.All"]
-      type = "Role"
-    }
-    resource_access {
       id   = data.azuread_service_principal.msgraph.app_role_ids["Directory.Read.All"]
-      type = "Role"
-    }
-    resource_access {
-      id   = data.azuread_service_principal.msgraph.app_role_ids["Domain.Read.All"]
       type = "Role"
     }
     resource_access {
