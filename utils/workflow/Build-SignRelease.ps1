@@ -64,7 +64,9 @@ function Use-AzureSignTool {
   }
   else {
     $ErrorMessage = "Failed to sign the filelist without errors."
-    Write-Error = $ErrorMessage
+    Write-Error $ErrorMessage
+    Write-Warning "True Error $($_.Exception.Message)`n$($_.ScriptStackTrace)"
+
     throw $ErrorMessage
   }
 }
@@ -187,10 +189,12 @@ function New-ModuleSignature {
     -ArrayOfFilePaths $ArrayOfFilePaths
 
   Write-Warning "Calling AzureSignTool function to sign scripts, manifest, and modules..."
+
   Use-AzureSignTool `
     -AzureKeyVaultUrl $AzureKeyVaultUrl `
     -CertificateName $CertificateName `
     -FileList $FileListFileName
+
   $ReleaseName = "ScubaConnect"
   Move-Item -Path $RootFolderName -Destination "$ReleaseName-$ReleaseVersion" -Force
   Compress-Archive -Path "$ReleaseName-$ReleaseVersion" -DestinationPath "$ReleaseName-$ReleaseVersion.zip"
