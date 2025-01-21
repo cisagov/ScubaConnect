@@ -10,13 +10,16 @@ function Use-AzureSignTool {
     [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') -and ([uri] $_).Scheme -in 'https' })]
     [System.Uri]
     $AzureKeyVaultUrl,
+
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string]
     $CertificateName,
+
     [Parameter(Mandatory = $false)]
     [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') -and ([uri] $_).Scheme -in 'http', 'https' })]
     $TimeStampServer = 'http://timestamp.digicert.com',
+
     [Parameter(Mandatory = $true)]
     [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
     $FileList
@@ -44,7 +47,9 @@ function Use-AzureSignTool {
     Write-Error = $ErrorMessage
     throw $ErrorMessage
   }
+
   $ToolPath = (Get-Command AzureSignTool).Path
+
   Write-Warning "The path to AzureSignTool is $ToolPath"
   # & is the call operator that executes a command, script, or function.
   $Results = & $ToolPath $SignArguments

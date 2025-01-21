@@ -1,4 +1,5 @@
 # Purpose:  Build and sign and draft release. Port of ScubaGear's release workflow
+# This workflow port is mostly meant to sign any PowerShell code for ScubaConnect
 
 name: Build, Sign, and Draft Release
 
@@ -52,23 +53,23 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
-      # - name: Sign Module
-      #   run: |
-      #     # Source the function.
-      #     . repo/utils/workflow/Build-SignRelease.ps1
-      #     New-ModuleSignature `
-      #       -AzureKeyVaultUrl ${{ secrets.AZURE_KEY_VAULT_URL }} `
-      #       -CertificateName ${{ secrets.AZURE_CERTIFICATE_NAME }} `
-      #       -ReleaseVersion ${{ inputs.version }} `
-      #       -RootFolderName "repo"
-      # - name: Create Release
-      #   uses: softprops/action-gh-release@v1
-      #   id: create-release
-      #   with:
-      #     draft: true
-      #     prerelease: false
-      #     name: ${{ inputs.releaseName }}
-      #     tag_name: v${{ inputs.version }}
-      #     files: ScubaConnect-${{ inputs.version }}.zip
-      #     generate_release_notes: true
-      #     fail_on_unmatched_files: true
+      - name: Sign Module
+        run: |
+          # Source the function.
+          . repo/utils/workflow/Build-SignRelease.ps1
+          New-ModuleSignature `
+            -AzureKeyVaultUrl ${{ secrets.AZURE_KEY_VAULT_URL }} `
+            -CertificateName ${{ secrets.AZURE_CERTIFICATE_NAME }} `
+            -ReleaseVersion ${{ inputs.version }} `
+            -RootFolderName "repo"
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        id: create-release
+        with:
+          draft: true
+          prerelease: false
+          name: ${{ inputs.releaseName }}
+          tag_name: v${{ inputs.version }}
+          files: ScubaConnect-${{ inputs.version }}.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true
