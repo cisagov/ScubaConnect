@@ -63,9 +63,10 @@ function Use-AzureSignTool {
     Write-Warning "Signed the filelist without errors."
   }
   else {
+    Write-Warning $Results
     $ErrorMessage = "Failed to sign the filelist without errors."
     Write-Error $ErrorMessage
-    Write-Warning "True Error $($_.Exception.Message)`n$($_.ScriptStackTrace)"
+    # Write-Warning "True Error $($_.Exception.Message)`n$($_.ScriptStackTrace)"
 
     throw $ErrorMessage
   }
