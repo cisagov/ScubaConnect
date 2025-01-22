@@ -62,7 +62,7 @@ jobs:
         with:
           draft: true
           prerelease: false
-          name: ${{ inputs.version }}
+          name: v${{ inputs.version }}
           tag_name: v${{ inputs.version }}
           files: |
             GearConnect-${{ inputs.version }}.zip
