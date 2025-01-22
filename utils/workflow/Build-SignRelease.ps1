@@ -93,7 +93,7 @@ function New-ArrayOfFilePaths {
   $FilesToSign = @("Install-GearConnect.ps1")
 
   # Filter files to the scripts we want to sign
-  $ArrayOfFilePaths = $ArrayOfFilePaths | Where-Object { $FilesToSign -contains $_ }
+  $ArrayOfFilePaths = $ArrayOfFilePaths | Where-Object { $FilesToSign -contains $_.name }
 
   if ($ArrayOfFilePaths.Length -gt 0) {
     Write-Warning "Found $($ArrayOfFilePaths.Count) files to sign"
