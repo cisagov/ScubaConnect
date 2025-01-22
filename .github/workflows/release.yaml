@@ -56,7 +56,7 @@ jobs:
             -CertificateName ${{ secrets.AZURE_CERTIFICATE_NAME }} `
             -ReleaseVersion ${{ inputs.version }} `
             -RootFolderName "repo"
-        # Creates 2 release assets; one for GearConnect, one for GogglesConnect
+        # Creates release assets
       - name: Create Release
         uses: softprops/action-gh-release@v1
         id: create-release
