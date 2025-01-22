@@ -14,11 +14,6 @@ on:
         description: "Release Version (e.g., 1.2.4)"
         required: true
         type: string
-      runQuickCheck:
-        description: "Run a quick check of release"
-        required: false
-        type: boolean
-        default: true
 
 permissions: read-all
 
@@ -53,7 +48,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
-      - name: Sign Module
+      - name: Sign the Scripts
         run: |
           # Source the function.
           . repo/utils/workflow/Build-SignRelease.ps1

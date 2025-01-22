@@ -86,10 +86,14 @@ function New-ArrayOfFilePaths {
   $ArrayOfFilePaths = @()
   $ArrayOfFilePaths = Get-ChildItem -Recurse -Path $ModuleDestinationPath -Include $FileExtensions
 
-  # Write-Warning "Verifying array of file paths..."
-  # ForEach ($FilePath in $ArrayOfFilePaths) {
-  #     Write-Warning ">>> File path is $FilePath"
-  # }
+  #
+  # Files to sign. Hardcoded as the number of files to sign is 1 to few
+  # and we don't need to sign every PowerShell file.
+  #
+  $FilesToSign = @("Install-GearConnect.ps1")
+
+  # Single script to sign
+  $ArrayOfFilePaths = $ArrayOfFilePaths | Where-Object { $FilesToSign -contains $_ }
 
   if ($ArrayOfFilePaths.Length -gt 0) {
     Write-Warning "Found $($ArrayOfFilePaths.Count) files to sign"
