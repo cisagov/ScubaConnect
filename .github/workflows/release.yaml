@@ -48,11 +48,12 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
-      - name: Sign the Scripts
+      # Hardcoded to sign specifically named scripts in Build-SignRelease.ps1
+      - name: Sign Scripts and Bundle Release Asset(s)
         run: |
           # Source the function.
           . repo/utils/workflow/Build-SignRelease.ps1
-          New-ModuleSignature `
+          New-ScubaReleaseAsset `
             -AzureKeyVaultUrl ${{ secrets.AZURE_KEY_VAULT_URL }} `
             -CertificateName ${{ secrets.AZURE_CERTIFICATE_NAME }} `
             -ReleaseVersion ${{ inputs.version }} `

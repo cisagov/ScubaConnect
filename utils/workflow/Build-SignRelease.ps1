@@ -60,10 +60,10 @@ function Use-AzureSignTool {
   $SuccessPattern = 'Failed operations: 0'
   $FoundNoFailures = $Results | Select-String -Pattern $SuccessPattern -Quiet
   if ($FoundNoFailures -eq $true) {
-    Write-Warning "Signed the filelist without errors."
+    Write-Warning "Signed the file list without errors."
   }
   else {
-    $ErrorMessage = "Failed to sign the filelist without errors."
+    $ErrorMessage = "Failed to sign the file list without errors."
     Write-Error $ErrorMessage
     throw $ErrorMessage
   }
@@ -87,12 +87,12 @@ function New-ArrayOfFilePaths {
   $ArrayOfFilePaths = Get-ChildItem -Recurse -Path $ModuleDestinationPath -Include $FileExtensions
 
   #
-  # Files to sign. Hardcoded as the number of files to sign is 1 to few
-  # and we don't need to sign every PowerShell file.
+  # Files to sign. Hardcoded as the number of files to sign is 1 to few.
+  # Since we don't need to sign every PowerShell file.
   #
   $FilesToSign = @("Install-GearConnect.ps1")
 
-  # Single script to sign
+  # Filter files to the scripts we want to sign
   $ArrayOfFilePaths = $ArrayOfFilePaths | Where-Object { $FilesToSign -contains $_ }
 
   if ($ArrayOfFilePaths.Length -gt 0) {
@@ -136,7 +136,7 @@ function New-FileList {
   return $FileListFileName
 }
 
-function New-ModuleSignature {
+function New-ScubaReleaseAsset {
   <#
   .SYNOPSIS
   Sign the module.
@@ -157,12 +157,15 @@ function New-ModuleSignature {
     [Parameter(Mandatory = $true)]
     [string]
     $AzureKeyVaultUrl,
+
     [Parameter(Mandatory = $true)]
     [string]
     $CertificateName,
+
     [Parameter(Mandatory = $true)]
     [string]
     $ReleaseVersion,
+
     [Parameter(Mandatory = $true)]
     [string]
     $RootFolderName
@@ -191,12 +194,13 @@ function New-ModuleSignature {
     -ArrayOfFilePaths $ArrayOfFilePaths
 
   Write-Warning "Calling AzureSignTool function to sign scripts, manifest, and modules..."
-
   Use-AzureSignTool `
     -AzureKeyVaultUrl $AzureKeyVaultUrl `
     -CertificateName $CertificateName `
     -FileList $FileListFileName
 
+  # This creates the release asset
+  # TODO: Separate GearConnect and GogglesConnect into separate assets
   $ReleaseName = "ScubaConnect"
   Move-Item -Path $RootFolderName -Destination "$ReleaseName-$ReleaseVersion" -Force
   Compress-Archive -Path "$ReleaseName-$ReleaseVersion" -DestinationPath "$ReleaseName-$ReleaseVersion.zip"
