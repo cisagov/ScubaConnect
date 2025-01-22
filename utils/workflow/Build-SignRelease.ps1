@@ -1,9 +1,9 @@
 function Use-AzureSignTool {
   <#
     .SYNOPSIS
-      AzureSignTool is a utility for signing code that is used to secure ScubaGear.
+      AzureSignTool is a utility for signing code.
       https://github.com/vcsjones/AzureSignTool
-      Throws an error if there was an error signing the files.
+      Throws an error, if there was an error signing the files.
   #>
   param (
     [Parameter(Mandatory = $true)]

@@ -1,5 +1,5 @@
-# Purpose:  Build and sign and draft release. Port of ScubaGear's release workflow
-# This workflow port is mostly meant to sign any PowerShell code for ScubaConnect
+# Purpose:  Build, sign and draft release. This workflow is a port of ScubaGear's release workflow
+# This workflow's current main purpose is to sign any PowerShell code for ScubaConnect
 
 name: Build, Sign, and Draft Release
 
