@@ -1,22 +1,25 @@
 function Use-AzureSignTool {
   <#
     .SYNOPSIS
-      AzureSignTool is a utility for signing code that is used to secure ScubaGear.
+      AzureSignTool is a utility for signing code.
       https://github.com/vcsjones/AzureSignTool
-      Throws an error if there was an error signing the files.
+      Throws an error, if there was an error signing the files.
   #>
   param (
     [Parameter(Mandatory = $true)]
     [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') -and ([uri] $_).Scheme -in 'https' })]
     [System.Uri]
     $AzureKeyVaultUrl,
+
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string]
     $CertificateName,
+
     [Parameter(Mandatory = $false)]
     [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') -and ([uri] $_).Scheme -in 'http', 'https' })]
     $TimeStampServer = 'http://timestamp.digicert.com',
+
     [Parameter(Mandatory = $true)]
     [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
     $FileList
@@ -44,7 +47,9 @@ function Use-AzureSignTool {
     Write-Error = $ErrorMessage
     throw $ErrorMessage
   }
+
   $ToolPath = (Get-Command AzureSignTool).Path
+
   Write-Warning "The path to AzureSignTool is $ToolPath"
   # & is the call operator that executes a command, script, or function.
   $Results = & $ToolPath $SignArguments
@@ -55,11 +60,11 @@ function Use-AzureSignTool {
   $SuccessPattern = 'Failed operations: 0'
   $FoundNoFailures = $Results | Select-String -Pattern $SuccessPattern -Quiet
   if ($FoundNoFailures -eq $true) {
-    Write-Warning "Signed the filelist without errors."
+    Write-Warning "Signed the file list without errors."
   }
   else {
-    $ErrorMessage = "Failed to sign the filelist without errors."
-    Write-Error = $ErrorMessage
+    $ErrorMessage = "Failed to sign the file list without errors."
+    Write-Error $ErrorMessage
     throw $ErrorMessage
   }
 }
@@ -81,10 +86,14 @@ function New-ArrayOfFilePaths {
   $ArrayOfFilePaths = @()
   $ArrayOfFilePaths = Get-ChildItem -Recurse -Path $ModuleDestinationPath -Include $FileExtensions
 
-  # Write-Warning "Verifying array of file paths..."
-  # ForEach ($FilePath in $ArrayOfFilePaths) {
-  #     Write-Warning ">>> File path is $FilePath"
-  # }
+  #
+  # Files to sign. Hardcoded as the number of files to sign is 1 to few.
+  # Since we don't need to sign every PowerShell file.
+  #
+  $FilesToSign = @("Install-GearConnect.ps1")
+
+  # Filter files to the scripts we want to sign
+  $ArrayOfFilePaths = $ArrayOfFilePaths | Where-Object { $FilesToSign -contains $_.name }
 
   if ($ArrayOfFilePaths.Length -gt 0) {
     Write-Warning "Found $($ArrayOfFilePaths.Count) files to sign"
@@ -127,7 +136,7 @@ function New-FileList {
   return $FileListFileName
 }
 
-function New-ModuleSignature {
+function New-ScubaReleaseAsset {
   <#
   .SYNOPSIS
   Sign the module.
@@ -148,12 +157,15 @@ function New-ModuleSignature {
     [Parameter(Mandatory = $true)]
     [string]
     $AzureKeyVaultUrl,
+
     [Parameter(Mandatory = $true)]
     [string]
     $CertificateName,
+
     [Parameter(Mandatory = $true)]
     [string]
     $ReleaseVersion,
+
     [Parameter(Mandatory = $true)]
     [string]
     $RootFolderName
@@ -186,7 +198,18 @@ function New-ModuleSignature {
     -AzureKeyVaultUrl $AzureKeyVaultUrl `
     -CertificateName $CertificateName `
     -FileList $FileListFileName
-  $ReleaseName = "ScubaConnect"
-  Move-Item -Path $RootFolderName -Destination "$ReleaseName-$ReleaseVersion" -Force
-  Compress-Archive -Path "$ReleaseName-$ReleaseVersion" -DestinationPath "$ReleaseName-$ReleaseVersion.zip"
+
+  # create the M365 GearConnect zip asset
+  $GearConnectAsset = "GearConnect-$ReleaseVersion"
+  Move-Item -Path "$RootFolderName/m365" -Destination $GearConnectAsset -Force
+  Compress-Archive -Path $GearConnectAsset -DestinationPath "$GearConnectAsset.zip"
+
+  # Commented out block below until GogglesConnect is release ready
+  # Remember to also add: GogglesConnect-${{ inputs.version }}.zip
+  # under `files` in the release action
+
+  # create the GWS GogglesConnect zip asset
+  # $GogglesConnectAsset = "GogglesConnect-$ReleaseVersion"
+  # Move-Item -Path "$RootFolderName/gws" -Destination $GogglesConnectAsset -Force
+  # Compress-Archive -Path $GogglesConnectAsset -DestinationPath "$GogglesConnectAsset.zip"
 }
