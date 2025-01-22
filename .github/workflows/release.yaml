@@ -1,5 +1,6 @@
 # Purpose:  Build, sign and draft release. This workflow is a port of ScubaGear's release workflow
-# This workflow's current main purpose is to sign any PowerShell code for ScubaConnect
+# This workflow's current main purpose is to sign specific PowerShell code for GearConnect
+# Then create release assets
 
 name: Build, Sign, and Draft Release
 
@@ -66,6 +67,5 @@ jobs:
           tag_name: v${{ inputs.version }}
           files: |
             GearConnect-${{ inputs.version }}.zip
-            GogglesConnect-${{ inputs.version }}.zip
           generate_release_notes: true
           fail_on_unmatched_files: true
