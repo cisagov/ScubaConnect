@@ -6,12 +6,8 @@ name: Build, Sign, and Draft Release
 on:
   workflow_dispatch:
     inputs:
-      releaseName:
-        description: "Release Name"
-        required: true
-        type: string
       version:
-        description: "Release Version (e.g., 1.2.4)"
+        description: "Release Version (e.g. semver, 1.2.4)"
         required: true
         type: string
 
@@ -49,6 +45,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
       # Hardcoded to sign specifically named scripts in Build-SignRelease.ps1
+      # We don't need to sign every script
       - name: Sign Scripts and Bundle Release Asset(s)
         run: |
           # Source the function.
@@ -58,14 +55,17 @@ jobs:
             -CertificateName ${{ secrets.AZURE_CERTIFICATE_NAME }} `
             -ReleaseVersion ${{ inputs.version }} `
             -RootFolderName "repo"
+        # Creates 2 release assets; one for GearConnect, one for GogglesConnect
       - name: Create Release
         uses: softprops/action-gh-release@v1
         id: create-release
         with:
           draft: true
           prerelease: false
-          name: ${{ inputs.releaseName }}
+          name: ${{ inputs.version }}
           tag_name: v${{ inputs.version }}
-          files: ScubaConnect-${{ inputs.version }}.zip
+          files: |
+            GearConnect-${{ inputs.version }}.zip
+            GogglesConnect-${{ inputs.version }}.zip
           generate_release_notes: true
           fail_on_unmatched_files: true

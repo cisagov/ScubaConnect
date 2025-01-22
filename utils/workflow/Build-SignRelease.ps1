@@ -199,9 +199,13 @@ function New-ScubaReleaseAsset {
     -CertificateName $CertificateName `
     -FileList $FileListFileName
 
-  # This creates the release asset
-  # TODO: Separate GearConnect and GogglesConnect into separate assets
-  $ReleaseName = "ScubaConnect"
-  Move-Item -Path $RootFolderName -Destination "$ReleaseName-$ReleaseVersion" -Force
-  Compress-Archive -Path "$ReleaseName-$ReleaseVersion" -DestinationPath "$ReleaseName-$ReleaseVersion.zip"
+  # create the M365 GearConnect zip asset
+  $GearConnectAsset = "GearConnect-$ReleaseVersion"
+  Move-Item -Path "$RootFolderName/m365" -Destination $GearConnectAsset -Force
+  Compress-Archive -Path $GearConnectAsset -DestinationPath "$GearConnectAsset.zip"
+
+  # create the GWS GogglesConnect zip asset
+  $GogglesConnectAsset = "GogglesConnect-$ReleaseVersion"
+  Move-Item -Path "$RootFolderName/gws" -Destination $GogglesConnectAsset -Force
+  Compress-Archive -Path $GogglesConnectAsset -DestinationPath "$GogglesConnectAsset.zip"
 }
