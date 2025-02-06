@@ -58,11 +58,17 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             throw "Error transferring files"
         }
         Write-Output "  Finished Upload to $OutPath"
+        Remove-Item $ResultsFile
     
     } catch {
         $error_count += 1
         Write-Output "Error occurred while running on $($org)"
         Write-Output $_
+    }
+
+    if ($Env:DEBUG_LOG -eq "true") {
+        Get-Process | Sort-Object -Property WS -Descending | Select-Object ProcessName,WS,CPU,ID -First 10
+        Get-Counter '\Memory\Available MBytes'
     }
 }
 
