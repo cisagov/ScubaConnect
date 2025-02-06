@@ -33,7 +33,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     $total_count += 1
     try {
         $org = $tenantConfig.BaseName.split("_")[0]
-        Write-Output "Running ScubaGear on $($org)"
+        Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
 
         $params = @{
             CertificateThumbPrint = $CertificateThumbPrint; # Certificate Hash; Needed for SP auth
@@ -67,8 +67,8 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     }
 
     if ($Env:DEBUG_LOG -eq "true") {
-        Get-Process | Sort-Object -Property WS -Descending | Select-Object ProcessName,WS,CPU,ID -First 10
-        Get-Counter '\Memory\Available MBytes'
+        Get-Process | Sort-Object -Property WS -Descending | Select-Object -First 10
+        (Get-Ciminstance Win32_OperatingSystem).FreePhysicalMemory
     }
 }
 
