@@ -34,7 +34,7 @@ resource "azurerm_container_group" "aci" {
     name   = "${var.resource_prefix}-container"
     image  = var.container_image
     cpu    = "1"
-    memory = "3"
+    memory = var.container_memory_gb
     environment_variables = {
       "RUN_TYPE"                         = each.key
       "TENANT_ID"                        = data.azurerm_client_config.current.tenant_id
@@ -42,6 +42,7 @@ resource "azurerm_container_group" "aci" {
       "REPORT_OUTPUT"                    = var.output_storage_container_id == null ? azurerm_storage_container.output[0].id : var.output_storage_container_id
       "TENANT_INPUT"                     = var.input_storage_container_id == null ? azurerm_storage_container.input[0].id : var.input_storage_container_id
       "AZCOPY_ACTIVE_DIRECTORY_ENDPOINT" = local.aad_endpoint
+      "DEBUG_LOG"                        = "false"
     }
     secure_environment_variables = {
       "PFX_B64" = var.application_pfx_b64

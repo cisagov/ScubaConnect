@@ -64,4 +64,5 @@ module "container" {
   input_storage_container_id  = var.input_storage_container_id
   contact_emails              = var.contact_emails
   log_analytics_workspace     = azurerm_log_analytics_workspace.monitor_law
+  container_memory_gb         = var.container_memory_gb
 }

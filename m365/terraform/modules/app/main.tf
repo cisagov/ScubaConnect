@@ -36,6 +36,7 @@ resource "azurerm_key_vault" "vault" {
     certificate_permissions = [
       "Create",
       "Delete",
+      "Recover",
       "Get",
       "GetIssuers",
       "Import",

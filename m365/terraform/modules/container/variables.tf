@@ -92,3 +92,13 @@ variable "container_image" {
   type        = string
   description = "Docker image to use for running ScubaGear."
 }
+
+variable "container_memory_gb" {
+  type        = number
+  description = "Amount of memory to allocate for ScubaGear container. Due to memory leaks in some dependencies, this may need to be increased if running on many tenants"
+  default     = 3
+  validation {
+    condition     = var.container_memory_gb <= 16 && var.container_memory_gb >= 2
+    error_message = "Container memory must be between 2GB and 16GB"
+  }
+}

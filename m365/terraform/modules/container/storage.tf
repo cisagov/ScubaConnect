@@ -30,7 +30,7 @@ resource "azurerm_storage_account" "storage" {
 
 # Allows the app registration used by the ScubaGear container to read/write to the storage account
 resource "azurerm_role_assignment" "app_storage_role" {
-  count               = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
+  count                = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
   scope                = azurerm_storage_account.storage[0].id
   role_definition_name = "Storage Blob Data Owner"
   principal_id         = var.application_object_id
