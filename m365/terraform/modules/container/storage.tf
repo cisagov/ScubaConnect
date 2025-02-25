@@ -1,7 +1,7 @@
 # Azure Storage Account used by the ScubaGear container
 resource "azurerm_storage_account" "storage" {
   count               = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
-  name                = "${replace(var.resource_prefix, "-", "")}sa"
+  name                = "${replace(var.resource_prefix, "-", "")}sa${substr(data.azurerm_client_config.current.tenant_id, -5, -1)}"
   resource_group_name = var.resource_group.name
   location            = var.resource_group.location
 
@@ -32,7 +32,7 @@ resource "azurerm_storage_account" "storage" {
 resource "azurerm_role_assignment" "app_storage_role" {
   count                = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
   scope                = azurerm_storage_account.storage[0].id
-  role_definition_name = "Storage Blob Data Owner"
+  role_definition_name = "Storage Blob Data Contributor"
   principal_id         = var.application_object_id
 }
 
