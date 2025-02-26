@@ -1,7 +1,12 @@
+locals {
+  sa_prefix = replace(var.resource_prefix, "-", "")
+  sa_unique_id = substr(replace(data.azurerm_client_config.current.tenant_id, "-", ""), 0, 24-length(local.sa_prefix))
+}
+
 # Azure Storage Account used by the ScubaGear container
 resource "azurerm_storage_account" "storage" {
   count               = var.output_storage_container_id == null || var.input_storage_container_id == null ? 1 : 0
-  name                = "${replace(var.resource_prefix, "-", "")}sa${substr(data.azurerm_client_config.current.tenant_id, -5, -1)}"
+  name                = "${local.sa_prefix}${local.sa_unique_id}"
   resource_group_name = var.resource_group.name
   location            = var.resource_group.location
 

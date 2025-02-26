@@ -1,3 +1,7 @@
+locals {
+  is_us_gov = contains(split(" ", var.location), "USGov")
+}
+
 data "azuread_application_published_app_ids" "well_known" {}
 
 data "azuread_service_principal" "msgraph" {
@@ -16,7 +20,7 @@ resource "azuread_application" "app" {
   logo_image       = filebase64(var.image_path)
   sign_in_audience = var.app_multi_tenant ? "AzureADMultipleOrgs" : "AzureADMyOrg"
   web {
-    redirect_uris = ["https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview"]
+    redirect_uris = [local.is_us_gov ? "https://portal.azure.us/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview" : "https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview"]
   }
 
 
@@ -68,6 +72,20 @@ resource "azuread_application" "app" {
       id   = data.azuread_service_principal.o365exchange.app_role_ids["Exchange.ManageAsApp"]
       type = "Role"
     }
+  }
+
+  # Only needed in GCC High
+  # see https://github.com/cisagov/ScubaGear/blob/main/docs/prerequisites/noninteractive.md#additional-gcc-high-details
+  dynamic "required_resource_access" {
+    for_each = local.is_us_gov ? [1] : []
+    content {
+      resource_app_id = data.azuread_application_published_app_ids.well_known.result.Office365ExchangeOnlineProtection
+      resource_access {
+        id   = data.azuread_service_principal.o365exchange.app_role_ids["Exchange.ManageAsApp"]
+        type = "Role"
+      }
+    }
+
   }
 
   required_resource_access {
