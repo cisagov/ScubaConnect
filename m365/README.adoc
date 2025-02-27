@@ -57,7 +57,7 @@ Before deploying GearConnect, the following will need to be installed on your ma
 . Onboard a tenant following the guidance in <<onboard>>
 
 .Example of completing steps 1-3 in bash
-[source,console]
+[source,shell]
 ----
 $ cd m365/terraform/env
 m365/terraform/env$ cp -r example myenv
