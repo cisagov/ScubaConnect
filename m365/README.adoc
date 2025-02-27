@@ -60,12 +60,12 @@ Before deploying GearConnect, the following will need to be installed on your ma
 [source,console]
 ----
 $ cd m365/terraform/env
-m365/terraform/env $ cp -r example myenv
-m365/terraform/env $ cd myenv
-m365/terraform/env/myenv $ vim variables.tfvars
-m365/terraform/env/myenv $ az login
-m365/terraform/env/myenv $ terraform init # only needed once
-m365/terraform/env/myenv $ terraform apply -var-file=variables.tfvars
+m365/terraform/env$ cp -r example myenv
+m365/terraform/env$ cd myenv
+m365/terraform/env/myenv$ vim variables.tfvars
+m365/terraform/env/myenv$ az login
+m365/terraform/env/myenv$ terraform init # only needed once
+m365/terraform/env/myenv$ terraform apply -var-file=variables.tfvars
 ----
 
 [#terraform-variables]
