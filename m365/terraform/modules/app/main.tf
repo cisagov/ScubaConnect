@@ -22,12 +22,16 @@ resource "azurerm_key_vault" "vault" {
     }
   }
 
-  network_acls {
-    default_action             = "Deny"
-    ip_rules                   = var.allowed_access_ips
-    virtual_network_subnet_ids = []
-    bypass                     = "None"
+  dynamic "network_acls" {
+    for_each = var.allowed_access_ips == null ? [] : [1]
+    content {
+      default_action             = "Deny"
+      ip_rules                   = var.allowed_access_ips
+      virtual_network_subnet_ids = []
+      bypass                     = "None"
+    }
   }
+
 
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id

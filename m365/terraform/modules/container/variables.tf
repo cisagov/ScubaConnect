@@ -72,11 +72,13 @@ variable "log_analytics_workspace" {
 variable "allowed_access_ips" {
   type        = list(string)
   description = "List of IP addresses/subnets in CIDR format that should be able to access storage"
+  default     = null
 }
 
 variable "subnet_ids" {
   type        = list(string)
   description = "List of subnets used for storage and Azure Container Instances"
+  default = null
 }
 
 variable "container_registry" {

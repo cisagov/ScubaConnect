@@ -52,4 +52,5 @@ variable "app_multi_tenant" {
 variable "allowed_access_ips" {
   type        = list(string)
   description = "List of IP addresses/subnets in CIDR format that should be able to access keyvault"
+  default     = null
 }

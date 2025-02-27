@@ -1,6 +1,6 @@
 locals {
-  sa_prefix = replace(var.resource_prefix, "-", "")
-  sa_unique_id = substr(replace(data.azurerm_client_config.current.tenant_id, "-", ""), 0, 24-length(local.sa_prefix))
+  sa_prefix    = replace(var.resource_prefix, "-", "")
+  sa_unique_id = substr(replace(data.azurerm_client_config.current.tenant_id, "-", ""), 0, 24 - length(local.sa_prefix))
 }
 
 # Azure Storage Account used by the ScubaGear container
@@ -21,11 +21,14 @@ resource "azurerm_storage_account" "storage" {
     type = "SystemAssigned"
   }
 
-  network_rules {
-    default_action             = "Deny"
-    ip_rules                   = var.allowed_access_ips
-    virtual_network_subnet_ids = var.subnet_ids
-    bypass                     = ["AzureServices"]
+  dynamic "network_rules" {
+    for_each = var.allowed_access_ips == null ? [] : [1]
+    content {
+      default_action             = "Deny"
+      ip_rules                   = var.allowed_access_ips
+      virtual_network_subnet_ids = var.subnet_ids
+      bypass                     = ["AzureServices"]
+    }
   }
 
   lifecycle {

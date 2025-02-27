@@ -33,12 +33,13 @@ module "app" {
   image_path                       = var.image_path
   create_app                       = var.create_app
   contact_emails                   = var.contact_emails
-  allowed_access_ips               = var.vnet.allowed_access_ip_list
+  allowed_access_ips               = try(var.vnet.allowed_access_ip_list, null)
   certificate_rotation_period_days = var.certificate_rotation_period_days
   app_multi_tenant                 = var.app_multi_tenant
 }
 
 module "networking" {
+  count               = var.vnet == null ? 0 : 1
   source              = "./modules/networking"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
@@ -57,8 +58,8 @@ module "container" {
   application_client_id       = module.app.client_id
   application_object_id       = module.app.sp_object_id
   application_pfx_b64         = module.app.certificate_pfx_b64
-  allowed_access_ips          = var.vnet.allowed_access_ip_list
-  subnet_ids                  = [module.networking.aci_subnet_id]
+  allowed_access_ips          = try(var.vnet.allowed_access_ip_list, null)
+  subnet_ids                  = var.vnet == null ? null : [module.networking[0].aci_subnet_id]
   schedule_interval           = var.schedule_interval
   output_storage_container_id = var.output_storage_container_id
   input_storage_container_id  = var.input_storage_container_id
