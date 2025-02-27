@@ -27,8 +27,8 @@ image::../graphics/diagrams-m365.png[width=1000]
 
 GearConnect requires two primary steps to install and use.
 
-. Deploying resources to host tenant with terraform
-. Onboarding tenants via uploading configuration files and running install script
+. Deploying resources to host tenant with terraform. See <<deploy>>
+. Onboarding tenants via uploading configuration files and running install script. See <<onboard>>
 
 === Requirements
 
@@ -38,17 +38,37 @@ Before deploying GearConnect, the following will need to be installed on your ma
 * https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli[Azure CLI] - Used for authenticating and interacting with your Azure environment
 ** Be sure to also follow the instructions to sign in
 
+[#deploy]
 === Deploying with Terraform
 
-. Clone or download this repository
-. Change directories to `m365/terraform/env`
-. Create a copy of the `example` directory with a name of your choice
-. Modify the `.tfvars` file to configure the deployment for your needs. 
-.. Set `contact_emails` to administrators' emails and set `resource_group_name` to the resource group to create and deploy infrastructure in
-.. Review the defaults used for optional variables in <<_terraform_variables>>
-.. Optionally modify `provider.tf` to configure Terraform to store state in Azure. See external https://developer.hashicorp.com/terraform/language/backend/azurerm[documentation].
-. Run `terraform apply -var-file=<myfile>.tfvars`. Confirm changes meet your expectations then type "yes"
+. Prepare a directory for your deployment
+.. Change directories to `m365/terraform/env`
+.. Create a copy of the `example` directory with a name of your choice (e.g., `<myenv>`). **The remaining steps should be completed in this new directory.**
+. Update variables and configurations
+.. In your new directory, `<myenv>`, modify the `variables.tfvars` file to configure the deployment for your needs. 
+... Set `contact_emails` to administrators' emails and set `resource_group_name` to the resource group to create and deploy infrastructure in
+... Review the defaults used for optional variables in <<terraform-variables>>. Some of these may need to be modified depending on your environment
+.. Optionally modify the `provider.tf` file to configure Terraform to store state in Azure. See external https://developer.hashicorp.com/terraform/language/backend/azurerm[documentation].
+.. If 
+. Run terraform
+.. Run `az login` if not already done to configure your credentials
+.. In your `<myenv>` directory, Run `terraform init`. This only needs to be done once unless providers are updated
+.. In your `<myenv>` directory, Run `terraform apply -var-file=variables.tfvars`. Confirm changes meet your expectations then type "yes"
+. Onboard a tenant following the guidance in <<onboard>>
 
+.Example of completing steps 1-3 in bash
+[source,console]
+----
+$ cd m365/terraform/env
+m365/terraform/env $ cp -r example myenv
+m365/terraform/env $ cd myenv
+m365/terraform/env/myenv $ vim variables.tfvars
+m365/terraform/env/myenv $ az login
+m365/terraform/env/myenv $ terraform init # only needed once
+m365/terraform/env/myenv $ terraform apply -var-file=variables.tfvars
+----
+
+[#terraform-variables]
 ==== Terraform Variables
 This section provides the description for all terraform variables sorted by their likelihood of being changed.
 For a typical deployment, set `contact_emails` and `resource_group_name` then review the defaults for the optional variables and override in the `tfvars` file as needed.
@@ -76,7 +96,7 @@ Advanced::
 `container_registry` (object) [default={'server': 'ghcr.io'}]::: Credentials for logging into registry with container image
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.
 
-
+[#onboard]
 === Onboarding a Tenant
 
 To onboard a tenant, open powershell and run `./Install-GearConnect.ps1 -AppId <app_id>` where `app_id` is output by Terraform.
