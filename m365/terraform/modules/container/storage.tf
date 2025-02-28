@@ -1,6 +1,6 @@
 locals {
   sa_prefix    = replace(var.resource_prefix, "-", "")
-  sa_unique_id = substr(replace(data.azurerm_client_config.current.tenant_id, "-", ""), 0, 24 - length(local.sa_prefix))
+  sa_unique_id = substr(replace(var.application_client_id, "-", ""), 0, 24 - length(local.sa_prefix))
 }
 
 # Azure Storage Account used by the ScubaGear container

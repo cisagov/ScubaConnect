@@ -1,6 +1,11 @@
+locals {
+  aa_prefix    = "${var.resource_prefix}-runner-automation-"
+  aa_unique_id = substr(replace(var.application_client_id, "-", ""), 0, 50 - length(local.aa_prefix))
+}
+
 # Automation Account for a script which periodically runs the ScubaGear container
 resource "azurerm_automation_account" "runner_aa" {
-  name                = "${var.resource_prefix}-runner-automation"
+  name                = "${local.aa_prefix}${local.aa_unique_id}"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
   sku_name            = "Basic"
@@ -16,7 +21,7 @@ resource "azurerm_automation_account" "runner_aa" {
 
 # Role which allows the script to start Azure Container Instances
 resource "azurerm_role_definition" "start_container_role" {
-  name  = "${var.resource_prefix}-start-aci"
+  name  = "${var.resource_prefix}-start-aci-${var.application_client_id}"
   scope = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${var.resource_group.name}"
 
   permissions {

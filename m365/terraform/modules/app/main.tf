@@ -1,9 +1,14 @@
 data "azurerm_client_config" "current" {}
 data "azuread_client_config" "current" {}
 
+locals {
+  kv_prefix    = "${var.resource_prefix}-kv-"
+  kv_unique_id = substr(replace((var.create_app ? azuread_application.app[0].client_id : data.azuread_application.app[0].client_id), "-", ""), 0, 24 - length(local.kv_prefix))
+}
+
 # Azure Key Vault to hold an app registration certificate
 resource "azurerm_key_vault" "vault" {
-  name                            = "${var.resource_prefix}-kv"
+  name                            = "${local.kv_prefix}${local.kv_unique_id}"
   location                        = var.location
   resource_group_name             = var.resource_group_name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
