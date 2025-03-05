@@ -18,14 +18,59 @@ policy](https://github.com/cisagov/development-guide/blob/develop/open-source-po
 <!-- above should be deleted once public -->
 
 # ScubaConnect
-ScubaConnect is cloud-native infrastructure that provides [ScubaGear](https://github.com/cisagov/ScubaGear) and [ScubaGoggles](https://github.com/cisagov/ScubaGoggles) as a service.
-This allows easily automating execution of ScubaGear/ScubaGoggles across multiple tenants from a central location.
+ScubaConnect is cloud-native infrastructure that automates the execution of assessment tools [ScubaGear](https://github.com/cisagov/ScubaGear) and [ScubaGoggles](https://github.com/cisagov/ScubaGoggles) across multiple tenants from a central location, allowing administrators to maintain consistent and secure configurations
 
-All code is provided in terraform for easy installation.
+### Target Audience
 
-* For use with [ScubaGear](https://github.com/cisagov/ScubaGear) (Microsoft 365), see [`m365`](https://github.com/cisagov/ScubaConnect/blob/main/m365) directory.
-* For use with [ScubaGoggles](https://github.com/cisagov/ScubaGear) (Google Workspace), see [`gws`](https://github.com/cisagov/ScubaConnect/blob/main/gws) directory.
+ScubaConnect is for M365 and GWS administrators who want to streamline the assessment of their tenant environments against CISA Secure Configuration Baselines (SCBs), eliminating the need to manually update, configure, and run ScubaGear and ScubaGoggles.
+
+
+### Federal Agencies
+
+Following the release of CISA’s [Binding Operational Directive (BOD) 25-01: Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services) on Dec. 17, 2024, which requires Federal Civilian Executive Branch (FCEB) agencies to deploy SCuBA assessment tools for in-scope cloud tenants no later than Friday, April 25, 2025 and begin continuous reporting, agencies can use ScubaConnect to ensure their cloud environments are properly configured and that reports are submitted automatically to CISA. For more information, please refer to the [SCuBA project webpage](https://www.cisa.gov/resources-tools/services/secure-cloud-business-applications-scuba-project) or email scuba@mail.cisa.dhs.gov.
+
+## Overview
+
+ScubaConnect has two managed components for SCuBA’s two current assessment tools: GearConnect (for ScubaGear) and GogglesConnect (for ScubaGoggles).
+
+### Getting Started with GearConnect
+
+All code is provided in terraform for easy installation. For use with [ScubaGear](https://github.com/cisagov/ScubaGear) (Microsoft 365), see [`m365`](m365) directory.
+
+To install GearConnect from PSGallery, open a PowerShell 5 terminal on a Windows computer and install the module:
+
+* To install its dependencies:
+
+* To verify that it is installed:
+
+* To run GearConnect:
+
+**Note:** Successfully running GearConnect requires certain prerequisites and configuration settings. To learn more, read through the sections below.
+
+### Getting Started with GogglesConnect
+
+All code is provided in terraform for easy installation. For use with [ScubaGoggles](https://github.com/cisagov/ScubaGoggles) (Google Workspace), see [`gws`](gws) directory.
+
+To install GogglesConnect from PSGallery, open a PowerShell 5 terminal on a Windows computer and install the module:
+
+* To install its dependencies:
+
+* To verify that it is installed:
+
+* To run GogglesConnect:
+
+**Note:** Successfully running GogglesConnect requires certain prerequisites and configuration settings. To learn more, read through the sections below.
+
+## Resources
+
+* [BOD 25-01: Implementation Guidance for Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services)
+* [M365 Slack Channel](https://dhscisa.enterprise.slack.com/archives/C07BH1S4TJ7)
+* [GWS Slack Channel](https://dhscisa.enterprise.slack.com/archives/C07BH28LRK5)
+
 
 ## Project License
 
 Unless otherwise noted, this project is distributed under the Creative Commons Zero license. With developer approval, contributions may be submitted with an alternate compatible license. If accepted, those contributions will be listed herein with the appropriate license.
+
+
+
