@@ -24,7 +24,6 @@ ScubaConnect is cloud-native infrastructure that automates the execution of asse
 
 ScubaConnect is for M365 and GWS administrators who want to streamline the assessment of their tenant environments against CISA Secure Configuration Baselines (SCBs), eliminating the need to manually update, configure, and run ScubaGear and ScubaGoggles.
 
-
 ### Federal Agencies
 
 Following the release of CISA’s [Binding Operational Directive (BOD) 25-01: Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services) on Dec. 17, 2024, which requires Federal Civilian Executive Branch (FCEB) agencies to deploy SCuBA assessment tools for in-scope cloud tenants no later than Friday, April 25, 2025 and begin continuous reporting, agencies can use ScubaConnect to ensure their cloud environments are properly configured and that reports are submitted automatically to CISA. For more information, please refer to the [SCuBA project webpage](https://www.cisa.gov/resources-tools/services/secure-cloud-business-applications-scuba-project) or email scuba@mail.cisa.dhs.gov.
@@ -71,6 +70,3 @@ To install GogglesConnect from PSGallery, open a PowerShell 5 terminal on a Wind
 ## Project License
 
 Unless otherwise noted, this project is distributed under the Creative Commons Zero license. With developer approval, contributions may be submitted with an alternate compatible license. If accepted, those contributions will be listed herein with the appropriate license.
-
-
-
