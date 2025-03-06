@@ -36,29 +36,9 @@ ScubaConnect has two managed components for SCuBA’s two current assessment too
 
 All code is provided in terraform for easy installation. For use with [ScubaGear](https://github.com/cisagov/ScubaGear) (Microsoft 365), see [`m365`](m365) directory.
 
-To install GearConnect from PSGallery, open a PowerShell 5 terminal on a Windows computer and install the module:
-
-* To install its dependencies:
-
-* To verify that it is installed:
-
-* To run GearConnect:
-
-**Note:** Successfully running GearConnect requires certain prerequisites and configuration settings. To learn more, read through the sections below.
-
 ### Getting Started with GogglesConnect
 
 All code is provided in terraform for easy installation. For use with [ScubaGoggles](https://github.com/cisagov/ScubaGoggles) (Google Workspace), see [`gws`](gws) directory.
-
-To install GogglesConnect from PSGallery, open a PowerShell 5 terminal on a Windows computer and install the module:
-
-* To install its dependencies:
-
-* To verify that it is installed:
-
-* To run GogglesConnect:
-
-**Note:** Successfully running GogglesConnect requires certain prerequisites and configuration settings. To learn more, read through the sections below.
 
 ## Resources
 
