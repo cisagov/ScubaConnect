@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
-ARG SCUBAGEAR_VERSION=1.4.0
+ARG SCUBAGEAR_VERSION=1.5.0
 # How URL is obtained for specific version:
 # https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10?tabs=dnf#obtain-a-static-download-link
 ARG AZCOPY_URL=https://azcopyvnext-awgzd8g7aagqhzhe.b02.azurefd.net/releases/release-10.27.1-20241113/azcopy_windows_amd64_10.27.1.zip 

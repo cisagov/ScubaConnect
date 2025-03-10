@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: '16 11 * * 1'
   push:
-    branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
@@ -16,12 +15,19 @@ env:
 
 jobs:
   build:
+    # based on https://github.com/orgs/community/discussions/26253#discussioncomment-6745038
+    # intent is to run on current ref, unless this is a scheduled run, then run on list defined below
     strategy:
       matrix:
         version: 
-          # to maintain multiple versions, list here refs for this repo
+          # to maintain multiple versions for scheduled builds, list here refs for this repo
           - ref: main
-
+        scheduled: 
+          - ${{ github.event_name == 'schedule' }}
+        exclude:
+          - { scheduled: false }
+        include:
+          - ref: ${{ github.head_ref || github.ref_name }} 
     runs-on: windows-latest
     permissions:
       contents: read
@@ -67,6 +73,8 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=semver,pattern={{major}}.{{minor}}
+            type=raw,gear1.5.0
+            type=ref,event=branch
 
       # Build and push Docker image
       - name: Build and push Docker image
