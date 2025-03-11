@@ -2,11 +2,60 @@
 $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (500, 25)
 $ErrorActionPreference = "Stop"
 
+Get-ChildItem env:
+
+# Get app certificate from vault
+$VaultName = $ENV:VaultName
+$CertName = $ENV:CertName
+
+# Retrieve an Access Token
+if (($ENV:Vnet -eq 'Yes') -and $env:IDENTITY_ENDPOINT -like "http://10.92.0.*:2377/metadata/identity/oauth2/token?api-version=1.0") {
+    $identityEndpoint = "http://169.254.128.1:2377/metadata/identity/oauth2/token?api-version=1.0"
+} else {
+    $identityEndpoint = $env:IDENTITY_ENDPOINT
+}
+
+$identityHeader = $ENV:IDENTITY_HEADER
+$principalId    = $ENV:MIPrincipalID
+$Environment    = $ENV:TenantLocation
+
+switch ($Environment) {
+    {"commercial" -or "gcc"} {
+        $VaultURL = "https://$($VaultName).vault.azure.net"
+        $RawVaultURL = "https%3A%2F%2F" + "vault.azure.net"
+    }
+    "gcchigh" {
+        $VaultURL = "https://$($VaultName).vault.usgovcloudapi.net"
+        $RawVaultURL = "https%3A%2F%2F" + "vault.usgovcloudapi.net"
+    }
+    "dod" {
+        $VaultURL = "https://$($VaultName).vault.microsoft.scloud"
+        $RawVaultURL = "https%3A%2F%2F" + "vault.microsoft.scloud"
+    }
+}
+
+$uri = $identityEndpoint + '&resource=' + $RawVaultURL + '&principalId=' + $principalId
+$headers = @{
+    secret = $identityHeader
+    "Content-Type" = "application/x-www-form-urlencoded"
+}
+$response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+
+# Access values from Key Vault with token
+$accessToken = $Response.access_token
+$headers2 = @{
+    Authorization = "Bearer $accessToken"
+}
+
+$PrivKey = (Invoke-RestMethod -Uri "$($VaultURL)/Secrets/$($CertName)/?api-version=7.4" -Headers $headers2).Value
+
+# Decode the Base64 string
+$PFX_BYTES = [Convert]::FromBase64String($PrivKey)
+
 Write-Output "Installing cert"
 # Install certificate by decoding env variable
 $PFX_FILE = '.\certificate.pfx'
-$BYTES = [Convert]::FromBase64String($Env:PFX_B64)
-[IO.File]::WriteAllBytes($PFX_FILE, $BYTES)
+[IO.File]::WriteAllBytes($PFX_FILE, $PFX_BYTES)
 $CertificateThumbPrint = (Import-PfxCertificate -FilePath $PFX_FILE -CertStoreLocation cert:\CurrentUser\My).Thumbprint
 Write-Output "  CERT: $CertificateThumbPrint"
 
