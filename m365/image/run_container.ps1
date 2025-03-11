@@ -5,33 +5,26 @@ $ErrorActionPreference = "Stop"
 Get-ChildItem env:
 
 # Get app certificate from vault
-$VaultName = $ENV:VaultName
-$CertName = $ENV:CertName
+$VaultName = $Env:VaultName
+$CertName = $Env:CertName
 
 # Retrieve an Access Token
-if (($ENV:Vnet -eq 'Yes') -and $env:IDENTITY_ENDPOINT -like "http://10.92.0.*:2377/metadata/identity/oauth2/token?api-version=1.0") {
+if (($Env:Vnet -eq 'Yes') -and $Env:IDENTITY_ENDPOINT -like "http://10.92.0.*:2377/metadata/identity/oauth2/token?api-version=1.0") {
     $identityEndpoint = "http://169.254.128.1:2377/metadata/identity/oauth2/token?api-version=1.0"
 } else {
-    $identityEndpoint = $env:IDENTITY_ENDPOINT
+    $identityEndpoint = $Env:IDENTITY_ENDPOINT
 }
 
-$identityHeader = $ENV:IDENTITY_HEADER
-$principalId    = $ENV:MIPrincipalID
-$Environment    = $ENV:TenantLocation
+$identityHeader = $Env:IDENTITY_HEADER
+$principalId    = $Env:MIPrincipalID
 
-switch ($Environment) {
-    {"commercial" -or "gcc"} {
-        $VaultURL = "https://$($VaultName).vault.azure.net"
-        $RawVaultURL = "https%3A%2F%2F" + "vault.azure.net"
-    }
-    "gcchigh" {
-        $VaultURL = "https://$($VaultName).vault.usgovcloudapi.net"
-        $RawVaultURL = "https%3A%2F%2F" + "vault.usgovcloudapi.net"
-    }
-    "dod" {
-        $VaultURL = "https://$($VaultName).vault.microsoft.scloud"
-        $RawVaultURL = "https%3A%2F%2F" + "vault.microsoft.scloud"
-    }
+if ($Env:IS_GOV) {
+    $VaultURL = "https://$($VaultName).vault.usgovcloudapi.net"
+    $RawVaultURL = "https%3A%2F%2F" + "vault.usgovcloudapi.net"
+}
+else {
+    $VaultURL = "https://$($VaultName).vault.azure.net"
+    $RawVaultURL = "https%3A%2F%2F" + "vault.azure.net"    
 }
 
 $uri = $identityEndpoint + '&resource=' + $RawVaultURL + '&principalId=' + $principalId
@@ -65,6 +58,7 @@ $Env:AZCOPY_SPA_APPLICATION_ID= $Env:APP_ID
 $Env:AZCOPY_TENANT_ID=$Env:TENANT_ID
 $Env:AZCOPY_AUTO_LOGIN_TYPE="SPN"
 $Env:AZCOPY_SPA_CERT_PATH=$PFX_FILE
+$Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = $Env:IS_GOV ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
 
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version

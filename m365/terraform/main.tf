@@ -57,7 +57,6 @@ module "container" {
   container_image             = var.container_image
   application_client_id       = module.app.client_id
   application_object_id       = module.app.sp_object_id
-  application_pfx_b64         = module.app.certificate_pfx_b64
   allowed_access_ips          = try(var.vnet.allowed_access_ip_list, null)
   subnet_ids                  = var.vnet == null ? null : [module.networking[0].aci_subnet_id]
   schedule_interval           = var.schedule_interval
@@ -66,4 +65,5 @@ module "container" {
   contact_emails              = var.contact_emails
   log_analytics_workspace     = azurerm_log_analytics_workspace.monitor_law
   container_memory_gb         = var.container_memory_gb
+  cert_info = module.app.cert_info
 }

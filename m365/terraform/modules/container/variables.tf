@@ -3,12 +3,6 @@ variable "resource_prefix" {
   description = "Prefix to use in resource names"
 }
 
-variable "application_pfx_b64" {
-  sensitive   = true
-  description = "The PFX ceritificate for the application in base64 encoding"
-  type        = string
-}
-
 variable "application_client_id" {
   description = "The client ID of the application"
   type        = string
@@ -103,4 +97,12 @@ variable "container_memory_gb" {
     condition     = var.container_memory_gb <= 16 && var.container_memory_gb >= 2
     error_message = "Container memory must be between 2GB and 16GB"
   }
+}
+
+variable "cert_info" {
+  type = object({
+    vault_id = string
+    vault_name = string
+    cert_name = string
+  })
 }

@@ -146,7 +146,3 @@ resource "local_file" "scuba_pem_file" {
   filename = "${path.cwd}/${var.app_name}.pem"
 }
 
-data "azurerm_key_vault_secret" "pfx_b64" {
-  name         = azurerm_key_vault_certificate.cert.name
-  key_vault_id = azurerm_key_vault.vault.id
-}
