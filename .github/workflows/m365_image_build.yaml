@@ -74,7 +74,6 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,gear1.5.0
             type=ref,event=branch
 
       # Build and push Docker image
