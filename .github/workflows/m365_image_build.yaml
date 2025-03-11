@@ -118,7 +118,8 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: |
-          $Env:TAGS.Split([Environment]::NewLine) | Where-Object { $_ -ne "" } | ForEach {
-            cosign sign --yes $_@$Env:DIGEST
+          $digest = $Env:DIGEST.Split(" ") | Where-Object { $_ -ne "" } | Select-Object -First 1
+          $Env:TAGS.Split("`n") | Where-Object { $_ -ne "" } | ForEach {
+            cosign sign --yes "$_@$digest"
           }
           exit 0
