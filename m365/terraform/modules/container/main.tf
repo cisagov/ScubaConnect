@@ -18,7 +18,7 @@ resource "azurerm_container_group" "aci" {
   name                = "${var.resource_prefix}-${each.key}-container"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
-  ip_address_type     = "None"
+  ip_address_type     = "Private"
   subnet_ids          = var.subnet_ids
   os_type             = "Windows"
   restart_policy      = "Never"
@@ -73,6 +73,9 @@ resource "azurerm_key_vault_access_policy" "kv_access" {
 
   certificate_permissions = [
     "Get", "List"
+  ]
+  secret_permissions = [
+    "Get"
   ]
 }
 

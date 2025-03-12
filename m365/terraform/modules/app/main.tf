@@ -13,7 +13,7 @@ resource "azurerm_key_vault" "vault" {
   resource_group_name             = var.resource_group_name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days      = 7
-  purge_protection_enabled        = false # testing only
+  purge_protection_enabled        = true
   sku_name                        = "standard"
   enabled_for_deployment          = false
   enabled_for_disk_encryption     = false
@@ -21,11 +21,11 @@ resource "azurerm_key_vault" "vault" {
   enable_rbac_authorization       = false
 
   dynamic "network_acls" {
-    for_each = var.allowed_access_ips == null ? [] : [1]
+    for_each = var.allowed_access_ips == null && var.aci_subnet_id == null ? [] : [1]
     content {
       default_action             = "Deny"
       ip_rules                   = var.allowed_access_ips
-      virtual_network_subnet_ids = []
+      virtual_network_subnet_ids = var.aci_subnet_id == null ? [] : [var.aci_subnet_id]
       bypass                     = "None"
     }
   }

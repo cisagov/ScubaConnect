@@ -23,6 +23,16 @@ resource "azurerm_log_analytics_workspace" "monitor_law" {
   }
 }
 
+module "networking" {
+  count               = var.vnet == null ? 0 : 1
+  source              = "./modules/networking"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  resource_prefix     = local.name
+  firewall            = var.firewall
+  vnet                = var.vnet
+}
+
 # Creates the app registration, or reads an existing one, which is used by the ScubaGear container
 module "app" {
   source                           = "./modules/app"
@@ -34,20 +44,10 @@ module "app" {
   create_app                       = var.create_app
   contact_emails                   = var.contact_emails
   allowed_access_ips               = try(var.vnet.allowed_access_ip_list, null)
+  aci_subnet_id = try(module.networking[0].aci_subnet_id, null)
   certificate_rotation_period_days = var.certificate_rotation_period_days
   app_multi_tenant                 = var.app_multi_tenant
 }
-
-module "networking" {
-  count               = var.vnet == null ? 0 : 1
-  source              = "./modules/networking"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = var.location
-  resource_prefix     = local.name
-  firewall            = var.firewall
-  vnet                = var.vnet
-}
-
 
 module "container" {
   source                      = "./modules/container"
