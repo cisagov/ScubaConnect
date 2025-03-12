@@ -58,7 +58,7 @@ $Env:AZCOPY_SPA_APPLICATION_ID= $Env:APP_ID
 $Env:AZCOPY_TENANT_ID=$Env:TENANT_ID
 $Env:AZCOPY_AUTO_LOGIN_TYPE="SPN"
 $Env:AZCOPY_SPA_CERT_PATH=$PFX_FILE
-$Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = $Env:IS_GOV ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
+$Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV) {"https://login.microsoftonline.us"} else {"https://login.microsoftonline.com"}
 
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version
