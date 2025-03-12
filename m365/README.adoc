@@ -41,6 +41,7 @@ Before deploying GearConnect, the following will need to be installed on your ma
 [#deploy]
 === Deploying with Terraform
 
+. Run `az login` if not already done to configure your credentials
 . Prepare a directory for your deployment
 .. Change directories to `m365/terraform/env`
 .. Create a copy of the `example` directory with a name of your choice (e.g., `<myenv>`). **The remaining steps should be completed in this new directory.**
@@ -48,10 +49,9 @@ Before deploying GearConnect, the following will need to be installed on your ma
 .. In your new directory, `<myenv>`, modify the `variables.tfvars` file to configure the deployment for your needs. 
 ... Set `contact_emails` to administrators' emails and set `resource_group_name` to the resource group to create and deploy infrastructure in
 ... Review the defaults used for optional variables in <<terraform-variables>>. Some of these may need to be modified depending on your environment
-.. Optionally modify the `provider.tf` file to configure Terraform to store state in Azure. See external https://developer.hashicorp.com/terraform/language/backend/azurerm[documentation].
-.. If 
+.. In `provider.tf`, replace `<YOUR_SUBSCRIPTION_UUID>` with the Subscription ID you'll be deploying in. The subscription ID can be found in the console, or as the `id` field output by the command `az account show`
+.. (Optional, but recommended) Modify the `provider.tf` file to configure Terraform to store state in Azure. See external https://developer.hashicorp.com/terraform/language/backend/azurerm[documentation].
 . Run terraform
-.. Run `az login` if not already done to configure your credentials
 .. In your `<myenv>` directory, Run `terraform init`. This only needs to be done once unless providers are updated
 .. In your `<myenv>` directory, Run `terraform apply -var-file=variables.tfvars`. Confirm changes meet your expectations then type "yes"
 . Onboard a tenant following the guidance in <<onboard>>
@@ -59,11 +59,12 @@ Before deploying GearConnect, the following will need to be installed on your ma
 .Example of completing steps 1-3 in bash
 [source,shell]
 ----
+$ az login
 $ cd m365/terraform/env
 m365/terraform/env$ cp -r example myenv
 m365/terraform/env$ cd myenv
 m365/terraform/env/myenv$ vim variables.tfvars
-m365/terraform/env/myenv$ az login
+m365/terraform/env/myenv$ vim provider.tf
 m365/terraform/env/myenv$ terraform init # only needed once
 m365/terraform/env/myenv$ terraform apply -var-file=variables.tfvars
 ----

@@ -5,11 +5,11 @@ locals {
   aad_endpoint = local.is_us_gov ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
 }
 
-# resource "azurerm_user_assigned_identity" "example" {
-#   location            = var.resource_group.location
-#   name                = "example"
-#   resource_group_name = var.resource_group.name
-# }
+resource "azurerm_user_assigned_identity" "container_mi" {
+  location            = var.resource_group.location
+  name                = "${var.resource_prefix}-container-mi"
+  resource_group_name = var.resource_group.name
+}
 
 # Azure Container Instances to run the ScubaGear container
 # One group is automatically executed periodically, the other manually
@@ -24,8 +24,8 @@ resource "azurerm_container_group" "aci" {
   restart_policy      = "Never"
 
   identity {
-    type = "SystemAssigned"
-    # identity_ids = [ azurerm_user_assigned_identity.example.id ]
+    type = "UserAssigned"
+    identity_ids = [ azurerm_user_assigned_identity.container_mi.id ]
   }
 
   image_registry_credential {
@@ -52,10 +52,12 @@ resource "azurerm_container_group" "aci" {
       "APP_ID"                           = var.application_client_id
       "REPORT_OUTPUT"                    = var.output_storage_container_id == null ? azurerm_storage_container.output[0].id : var.output_storage_container_id
       "TENANT_INPUT"                     = var.input_storage_container_id == null ? azurerm_storage_container.input[0].id : var.input_storage_container_id
+      "IS_VNET" = var.subnet_ids != null
       "IS_GOV" = local.is_us_gov
       "VAULT_NAME" = var.cert_info.vault_name
       "CERT_NAME" = var.cert_info.cert_name
       "DEBUG_LOG"                        = "false"
+      "MI_PRINCIPAL_ID" = azurerm_user_assigned_identity.container_mi.principal_id
     }
   }
 
@@ -64,17 +66,10 @@ resource "azurerm_container_group" "aci" {
   }
 }
 
-data "azurerm_container_group" "aci_wrapper" {
-  for_each = azurerm_container_group.aci
-  name = each.value.name
-  resource_group_name = var.resource_group.name
-}
-
 resource "azurerm_key_vault_access_policy" "kv_access" {
-  for_each = data.azurerm_container_group.aci_wrapper
   key_vault_id = var.cert_info.vault_id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = each.value.identity[0].principal_id
+  object_id    = azurerm_user_assigned_identity.container_mi.principal_id
 
   certificate_permissions = [
     "Get", "List"

@@ -4,35 +4,32 @@ $ErrorActionPreference = "Stop"
 
 Get-ChildItem env:
 
-# Get app certificate from vault
-$VaultName = $Env:VaultName
-$CertName = $Env:CertName
 
 # Retrieve an Access Token
-if (($Env:Vnet -eq 'Yes') -and $Env:IDENTITY_ENDPOINT -like "http://10.92.0.*:2377/metadata/identity/oauth2/token?api-version=1.0") {
+if (($Env:IS_VNET -eq "true") -and $Env:IDENTITY_ENDPOINT -like "http://10.92.0.*:2377/metadata/identity/oauth2/token?api-version=1.0") {
     $identityEndpoint = "http://169.254.128.1:2377/metadata/identity/oauth2/token?api-version=1.0"
 } else {
     $identityEndpoint = $Env:IDENTITY_ENDPOINT
 }
 
-$identityHeader = $Env:IDENTITY_HEADER
-$principalId    = $Env:MIPrincipalID
-
-if ($Env:IS_GOV) {
-    $VaultURL = "https://$($VaultName).vault.usgovcloudapi.net"
+if ($Env:IS_GOV -eq "true") {
+    $VaultURL = "https://$($Env:VAULT_NAME).vault.usgovcloudapi.net"
     $RawVaultURL = "https%3A%2F%2F" + "vault.usgovcloudapi.net"
 }
 else {
-    $VaultURL = "https://$($VaultName).vault.azure.net"
+    $VaultURL = "https://$($Env:VAULT_NAME).vault.azure.net"
     $RawVaultURL = "https%3A%2F%2F" + "vault.azure.net"    
 }
 
-$uri = $identityEndpoint + '&resource=' + $RawVaultURL + '&principalId=' + $principalId
+$uri = $identityEndpoint + '&resource=' + $RawVaultURL + '&principalId=' + $Env:MI_PRINCIPAL_ID
 $headers = @{
-    secret = $identityHeader
+    secret = $Env:IDENTITY_HEADER
     "Content-Type" = "application/x-www-form-urlencoded"
 }
+
+Write-Output "Request $uri $headers"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+Write-Output "RESPONSE: $response"
 
 # Access values from Key Vault with token
 $accessToken = $Response.access_token
@@ -40,7 +37,7 @@ $headers2 = @{
     Authorization = "Bearer $accessToken"
 }
 
-$PrivKey = (Invoke-RestMethod -Uri "$($VaultURL)/Secrets/$($CertName)/?api-version=7.4" -Headers $headers2).Value
+$PrivKey = (Invoke-RestMethod -Uri "$($VaultURL)/Secrets/$($Env:CERT_NAME)/?api-version=7.4" -Headers $headers2).Value
 
 # Decode the Base64 string
 $PFX_BYTES = [Convert]::FromBase64String($PrivKey)
@@ -58,7 +55,7 @@ $Env:AZCOPY_SPA_APPLICATION_ID= $Env:APP_ID
 $Env:AZCOPY_TENANT_ID=$Env:TENANT_ID
 $Env:AZCOPY_AUTO_LOGIN_TYPE="SPN"
 $Env:AZCOPY_SPA_CERT_PATH=$PFX_FILE
-$Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV) {"https://login.microsoftonline.us"} else {"https://login.microsoftonline.com"}
+$Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://login.microsoftonline.us"} else {"https://login.microsoftonline.com"}
 
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version

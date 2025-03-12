@@ -13,19 +13,12 @@ resource "azurerm_key_vault" "vault" {
   resource_group_name             = var.resource_group_name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days      = 7
-  purge_protection_enabled        = true
+  purge_protection_enabled        = false # testing only
   sku_name                        = "standard"
   enabled_for_deployment          = false
   enabled_for_disk_encryption     = false
   enabled_for_template_deployment = false
   enable_rbac_authorization       = false
-
-  dynamic "contact" {
-    for_each = var.contact_emails
-    content {
-      email = contact.value
-    }
-  }
 
   dynamic "network_acls" {
     for_each = var.allowed_access_ips == null ? [] : [1]
@@ -68,6 +61,17 @@ resource "azurerm_key_vault" "vault" {
 
   lifecycle {
     ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_key_vault_certificate_contacts" "contacts" {
+  key_vault_id = azurerm_key_vault.vault.id
+
+  dynamic "contact" {
+    for_each = var.contact_emails
+    content {
+      email = contact.value
+    }
   }
 }
 
