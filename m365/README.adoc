@@ -17,11 +17,14 @@ GearConnect can be used to run ScubaGear against the tenant it is deployed in or
 NOTE: GCC High environments are separated from commercial and GCC. Deploy GearConnect in the same environment as the tenants you intend to run on. (Commercial and GCC can communicate between each other.)
 
 .GearConnect Single-Tenant Architecture
+--
 image::../graphics/diagrams-m365-single.png[width=500]
+--
 
 .GearConnect Multi-Tenant Architecture
+--
 image::../graphics/diagrams-m365.png[width=1000]
-
+--
 
 == Installation
 
@@ -43,13 +46,12 @@ Before deploying GearConnect, the following will need to be installed on your ma
 
 . Prepare a directory for your deployment
 .. Change directories to `m365/terraform/env`
-.. Create a copy of the `example` directory with a name of your choice (e.g., `<myenv>`). **The remaining steps should be completed in this new directory.**
+.. Create a copy of the `example` directory with a name of your choice (e.g., `<myenv>`). **The remaining steps should be completed in this new directory**
 . Update variables and configurations
-.. In your new directory, `<myenv>`, modify the `variables.tfvars` file to configure the deployment for your needs. 
+.. In your new directory, `<myenv>`, modify the `variables.tfvars` file to configure the deployment for your needs
 ... Set `contact_emails` to administrators' emails and set `resource_group_name` to the resource group to create and deploy infrastructure in
 ... Review the defaults used for optional variables in <<terraform-variables>>. Some of these may need to be modified depending on your environment
-.. Optionally modify the `provider.tf` file to configure Terraform to store state in Azure. See external https://developer.hashicorp.com/terraform/language/backend/azurerm[documentation].
-.. If 
+.. (Optional, but recommended) Modify the `provider.tf` file to configure Terraform to store state in Azure. See external https://developer.hashicorp.com/terraform/language/backend/azurerm[documentation]
 . Run terraform
 .. Run `az login` if not already done to configure your credentials
 .. In your `<myenv>` directory, Run `terraform init`. This only needs to be done once unless providers are updated
