@@ -35,17 +35,17 @@ module "networking" {
 
 # Creates the app registration, or reads an existing one, which is used by the ScubaGear container
 module "app" {
-  source                           = "./modules/app"
-  resource_group_name              = azurerm_resource_group.rg.name
-  location                         = var.location
-  resource_prefix                  = local.name
-  app_name                         = var.app_name
-  image_path                       = var.image_path
-  create_app                       = var.create_app
-  contact_emails                   = var.contact_emails
-  allowed_access_ips               = try(var.vnet.allowed_access_ip_list, null)
-  aci_subnet_id                    = try(module.networking[0].aci_subnet_id, null)
-  app_multi_tenant                 = var.app_multi_tenant
+  source              = "./modules/app"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  resource_prefix     = local.name
+  app_name            = var.app_name
+  image_path          = var.image_path
+  create_app          = var.create_app
+  contact_emails      = var.contact_emails
+  allowed_access_ips  = try(var.vnet.allowed_access_ip_list, null)
+  aci_subnet_id       = try(module.networking[0].aci_subnet_id, null)
+  app_multi_tenant    = var.app_multi_tenant
 }
 
 module "container" {

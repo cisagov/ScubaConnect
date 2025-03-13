@@ -27,12 +27,17 @@ resource "azurerm_key_vault_access_policy" "mi_kv_access" {
 
 # Azure Container Instances to run the ScubaGear container
 # One group is automatically executed periodically, the other manually
+# Note on ip_address/port: 
+#   If using a vnet, `ip_address_type` must be "Private" rather than "None".
+#   (If you set as "None" it applies, but the state will be "Private".)
+#   If "Private", a port must be opened on the container. This is dictated by Azure's APIs
+#   The open port is still within the vnet, so nothing is exposed externally
 resource "azurerm_container_group" "aci" {
   for_each            = toset(["scheduled", "adhoc"])
   name                = "${var.resource_prefix}-${each.key}-container"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
-  ip_address_type     = "None"
+  ip_address_type     = var.subnet_ids == null ? "None" : "Private"
   subnet_ids          = var.subnet_ids
   os_type             = "Windows"
   restart_policy      = "Never"
@@ -73,13 +78,20 @@ resource "azurerm_container_group" "aci" {
       "DEBUG_LOG"       = "false"
       "MI_PRINCIPAL_ID" = azurerm_user_assigned_identity.container_mi.principal_id
     }
+    dynamic "ports" {
+      for_each = var.subnet_ids == null ? [] : [1]
+      content {
+        port     = 443
+        protocol = "TCP"
+      }
+    }
   }
 
   lifecycle {
     ignore_changes = [tags]
   }
 
-  depends_on = [ azurerm_key_vault_access_policy.mi_kv_access ]
+  depends_on = [azurerm_key_vault_access_policy.mi_kv_access]
 }
 
 

@@ -37,31 +37,31 @@ resource "azurerm_key_vault" "vault" {
 
 resource "azurerm_key_vault_access_policy" "kv_access" {
   key_vault_id = azurerm_key_vault.vault.id
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azuread_client_config.current.object_id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azuread_client_config.current.object_id
 
-    certificate_permissions = [
-      "Create",
-      "Delete",
-      "Recover",
-      "Get",
-      "GetIssuers",
-      "Import",
-      "List",
-      "ListIssuers",
-      "ManageContacts",
-      "Purge",
-      "Update",
-    ]
+  certificate_permissions = [
+    "Create",
+    "Delete",
+    "Recover",
+    "Get",
+    "GetIssuers",
+    "Import",
+    "List",
+    "ListIssuers",
+    "ManageContacts",
+    "Purge",
+    "Update",
+  ]
 
-    secret_permissions = [
-      "Delete",
-      "Get",
-      "List",
-      "Purge",
-      "Recover",
-      "Set",
-    ]
+  secret_permissions = [
+    "Delete",
+    "Get",
+    "List",
+    "Purge",
+    "Recover",
+    "Set",
+  ]
 }
 
 resource "azurerm_key_vault_certificate_contacts" "contacts" {
@@ -74,7 +74,7 @@ resource "azurerm_key_vault_certificate_contacts" "contacts" {
     }
   }
 
-  depends_on = [ azurerm_key_vault_access_policy.kv_access ]
+  depends_on = [azurerm_key_vault_access_policy.kv_access]
 }
 
 # note this requires terraform to be run regularly
@@ -123,12 +123,12 @@ resource "azurerm_key_vault_certificate" "cert" {
         "keyEncipherment",
       ]
 
-      subject = "CN=${var.app_name}"
+      subject            = "CN=${var.app_name}"
       validity_in_months = 12
     }
   }
 
-  depends_on = [ azurerm_key_vault_access_policy.kv_access ]
+  depends_on = [azurerm_key_vault_access_policy.kv_access]
 }
 
 // note: if terraform isn't creating the app, a user must manually add the cert to the app

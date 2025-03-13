@@ -15,9 +15,9 @@ output "sp_object_id" {
 
 output "cert_info" {
   description = "Info for cert and its associated keyvault"
-  value     = {
-    vault_id = azurerm_key_vault.vault.id
+  value = {
+    vault_id   = azurerm_key_vault.vault.id
     vault_name = azurerm_key_vault.vault.name
-    cert_name = azurerm_key_vault_certificate.cert.name
+    cert_name  = azurerm_key_vault_certificate.cert.name
   }
 }

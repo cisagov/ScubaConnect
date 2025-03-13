@@ -71,7 +71,7 @@ variable "allowed_access_ips" {
 variable "subnet_ids" {
   type        = list(string)
   description = "List of subnets used for storage and Azure Container Instances"
-  default = null
+  default     = null
 }
 
 variable "container_registry" {
@@ -100,8 +100,8 @@ variable "container_memory_gb" {
 
 variable "cert_info" {
   type = object({
-    vault_id = string
+    vault_id   = string
     vault_name = string
-    cert_name = string
+    cert_name  = string
   })
 }

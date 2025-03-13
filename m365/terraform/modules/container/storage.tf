@@ -77,6 +77,6 @@ resource "azurerm_storage_blob" "tenants" {
 }
 
 locals {
-  input_storage_container_url = var.input_storage_container_url == null ? "${azurerm_storage_account.storage[0].primary_blob_endpoint}${azurerm_storage_container.input[0].name}" : var.input_storage_container_url
+  input_storage_container_url  = var.input_storage_container_url == null ? "${azurerm_storage_account.storage[0].primary_blob_endpoint}${azurerm_storage_container.input[0].name}" : var.input_storage_container_url
   output_storage_container_url = var.output_storage_container_url == null ? "${azurerm_storage_account.storage[0].primary_blob_endpoint}${azurerm_storage_container.output[0].name}" : var.output_storage_container_url
 }
