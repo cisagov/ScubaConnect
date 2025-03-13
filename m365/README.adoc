@@ -41,6 +41,8 @@ Before deploying GearConnect, the following will need to be installed on your ma
 * https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli[Azure CLI] - Used for authenticating and interacting with your Azure environment
 ** Be sure to also follow the instructions to sign in
 
+It is expected that this code is deployed by a user with administrator privledges. 
+
 [#deploy]
 === Deploying with Terraform
 
