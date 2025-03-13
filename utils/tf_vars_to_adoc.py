@@ -1,10 +1,15 @@
 import hcl2
+import argparse
 
-with open('m365/terraform/variables.tf', 'r') as f:
+parser = argparse.ArgumentParser("Converts variables in a .tf file to asciidoc description list")
+parser.add_argument("variables_tf")
+args = parser.parse_args()
+
+
+with open(args.variables_tf, 'r') as f:
     d = hcl2.load(f)
 
 for v in d['variable']:
-    # print(v)
     name = list(v.keys())[0]
     t = v[name]['type'].strip("{}$")
     if t.startswith("object"):

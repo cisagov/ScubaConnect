@@ -74,9 +74,8 @@ m365/terraform/env/myenv$ terraform apply -var-file=variables.tfvars
 This section provides the description for all terraform variables sorted by their likelihood of being changed.
 For a typical deployment, set `contact_emails` and `resource_group_name` then review the defaults for the optional variables and override in the `tfvars` file as needed.
 
-
 Required::
-`contact_emails` (string) ::: Emails to notify for alerts and before certificate expiry
+`contact_emails` (list(string)) ::: Emails to notify for alerts and before certificate expiry
 `resource_group_name` (string) ::: Resource group to create and build resources in
 Optional::
 `location` (string) [default=East US]::: Region to build resources in
@@ -88,14 +87,14 @@ Optional::
 `serial_number` (string) [default=01]::: Increment by 1 when re-provisioning with the same resource group name
 `image_path` (string) [default=./cisa_logo.png]::: Path to image used for app logo. Displayed in Azure console on installed tenants
 Advanced::
-`certificate_rotation_period_days` (number) [default=30]::: How many days between when the certificate key should be rotated. Note: rotation requires running terraform
 `create_app` (bool) [default=True]::: If true, the app will be created. If false, the app will be imported
 `prefix_override` (string) [default=None]::: Prefix for resource names. If null, one will be generated from app_name
-`input_storage_container_url` (string) [default=None]::: If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container.
-`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container.
+`input_storage_container_url` (string) [default=None]::: If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container
+`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container
 `tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
 `container_registry` (object) [default={'server': 'ghcr.io'}]::: Credentials for logging into registry with container image
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.
+`container_memory_gb` (number) [default=3]::: Amount of memory to allocate for ScubaGear container. Due to memory leaks in some dependencies, this may need to be increased if running on many tenants
 
 [#onboard]
 === Onboarding a Tenant
