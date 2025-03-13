@@ -60,7 +60,7 @@ Invoke-SCuBA -Version
 Write-Output "Grabbing tenant config files"
 .\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
 if ($LASTEXITCODE -gt 0) {
-    Get-ChildItem -Path "$HOME/.azcopy/" | Get-Content
+    Get-ChildItem -Path "$HOME\.azcopy\*.log" | Get-Content
     throw "Error reading config files"
 }
 
