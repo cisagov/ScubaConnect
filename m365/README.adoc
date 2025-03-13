@@ -91,8 +91,8 @@ Advanced::
 `certificate_rotation_period_days` (number) [default=30]::: How many days between when the certificate key should be rotated. Note: rotation requires running terraform
 `create_app` (bool) [default=True]::: If true, the app will be created. If false, the app will be imported
 `prefix_override` (string) [default=None]::: Prefix for resource names. If null, one will be generated from app_name
-`input_storage_container_id` (string) [default=None]::: If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container.
-`output_storage_container_id` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container.
+`input_storage_container_url` (string) [default=None]::: If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container.
+`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container.
 `tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
 `container_registry` (object) [default={'server': 'ghcr.io'}]::: Credentials for logging into registry with container image
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.
@@ -103,7 +103,7 @@ Advanced::
 To onboard a tenant, open powershell and run `./Install-GearConnect.ps1 -AppId <app_id>` where `app_id` is output by Terraform.
 This script must be run even in a single-tenant architecture to actually install the app.
 
-Once completed, upload a ScubaGear configuration file to the `input_storage_container_id` named `<tenant_fqdn>.yaml` (e.g., `myorg.onmicrosoft.com.yaml`).
+Once completed, upload a ScubaGear configuration file to the `input_storage_container_url` named `<tenant_fqdn>.yaml` (e.g., `myorg.onmicrosoft.com.yaml`).
 You may upload the file directly to Azure, or place it in `env/<your_env>/tenants/` and run `terraform apply`.
 Refer to the https://github.com/cisagov/ScubaGear/blob/main/docs/configuration/configuration.md#scuba-compliance-use[ScubaGear Configuration File documentation] for details on creating the configuration file.
 
@@ -122,13 +122,10 @@ Looks into the "Last Run Output" logs to determine the cause.
 
 === Maintenance
 
-GearConnect's architecture (limited by Managed Identity support in Windows containers) requires exporting the app's certificate as a secret variable in the container.
-To mitigate this, the certificate is short-lived.
-Terraform is set up to automatically generate a new certificate every `certificate_rotation_period_days` (defaults to 30).
-To utilize this mechanism, you must run `terraform apply` on a regular basis.
-This can be done through scheduled CI/CD or manually (an email will be sent one week prior to expiration).
-This will ensure the certificate is always valid.
-
+GearConnect utilizes a certificate to authenticate to tenants.
+This certificate is configured to expire after 1 year.
+60 days prior to expiration, an email will be sent.
+Running `terraform apply` will update the certificate for you.
 
 The container will be regularly rebuilt and updated overtime to support new versions of ScubaGear.
 No action is required for container updates as Azure Container Instances will grab the latest image by default.

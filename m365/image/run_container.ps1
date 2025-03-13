@@ -2,9 +2,11 @@
 $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (500, 25)
 $ErrorActionPreference = "Stop"
 
-Get-ChildItem env:
+if ($Env:DEBUG_LOG -eq "true") {
+    Get-ChildItem env:
+}
 
-
+Write-Output "Getting certificate from keyvault"
 # Retrieve an Access Token
 if (($Env:IS_VNET -eq "true") -and $Env:IDENTITY_ENDPOINT -like "http://10.92.0.*:2377/metadata/identity/oauth2/token?api-version=1.0") {
     $identityEndpoint = "http://169.254.128.1:2377/metadata/identity/oauth2/token?api-version=1.0"
@@ -27,9 +29,7 @@ $headers = @{
     "Content-Type" = "application/x-www-form-urlencoded"
 }
 
-Write-Output "Request $uri $headers"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
-Write-Output "RESPONSE: $response"
 
 # Access values from Key Vault with token
 $accessToken = $Response.access_token
@@ -38,10 +38,7 @@ $headers2 = @{
 }
 
 $PrivKey = (Invoke-RestMethod -Uri "$($VaultURL)/Secrets/$($Env:CERT_NAME)/?api-version=7.4" -Headers $headers2).Value
-
-# Decode the Base64 string
 $PFX_BYTES = [Convert]::FromBase64String($PrivKey)
-
 Write-Output "Installing cert"
 # Install certificate by decoding env variable
 $PFX_FILE = '.\certificate.pfx'
@@ -61,8 +58,9 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 Invoke-SCuBA -Version
 
 Write-Output "Grabbing tenant config files"
-.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level essential
+.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
 if ($LASTEXITCODE -gt 0) {
+    Get-ChildItem -Path "$HOME/.azcopy/" | Get-Content
     throw "Error reading config files"
 }
 
@@ -93,8 +91,9 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
-        .\azcopy copy $ResultsFile.FullName $OutPath --output-level essential
+        .\azcopy copy $ResultsFile.FullName $OutPath --output-level quiet
         if ($LASTEXITCODE -gt 0) {
+            Get-ChildItem -Path "$HOME/.azcopy/" | Get-Content
             throw "Error transferring files"
         }
         Write-Output "  Finished Upload to $OutPath"

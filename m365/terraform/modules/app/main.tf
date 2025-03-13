@@ -77,7 +77,7 @@ resource "azurerm_key_vault_certificate_contacts" "contacts" {
 
 # note this requires terraform to be run regularly
 resource "time_rotating" "cert_rotation" {
-  rotation_days = var.certificate_rotation_period_days
+  rotation_days = 9 * 30
 }
 
 # Generate the app registration certificate
@@ -104,7 +104,7 @@ resource "azurerm_key_vault_certificate" "cert" {
       }
 
       trigger {
-        days_before_expiry = 7
+        days_before_expiry = 60
       }
     }
 
@@ -122,8 +122,7 @@ resource "azurerm_key_vault_certificate" "cert" {
       ]
 
       subject = "CN=${var.app_name}"
-      # min 1 month; approx. twice length of rotation period
-      validity_in_months = max(1, ceil(var.certificate_rotation_period_days * 2 / 30))
+      validity_in_months = 12
     }
   }
 }

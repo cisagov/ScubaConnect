@@ -11,6 +11,20 @@ resource "azurerm_user_assigned_identity" "container_mi" {
   resource_group_name = var.resource_group.name
 }
 
+
+resource "azurerm_key_vault_access_policy" "kv_access" {
+  key_vault_id = var.cert_info.vault_id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_user_assigned_identity.container_mi.principal_id
+
+  certificate_permissions = [
+    "Get", "List"
+  ]
+  secret_permissions = [
+    "Get"
+  ]
+}
+
 # Azure Container Instances to run the ScubaGear container
 # One group is automatically executed periodically, the other manually
 resource "azurerm_container_group" "aci" {
@@ -18,14 +32,14 @@ resource "azurerm_container_group" "aci" {
   name                = "${var.resource_prefix}-${each.key}-container"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
-  ip_address_type     = "Private"
+  ip_address_type     = "None"
   subnet_ids          = var.subnet_ids
   os_type             = "Windows"
   restart_policy      = "Never"
 
   identity {
-    type = "UserAssigned"
-    identity_ids = [ azurerm_user_assigned_identity.container_mi.id ]
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.container_mi.id]
   }
 
   image_registry_credential {
@@ -47,16 +61,16 @@ resource "azurerm_container_group" "aci" {
     cpu    = "1"
     memory = var.container_memory_gb
     environment_variables = {
-      "RUN_TYPE"                         = each.key
-      "TENANT_ID"                        = data.azurerm_client_config.current.tenant_id
-      "APP_ID"                           = var.application_client_id
-      "REPORT_OUTPUT"                    = var.output_storage_container_id == null ? azurerm_storage_container.output[0].id : var.output_storage_container_id
-      "TENANT_INPUT"                     = var.input_storage_container_id == null ? azurerm_storage_container.input[0].id : var.input_storage_container_id
-      "IS_VNET" = var.subnet_ids != null
-      "IS_GOV" = local.is_us_gov
-      "VAULT_NAME" = var.cert_info.vault_name
-      "CERT_NAME" = var.cert_info.cert_name
-      "DEBUG_LOG"                        = "false"
+      "RUN_TYPE"        = each.key
+      "TENANT_ID"       = data.azurerm_client_config.current.tenant_id
+      "APP_ID"          = var.application_client_id
+      "REPORT_OUTPUT"   = local.output_storage_container_url
+      "TENANT_INPUT"    = local.input_storage_container_url
+      "IS_VNET"         = var.subnet_ids != null
+      "IS_GOV"          = local.is_us_gov
+      "VAULT_NAME"      = var.cert_info.vault_name
+      "CERT_NAME"       = var.cert_info.cert_name
+      "DEBUG_LOG"       = "false"
       "MI_PRINCIPAL_ID" = azurerm_user_assigned_identity.container_mi.principal_id
     }
   }
@@ -64,19 +78,9 @@ resource "azurerm_container_group" "aci" {
   lifecycle {
     ignore_changes = [tags]
   }
+
+  depends_on = [ azurerm_key_vault_access_policy.kv_access ]
 }
 
-resource "azurerm_key_vault_access_policy" "kv_access" {
-  key_vault_id = var.cert_info.vault_id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_user_assigned_identity.container_mi.principal_id
-
-  certificate_permissions = [
-    "Get", "List"
-  ]
-  secret_permissions = [
-    "Get"
-  ]
-}
 
 

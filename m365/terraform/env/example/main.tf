@@ -12,8 +12,7 @@ module "scuba_connect" {
   vnet                             = var.vnet
   container_image                  = var.container_image
   container_registry               = var.container_registry
-  input_storage_container_id       = var.input_storage_container_id
-  output_storage_container_id      = var.output_storage_container_id
-  certificate_rotation_period_days = var.certificate_rotation_period_days
+  input_storage_container_url      = var.input_storage_container_url
+  output_storage_container_url     = var.output_storage_container_url
 }
 

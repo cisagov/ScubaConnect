@@ -22,18 +22,17 @@ variable "schedule_interval" {
   }
 }
 
-variable "input_storage_container_id" {
+variable "input_storage_container_url" {
   default     = null
   type        = string
-  description = "If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container."
+  description = "If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container"
 }
 
-variable "output_storage_container_id" {
+variable "output_storage_container_url" {
   default     = null
   type        = string
-  description = "If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container."
+  description = "If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container"
 }
-
 variable "tenants_dir_path" {
   default     = "./tenants"
   type        = string
