@@ -58,9 +58,8 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 Invoke-SCuBA -Version
 
 Write-Output "Grabbing tenant config files"
-.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
+.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level essential
 if ($LASTEXITCODE -gt 0) {
-    Get-ChildItem -Path "$HOME\.azcopy\*.log" | Get-Content
     throw "Error reading config files"
 }
 
@@ -91,9 +90,8 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
-        .\azcopy copy $ResultsFile.FullName $OutPath --output-level quiet
+        .\azcopy copy $ResultsFile.FullName $OutPath --output-level essential
         if ($LASTEXITCODE -gt 0) {
-            Get-ChildItem -Path "$HOME/.azcopy/" | Get-Content
             throw "Error transferring files"
         }
         Write-Output "  Finished Upload to $OutPath"
