@@ -30,8 +30,13 @@ resource "azurerm_key_vault" "vault" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
 
-  access_policy {
+resource "azurerm_key_vault_access_policy" "kv_access" {
+  key_vault_id = azurerm_key_vault.vault.id
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azuread_client_config.current.object_id
 
@@ -57,11 +62,6 @@ resource "azurerm_key_vault" "vault" {
       "Recover",
       "Set",
     ]
-  }
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 resource "azurerm_key_vault_certificate_contacts" "contacts" {
@@ -73,6 +73,8 @@ resource "azurerm_key_vault_certificate_contacts" "contacts" {
       email = contact.value
     }
   }
+
+  depends_on = [ azurerm_key_vault_access_policy.kv_access ]
 }
 
 # note this requires terraform to be run regularly
@@ -125,6 +127,8 @@ resource "azurerm_key_vault_certificate" "cert" {
       validity_in_months = 12
     }
   }
+
+  depends_on = [ azurerm_key_vault_access_policy.kv_access ]
 }
 
 // note: if terraform isn't creating the app, a user must manually add the cert to the app

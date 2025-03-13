@@ -12,7 +12,7 @@ resource "azurerm_user_assigned_identity" "container_mi" {
 }
 
 
-resource "azurerm_key_vault_access_policy" "kv_access" {
+resource "azurerm_key_vault_access_policy" "mi_kv_access" {
   key_vault_id = var.cert_info.vault_id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = azurerm_user_assigned_identity.container_mi.principal_id
@@ -79,7 +79,7 @@ resource "azurerm_container_group" "aci" {
     ignore_changes = [tags]
   }
 
-  depends_on = [ azurerm_key_vault_access_policy.kv_access ]
+  depends_on = [ azurerm_key_vault_access_policy.mi_kv_access ]
 }
 
 
