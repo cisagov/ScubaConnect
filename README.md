@@ -43,8 +43,6 @@ All code is provided in terraform for easy installation. For use with [ScubaGogg
 ## Resources
 
 * [BOD 25-01: Implementation Guidance for Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services)
-* [M365 Slack Channel](https://dhscisa.enterprise.slack.com/archives/C07BH1S4TJ7)
-* [GWS Slack Channel](https://dhscisa.enterprise.slack.com/archives/C07BH28LRK5)
 
 
 ## Project License
