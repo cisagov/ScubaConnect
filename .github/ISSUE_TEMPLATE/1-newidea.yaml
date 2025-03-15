@@ -1,7 +1,7 @@
 name: "\U0001F4A1 Submit a feature request / idea"
 description: Describe an idea, todo, feature, task, improvement, issue, epic, or story
 labels:
-  - enhancement
+  - improvement
 
 body:
   - type: checkboxes
@@ -23,17 +23,9 @@ body:
   - type: textarea
     attributes:
       label: "\U0001F4A1 Summary"
-      description: What is the work, as a high-level summary?
+      description: What is the work, and why should it be added?
       placeholder: |
         The purpose of this issue is to accomplish x task for y reason...
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Motivation and context
-      description: Why does this work belong in this project?
-      placeholder: |
-       This would be useful because...
     validations:
       required: true
   - type: textarea
