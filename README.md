@@ -26,7 +26,7 @@ ScubaConnect is for M365 and GWS administrators who want to streamline the asses
 
 ### Federal Agencies
 
-Following the release of CISA’s [Binding Operational Directive (BOD) 25-01: Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services) on Dec. 17, 2024, which requires Federal Civilian Executive Branch (FCEB) agencies to deploy SCuBA assessment tools for in-scope cloud tenants no later than Friday, April 25, 2025 and begin continuous reporting, agencies can use ScubaConnect to ensure their cloud environments are properly configured and that reports are submitted automatically to CISA. For more information, please refer to the [SCuBA project webpage](https://www.cisa.gov/resources-tools/services/secure-cloud-business-applications-scuba-project) or email scuba@mail.cisa.dhs.gov.
+Following the release of CISA’s [Binding Operational Directive (BOD) 25-01: Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services) on Dec. 17, 2024, which requires Federal Civilian Executive Branch (FCEB) agencies to deploy SCuBA assessment tools for in-scope cloud tenants no later than Friday, April 25, 2025 and begin continuous reporting, agencies can use ScubaConnect to ensure their cloud environments are properly configured and that reports are submitted automatically to CISA. For more information, please refer to the [SCuBA project webpage](https://www.cisa.gov/resources-tools/services/secure-cloud-business-applications-scuba-project) or email scuba@cisa.dhs.gov.
 
 ## Overview
 
@@ -43,7 +43,7 @@ All code is provided in terraform for easy installation. For use with [ScubaGogg
 ## Resources
 
 * [BOD 25-01: Implementation Guidance for Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services)
-* For FCEB agencies, email scuba@mail.cisa.dhs.gov to gain access to the SCuBA Slack Channel
+* For FCEB agencies, email scuba@cisa.dhs.gov to gain access to the SCuBA Slack Channel
 
 
 ## Project License
