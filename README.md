@@ -43,6 +43,7 @@ All code is provided in terraform for easy installation. For use with [ScubaGogg
 ## Resources
 
 * [BOD 25-01: Implementation Guidance for Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services)
+* For FCEB agencies, email scuba@mail.cisa.dhs.gov to gain access to the SCuBA Slack Channel
 
 
 ## Project License
