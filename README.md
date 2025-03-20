@@ -19,7 +19,6 @@ policy](https://github.com/cisagov/development-guide/blob/develop/open-source-po
 
 ![ScubaConnect Logo](graphics/ScubaConnect%20GitHub%20Graphic.jpg)
 
-# ScubaConnect
 ScubaConnect is cloud-native infrastructure that automates the execution of assessment tools [ScubaGear](https://github.com/cisagov/ScubaGear) and [ScubaGoggles](https://github.com/cisagov/ScubaGoggles) across multiple tenants from a central location, allowing administrators to maintain consistent and secure configurations
 
 ### Target Audience
