@@ -32,14 +32,6 @@ resource "azuread_application" "app" {
       type = "Role"
     }
     resource_access {
-      id   = data.azuread_service_principal.msgraph.app_role_ids["GroupMember.Read.All"]
-      type = "Role"
-    }
-    resource_access {
-      id   = data.azuread_service_principal.msgraph.app_role_ids["Organization.Read.All"]
-      type = "Role"
-    }
-    resource_access {
       id   = data.azuread_service_principal.msgraph.app_role_ids["Policy.Read.All"]
       type = "Role"
     }
