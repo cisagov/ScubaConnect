@@ -1,5 +1,15 @@
 ![ScubaConnect Logo](graphics/ScubaConnect%20GitHub%20Graphic.jpg)
 
+[![GitHub Release](https://img.shields.io/github/v/release/cisagov/ScubaConnect?label=GitHub&logo=github)](https://github.com/cisagov/ScubaConnect/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/cisagov/ScubaConnect/total?logo=github)](https://github.com/cisagov/ScubaConnect/releases)
+[![Issues](https://img.shields.io/github/issues/cisagov/ScubaConnect)](https://github.com/cisagov/ScubaConnect/issues)
+[![License](https://img.shields.io/github/license/cisagov/ScubaConnect)](https://github.com/cisagov/ScubaConnect/blob/main/LICENSE)
+[![GearConnect Workflow Status](https://img.shields.io/github/actions/workflow/status/cisagov/ScubaConnect/m365_image_build.yaml?label=GearConnect%20(M365)%20Image&labelColor=008ad7)
+](https://github.com/cisagov/ScubaConnect/actions/workflows/m365_image_build.yaml)
+
+
+
+
 ScubaConnect is cloud-native infrastructure that automates the execution of assessment tools [ScubaGear](https://github.com/cisagov/ScubaGear) and [ScubaGoggles](https://github.com/cisagov/ScubaGoggles) across multiple tenants from a central location, allowing administrators to maintain consistent and secure configurations
 
 ### Target Audience
