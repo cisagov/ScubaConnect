@@ -54,3 +54,9 @@ variable "allowed_access_ips" {
   description = "List of IP addresses/subnets in CIDR format that should be able to access keyvault"
   default     = null
 }
+
+variable "aci_subnet_id" {
+  type        = string
+  description = "ID of subnet ACI is in"
+  default     = null
+}
