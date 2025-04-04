@@ -105,6 +105,7 @@ Advanced::
 
 To onboard a tenant, open powershell and run `./Install-GearConnect.ps1 -AppId <app_id>` where `app_id` is output by Terraform.
 This script must be run even in a single-tenant architecture to actually install the app.
+If the tenant is in GCC High, include `-M365Environment gcchigh` as a parameter to the script.
 
 Once completed, upload a ScubaGear configuration file to the `input_storage_container_id` named `<tenant_fqdn>.yaml` (e.g., `myorg.onmicrosoft.com.yaml`).
 You may upload the file directly to Azure, or place it in `env/<your_env>/tenants/` and run `terraform apply`.
