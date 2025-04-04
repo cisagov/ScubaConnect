@@ -118,12 +118,10 @@ variable "tenants_dir_path" {
 variable "container_registry" {
   type = object({
     server   = string
-    username = optional(string)
-    password = optional(string)
+    username = string
+    password = string
   })
-  default = {
-    server = "ghcr.io"
-  }
+  default = null
   description = "Credentials for logging into registry with container image"
 }
 

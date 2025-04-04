@@ -17,10 +17,13 @@ resource "azurerm_container_group" "aci" {
   os_type             = "Windows"
   restart_policy      = "Never"
 
-  image_registry_credential {
-    server   = var.container_registry.server
-    username = var.container_registry.username
-    password = var.container_registry.password
+  dynamic "image_registry_credential" {
+    for_each = var.container_registry == null ? [] : [1]
+    content {
+      server   = var.container_registry.server
+      username = var.container_registry.username
+      password = var.container_registry.password
+    }
   }
 
   diagnostics {
