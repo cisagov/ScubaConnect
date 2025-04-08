@@ -21,7 +21,7 @@ $Env:AZCOPY_SPA_CERT_PATH=$PFX_FILE
 Invoke-SCuBA -Version
 
 Write-Output "Grabbing tenant config files"
-.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level quiet
+.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level essential
 if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
@@ -53,7 +53,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
-        .\azcopy copy $ResultsFile.FullName $OutPath --output-level quiet
+        .\azcopy copy $ResultsFile.FullName $OutPath --output-level essential
         if ($LASTEXITCODE -gt 0) {
             throw "Error transferring files"
         }
