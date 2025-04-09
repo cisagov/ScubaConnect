@@ -103,9 +103,15 @@ Advanced::
 [#onboard]
 === Onboarding a Tenant
 
-To onboard a tenant, open powershell and run `./Install-GearConnect.ps1 -AppId <app_id>` where `app_id` is output by Terraform.
+To onboard a tenant, a Global Admin for the tenant should download link:Install-GearConnect.ps1[] and run `./Install-GearConnect.ps1 -AppId <app_id> -M365Environment <env>` where `app_id` is output by Terraform and `env` is one of `commercial`, `gcc`, or `gcchigh` depending on the tenant environment.
 This script must be run even in a single-tenant architecture to actually install the app.
-If the tenant is in GCC High, include `-M365Environment gcchigh` as a parameter to the script.
+It will perform the following steps (note that the required permissions/roles come from https://github.com/cisagov/ScubaGear/blob/main/docs/prerequisites/noninteractive.md[ScubaGear]):
+
+. Install the needed PowerShell dependencies on the local machine running the script
+. Add the ScubaConnect application to the tenant by presenting a consent page with the needed permissions
+. Grant the ScubaConnect application the Global Reader role
+. Register the ScubaConnect application as a PowerApps Admin
+
 
 Once completed, upload a ScubaGear configuration file to the `input_storage_container_id` named `<tenant_fqdn>.yaml` (e.g., `myorg.onmicrosoft.com.yaml`).
 You may upload the file directly to Azure, or place it in `env/<your_env>/tenants/` and run `terraform apply`.
@@ -137,10 +143,19 @@ This will ensure the certificate is always valid.
 The container will be regularly rebuilt and updated overtime to support new versions of ScubaGear.
 No action is required for container updates as Azure Container Instances will grab the latest image by default.
 
-== Additional Code Information
+== Frequently Asked Questions
 
-`scheduled` vs `adhoc` container instances::
+Why are there `scheduled` and `adhoc` container instances?::
 GearConnect creates two nearly identical container instances named `scheduled` and `adhoc`.
 When either container is run, they output their respective name to a field in the `ScubaResults` file: `MetaData/RunType`.
 The runbook triggers the `scheduled` container instances and the `adhoc` container instance is intended for manual runs.
 Azure does not allow changing input variables to a container instance, so this is why both are created.
+
+How does a tenant offboard from ScubaConnect?::
+An admin may offboard their tenant by doing the following in the Azure Portal by going to "https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview[Enterprise Applications] > ScubaConnect > Properties > Delete".
+At this point, the application no longer has permissions to run.
+Additionally, an admin for ScubaConnect should delete the configuration file from the input bucket to prevent future run attempts on the tenant.
+
+When will ScubaConnect run?::
+ScubaConnect's scheduled runs will be based on when it is deployed.
+For example, if the infrastructure is provisioned on a Monday at 3pm and the frequency is `Week`, runs will happen each Monday near 3pm.
