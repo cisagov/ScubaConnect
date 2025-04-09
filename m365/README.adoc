@@ -152,10 +152,12 @@ The runbook triggers the `scheduled` container instances and the `adhoc` contain
 Azure does not allow changing input variables to a container instance, so this is why both are created.
 
 How does a tenant offboard from ScubaConnect?::
-An admin may offboard their tenant by doing the following in the Azure Portal by going to "https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview[Enterprise Applications] > ScubaConnect > Properties > Delete".
+An admin may offboard their tenant from the Azure Portal by deleting the application.
+This can be done by going to "https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview[Enterprise Applications] > ScubaConnect > Properties > Delete".
 At this point, the application no longer has permissions to run.
 Additionally, an admin for ScubaConnect should delete the configuration file from the input bucket to prevent future run attempts on the tenant.
 
 When will ScubaConnect run?::
 ScubaConnect's scheduled runs will be based on when it is deployed.
 For example, if the infrastructure is provisioned on a Monday at 3pm and the frequency is `Week`, runs will happen each Monday near 3pm.
+The schedule can be verified or modified in the Azure Portal by going to "scubaconnect-runner-automation-x > Shared Resources > Schedules".
