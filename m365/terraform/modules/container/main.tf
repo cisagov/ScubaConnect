@@ -1,7 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 locals {
-  is_us_gov    = contains(split(" ", var.resource_group.location), "USGov")
+  is_us_gov = startswith(lower(var.resource_group.location), "usgov")
   aad_endpoint = local.is_us_gov ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
 }
 

@@ -1,5 +1,5 @@
 locals {
-  is_us_gov = contains(split(" ", var.location), "USGov")
+  is_us_gov = startswith(lower(var.location), "usgov")
 }
 
 data "azuread_application_published_app_ids" "well_known" {}
