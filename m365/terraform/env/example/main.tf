@@ -15,5 +15,5 @@ module "scuba_connect" {
   input_storage_container_id       = var.input_storage_container_id
   output_storage_container_id      = var.output_storage_container_id
   certificate_rotation_period_days = var.certificate_rotation_period_days
+  tags                             = var.tags
 }
-
