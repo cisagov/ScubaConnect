@@ -25,7 +25,7 @@ resource "azurerm_log_analytics_workspace" "monitor_law" {
   lifecycle {
     ignore_changes = [tags]
   }
-  depends_on = [data.azurerm_policy_definition_built_in.tagging_policy]
+  depends_on = [ azurerm_resource_group_policy_assignment.tagging_assignments ]
 }
 
 # Creates the app registration, or reads an existing one, which is used by the ScubaGear container
@@ -41,7 +41,7 @@ module "app" {
   allowed_access_ips               = try(var.vnet.allowed_access_ip_list, null)
   certificate_rotation_period_days = var.certificate_rotation_period_days
   app_multi_tenant                 = var.app_multi_tenant
-  depends_on                       = [data.azurerm_policy_definition_built_in.tagging_policy]
+  depends_on                       = [azurerm_resource_group_policy_assignment.tagging_assignments]
 }
 
 module "networking" {
@@ -52,7 +52,7 @@ module "networking" {
   resource_prefix     = local.name
   firewall            = var.firewall
   vnet                = var.vnet
-  depends_on          = [data.azurerm_policy_definition_built_in.tagging_policy]
+  depends_on          = [azurerm_resource_group_policy_assignment.tagging_assignments]
 }
 
 
@@ -73,5 +73,5 @@ module "container" {
   contact_emails              = var.contact_emails
   log_analytics_workspace     = azurerm_log_analytics_workspace.monitor_law
   container_memory_gb         = var.container_memory_gb
-  depends_on                  = [data.azurerm_policy_definition_built_in.tagging_policy]
+  depends_on                  = [azurerm_resource_group_policy_assignment.tagging_assignments]
 }
