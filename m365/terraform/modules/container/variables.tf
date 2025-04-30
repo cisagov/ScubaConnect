@@ -77,9 +77,10 @@ variable "subnet_ids" {
 variable "container_registry" {
   type = object({
     server   = string
-    username = optional(string)
-    password = optional(string)
+    username = string
+    password = string
   })
+  default = null
   description = "Credentials for logging into registry with container image"
 }
 

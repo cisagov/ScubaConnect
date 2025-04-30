@@ -1,0 +1,63 @@
+name: "\U0001F41B Bug report"
+description: Describe a bug, error, unexpected behavior, or other problem
+labels:
+  - bug
+
+body:
+  - type: checkboxes
+    attributes:
+      label: Prerequisites
+      options:
+        - label: This issue has an informative and human-readable title.
+          required: true
+        - label: This issue is specific to ScubaConnect (not applicable to ScubaGear or ScubaGoggles)
+          required: true
+  - type: dropdown
+    attributes:
+      label: Component with Issue
+      description: Does this bug apply to GearConnect, GogglesConnect, or the repository itself?
+      options:
+        - "GearConnect (m365)"
+        - "GogglesConnect (gws)"
+        - "Repository/Other"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Operating System
+      description: Which operating system are you using?
+      placeholder: |
+        Enter your operating system and version (e.g., Windows 10, Ubuntu 24.04 LTS, MacOS Big Sur)
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Terraform Version
+      description: Which Terraform version are you using?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "\U0001F41B Summary"
+      description: What's wrong? Please be specific.
+      placeholder: Seeing unexpected results in the reports...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior. Any helpful log output or screenshots?
+      placeholder: |
+        1. Do this
+        2. Then this
+
+        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen that didn't?
+    validations:
+      required: true
+

@@ -1,5 +1,5 @@
 locals {
-  is_us_gov = contains(split(" ", var.location), "USGov")
+  is_us_gov = startswith(lower(var.location), "usgov")
 }
 
 data "azuread_application_published_app_ids" "well_known" {}
@@ -29,14 +29,6 @@ resource "azuread_application" "app" {
 
     resource_access {
       id   = data.azuread_service_principal.msgraph.app_role_ids["Directory.Read.All"]
-      type = "Role"
-    }
-    resource_access {
-      id   = data.azuread_service_principal.msgraph.app_role_ids["GroupMember.Read.All"]
-      type = "Role"
-    }
-    resource_access {
-      id   = data.azuread_service_principal.msgraph.app_role_ids["Organization.Read.All"]
       type = "Role"
     }
     resource_access {

@@ -1,23 +1,15 @@
-# Why is this repository private? #
+![ScubaConnect Logo](graphics/ScubaConnect%20GitHub%20Graphic.jpg)
 
-|                                       |                                        |
-| ------------------------------------- | -------------------------------------- |
-| **Repository made private on:**       | Nov 15, 2024                           |
-| **Private status approved by:**       | [@h-m-f-t](https://github.com/h-m-f-t) |
-| **Private exception reason:**         | Pending BOD release                    |
-| **Repository contents:**              | A tool to support a new CISA directive |
-| **Planned repository deletion date:** | n/a                            |
-| **Responsible contacts:**             | [@chad-CISA](https://github.com/chad-CISA)  |
+[![GitHub Release](https://img.shields.io/github/v/release/cisagov/ScubaConnect?label=GitHub&logo=github)](https://github.com/cisagov/ScubaConnect/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/cisagov/ScubaConnect/total?logo=github)](https://github.com/cisagov/ScubaConnect/releases)
+[![Issues](https://img.shields.io/github/issues/cisagov/ScubaConnect)](https://github.com/cisagov/ScubaConnect/issues)
+[![License](https://img.shields.io/github/license/cisagov/ScubaConnect)](https://github.com/cisagov/ScubaConnect/blob/main/LICENSE)
+[![GearConnect Workflow Status](https://img.shields.io/github/actions/workflow/status/cisagov/ScubaConnect/m365_image_build.yaml?label=GearConnect%20(M365)%20Image&labelColor=008ad7)
+](https://github.com/cisagov/ScubaConnect/actions/workflows/m365_image_build.yaml)
 
-See our [development guide](https://github.com/cisagov/development-guide#readme)
-for more information about our [private repository
-policy](https://github.com/cisagov/development-guide/blob/develop/open-source-policy/practice.md#private-repositories).
 
-- - - - -
 
-<!-- above should be deleted once public -->
 
-# ScubaConnect
 ScubaConnect is cloud-native infrastructure that automates the execution of assessment tools [ScubaGear](https://github.com/cisagov/ScubaGear) and [ScubaGoggles](https://github.com/cisagov/ScubaGoggles) across multiple tenants from a central location, allowing administrators to maintain consistent and secure configurations
 
 ### Target Audience
@@ -26,7 +18,7 @@ ScubaConnect is for M365 and GWS administrators who want to streamline the asses
 
 ### Federal Agencies
 
-Following the release of CISA’s [Binding Operational Directive (BOD) 25-01: Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services) on Dec. 17, 2024, which requires Federal Civilian Executive Branch (FCEB) agencies to deploy SCuBA assessment tools for in-scope cloud tenants no later than Friday, April 25, 2025 and begin continuous reporting, agencies can use ScubaConnect to ensure their cloud environments are properly configured and that reports are submitted automatically to CISA. For more information, please refer to the [SCuBA project webpage](https://www.cisa.gov/resources-tools/services/secure-cloud-business-applications-scuba-project) or email scuba@mail.cisa.dhs.gov.
+Following the release of CISA’s [Binding Operational Directive (BOD) 25-01: Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services) on Dec. 17, 2024, which requires Federal Civilian Executive Branch (FCEB) agencies to deploy SCuBA assessment tools for in-scope cloud tenants no later than Friday, April 25, 2025 and begin continuous reporting, agencies can use ScubaConnect to ensure their cloud environments are properly configured and that reports are submitted automatically to CISA. For more information, please refer to the [SCuBA project webpage](https://www.cisa.gov/resources-tools/services/secure-cloud-business-applications-scuba-project) or email scuba@cisa.dhs.gov.
 
 ## Overview
 
@@ -43,8 +35,7 @@ All code is provided in terraform for easy installation. For use with [ScubaGogg
 ## Resources
 
 * [BOD 25-01: Implementation Guidance for Implementing Secure Practices for Cloud Services](https://www.cisa.gov/news-events/directives/bod-25-01-implementation-guidance-implementing-secure-practices-cloud-services)
-* [M365 Slack Channel](https://dhscisa.enterprise.slack.com/archives/C07BH1S4TJ7)
-* [GWS Slack Channel](https://dhscisa.enterprise.slack.com/archives/C07BH28LRK5)
+* For FCEB agencies, email scuba@cisa.dhs.gov to gain access to the SCuBA Slack Channel
 
 
 ## Project License

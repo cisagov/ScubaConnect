@@ -1,7 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 locals {
-  is_us_gov    = contains(split(" ", var.resource_group.location), "USGov")
+  is_us_gov = startswith(lower(var.resource_group.location), "usgov")
   aad_endpoint = local.is_us_gov ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
 }
 
@@ -47,10 +47,13 @@ resource "azurerm_container_group" "aci" {
     identity_ids = [azurerm_user_assigned_identity.container_mi.id]
   }
 
-  image_registry_credential {
-    server   = var.container_registry.server
-    username = var.container_registry.username
-    password = var.container_registry.password
+  dynamic "image_registry_credential" {
+    for_each = var.container_registry == null ? [] : [1]
+    content {
+      server   = var.container_registry.server
+      username = var.container_registry.username
+      password = var.container_registry.password
+    }
   }
 
   diagnostics {
