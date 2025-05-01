@@ -2,6 +2,10 @@
 resource "azurerm_resource_group" "rg" {
   name     = "${var.resource_group_name}-${var.serial_number}"
   location = var.location
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 data "azuread_client_config" "current" {}
@@ -21,6 +25,7 @@ resource "azurerm_log_analytics_workspace" "monitor_law" {
   lifecycle {
     ignore_changes = [tags]
   }
+  depends_on = [azurerm_resource_group_policy_assignment.tagging_assignments]
 }
 
 module "networking" {
@@ -31,6 +36,7 @@ module "networking" {
   resource_prefix     = local.name
   firewall            = var.firewall
   vnet                = var.vnet
+  depends_on          = [azurerm_resource_group_policy_assignment.tagging_assignments]
 }
 
 # Creates the app registration, or reads an existing one, which is used by the ScubaGear container
@@ -46,6 +52,7 @@ module "app" {
   allowed_access_ips  = try(var.vnet.allowed_access_ip_list, null)
   aci_subnet_id       = try(module.networking[0].aci_subnet_id, null)
   app_multi_tenant    = var.app_multi_tenant
+  depends_on          = [azurerm_resource_group_policy_assignment.tagging_assignments]
 }
 
 module "container" {
@@ -65,4 +72,5 @@ module "container" {
   log_analytics_workspace      = azurerm_log_analytics_workspace.monitor_law
   container_memory_gb          = var.container_memory_gb
   cert_info                    = module.app.cert_info
+  depends_on                   = [azurerm_resource_group_policy_assignment.tagging_assignments]
 }
