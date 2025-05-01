@@ -88,6 +88,7 @@ Optional::
 `app_multi_tenant` (bool) [default=False]::: If true, the app will be able to be installed in multiple tenants. By default, it is only available in this tenant
 `vnet` (object) [default=None]::: Configuration for the vnet, including the address space, ACI subnet, and a list of allowed IP ranges. All strings in CIDR format
 `firewall` (object) [default=None]::: Configuration for an Azure Firewall; if not null, traffic will be routed through this firewall
+`tags` (map(string)) [default={}]::: Tags to apply to all resources created. Application is done via policies
 `serial_number` (string) [default=01]::: Increment by 1 when re-provisioning with the same resource group name
 `image_path` (string) [default=./cisa_logo.png]::: Path to image used for app logo. Displayed in Azure console on installed tenants
 Advanced::

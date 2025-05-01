@@ -61,6 +61,12 @@ variable "firewall" {
   description = "Configuration for an Azure Firewall; if not null, traffic will be routed through this firewall"
 }
 
+variable "tags" {
+  type        = map(string)
+  description = "Tags to apply to all resources created. Application is done via policies"
+  default     = {}
+}
+
 variable "serial_number" {
   default     = "01"
   type        = string
@@ -121,7 +127,7 @@ variable "container_registry" {
     username = string
     password = string
   })
-  default = null
+  default     = null
   description = "Credentials for logging into registry with container image"
 }
 
