@@ -128,7 +128,7 @@ jobs:
       image:  ${{ steps.build-and-push.outputs.image }}
   m365-scan:
     name: Scan
-    if: github.ref == 'refs/heads/scanning'
+    if: github.ref == 'refs/heads/main'
     permissions:
       security-events: write
     needs: build
@@ -145,4 +145,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
-          category: M365Image
+          category: m365-image
