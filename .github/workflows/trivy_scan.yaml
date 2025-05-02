@@ -5,8 +5,25 @@ on:
   pull_request:
     branches: [ "main" ]
 jobs:
-  terraform:
-    name: Terraform
+  terraform-scan:
+    name: Terraform Scan
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner in IaC mode
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'config'
+          hide-progress: true
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+  terraform-report:
+    name: Terraform Report
+    if: github.ref == 'refs/heads/scanning'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,11 +36,10 @@ jobs:
           hide-progress: true
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        if: github.ref == 'refs/heads/scanning'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'

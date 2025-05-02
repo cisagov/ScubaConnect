@@ -99,7 +99,7 @@ jobs:
 
           docker build $docker_args m365/image
           echo "digest=$(docker images --no-trunc --quiet $Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
-          echo "image=$Env:IMAGE.ToLower()" >> $Env:GITHUB_OUTPUT
+          echo "image=$($Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
           if ($Env:PUSH -eq "true") {
             docker push $Env:IMAGE.ToLower() --all-tags
           }
