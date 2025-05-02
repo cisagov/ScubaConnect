@@ -122,3 +122,20 @@ jobs:
             cosign sign --yes "$_@$digest"
           }
           exit 0
+  m365-scan:
+    name: M365 Image Scan
+    if: github.ref == 'refs/heads/scanning'
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: M365Image
