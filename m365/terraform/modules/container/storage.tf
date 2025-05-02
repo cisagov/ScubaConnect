@@ -14,7 +14,7 @@ resource "azurerm_storage_account" "storage" {
   account_replication_type          = "GZRS"
   account_kind                      = "StorageV2"
   infrastructure_encryption_enabled = true
-  enable_https_traffic_only         = true # default
+  enable_https_traffic_only         = false # default
   allow_nested_items_to_be_public   = false
   min_tls_version                   = "TLS1_2"
   identity {
