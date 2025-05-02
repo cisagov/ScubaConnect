@@ -16,6 +16,10 @@ env:
 
 jobs:
   build:
+    name: Build
+    runs-on: windows-latest
+    # This condition prevents duplicate runs.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     # based on https://github.com/orgs/community/discussions/26253#discussioncomment-6745038
     # intent is to run on current ref, unless this is a scheduled run, then run on list defined below
     strategy:
@@ -29,7 +33,6 @@ jobs:
           - { scheduled: false }
         include:
           - ref: ${{ github.head_ref || github.ref_name }} 
-    runs-on: windows-latest
     permissions:
       contents: read
       packages: write
@@ -98,6 +101,7 @@ jobs:
 
           docker build $docker_args m365/image
           echo "digest=$(docker images --no-trunc --quiet $Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
+          echo "image=$($Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
           if ($Env:PUSH -eq "true") {
             docker push $Env:IMAGE.ToLower() --all-tags
           }
@@ -122,3 +126,25 @@ jobs:
             cosign sign --yes "$_@$digest"
           }
           exit 0
+    outputs:
+      image:  ${{ steps.build-and-push.outputs.image }}
+  m365-scan:
+    name: Scan
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      security-events: write
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ needs.build.outputs.image }}:latest
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: m365-image
