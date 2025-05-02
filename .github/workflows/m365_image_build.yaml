@@ -99,6 +99,7 @@ jobs:
 
           docker build $docker_args m365/image
           echo "digest=$(docker images --no-trunc --quiet $Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
+          echo "image=$Env:IMAGE.ToLower()" >> $Env:GITHUB_OUTPUT
           if ($Env:PUSH -eq "true") {
             docker push $Env:IMAGE.ToLower() --all-tags
           }
@@ -123,15 +124,18 @@ jobs:
             cosign sign --yes "$_@$digest"
           }
           exit 0
+    outputs:
+      image:  ${{ steps.build-and-push.outputs.image }}
   m365-scan:
     name: Scan
     if: github.ref == 'refs/heads/scanning'
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          image-ref: ${{ needs.build.outputs.image }}:latest
           format: 'sarif'
           output: 'trivy-results.sarif'
 
