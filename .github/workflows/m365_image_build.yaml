@@ -16,6 +16,8 @@ env:
 
 jobs:
   build:
+    name: Build
+    runs-on: windows-latest
     # based on https://github.com/orgs/community/discussions/26253#discussioncomment-6745038
     # intent is to run on current ref, unless this is a scheduled run, then run on list defined below
     strategy:
@@ -29,7 +31,6 @@ jobs:
           - { scheduled: false }
         include:
           - ref: ${{ github.head_ref || github.ref_name }} 
-    runs-on: windows-latest
     permissions:
       contents: read
       packages: write
@@ -123,9 +124,9 @@ jobs:
           }
           exit 0
   m365-scan:
-    name: M365 Image Scan
+    name: Scan
     if: github.ref == 'refs/heads/scanning'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0

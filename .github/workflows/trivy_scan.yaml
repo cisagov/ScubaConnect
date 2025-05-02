@@ -1,13 +1,13 @@
-name: Trivy Scans
+name: Trivy Scan
 on:
   push:
     branches: [ "*" ]
   pull_request:
     branches: [ "main" ]
 jobs:
-  code-scan:
-    name: Scan Code
-    runs-on: ubuntu-20.04
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
