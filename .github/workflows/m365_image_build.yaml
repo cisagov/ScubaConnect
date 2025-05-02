@@ -18,6 +18,8 @@ jobs:
   build:
     name: Build
     runs-on: windows-latest
+    # This condition prevents duplicate runs.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     # based on https://github.com/orgs/community/discussions/26253#discussioncomment-6745038
     # intent is to run on current ref, unless this is a scheduled run, then run on list defined below
     strategy:

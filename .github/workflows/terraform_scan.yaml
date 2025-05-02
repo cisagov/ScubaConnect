@@ -1,4 +1,4 @@
-name: Trivy Scan
+name: Terraform Scan
 permissions:
   security-events: write
 on:
@@ -7,8 +7,8 @@ on:
   pull_request:
     branches: [ "main" ]
 jobs:
-  terraform:
-    name: Terraform
+  scan:
+    name: Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
