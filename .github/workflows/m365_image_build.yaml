@@ -129,6 +129,8 @@ jobs:
   m365-scan:
     name: Scan
     if: github.ref == 'refs/heads/scanning'
+    permissions:
+      security-events: write
     needs: build
     runs-on: ubuntu-latest
     steps:

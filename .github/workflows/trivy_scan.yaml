@@ -1,4 +1,6 @@
 name: Trivy Scan
+permissions:
+  security-events: write
 on:
   push:
     branches: [ "*" ]
