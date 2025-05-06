@@ -40,6 +40,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             AppID = $Env:APP_ID; # App ID; Needed for Service Principal Auth
             Organization = $org; # primary domain of the tenantConfig needed for Service Principal Auth
             OutPath = ".\reports\$($org)"; # The folder path where the output will be stored
+            OPAPath = "."
             ConfigFilePath = $tenantConfig.FullName
             Quiet = $true;
         }
