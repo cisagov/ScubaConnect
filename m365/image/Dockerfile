@@ -18,7 +18,13 @@ RUN powershell Remove-Item AzCopy.zip; Remove-Item -r .\AzCopy
 # Needed for setup module installs
 RUN powershell Install-PackageProvider -Name NuGet -Force
 RUN powershell Install-Module -Name ScubaGear -RequiredVersion %SCUBAGEAR_VERSION% -Force
-RUN powershell Initialize-SCuBA
+RUN powershell Initialize-SCuBA -Scope AllUsers
 COPY run_container.ps1 .
+
+# Move opa exe to expected path for ContainerUser and grant execute permissions. Then switch to that user
+RUN powershell New-Item -Path C:\Users\ContainerUser\.scubagear\Tools -ItemType Directory
+RUN powershell Move-Item C:\Users\ContainerAdministrator\.scubagear\Tools\* C:\Users\ContainerUser\.scubagear\Tools
+RUN icacls C:\Users\ContainerUser\.scubagear\Tools\* /grant "User Manager\ContainerUser":RX
+USER ContainerUser
 
 CMD [ "powershell", ".\\run_container.ps1" ]
