@@ -3,14 +3,14 @@ output "app_id" {
   value       = module.scuba_connect.app_id
 }
 
-output "output_storage_container_id" {
-  description = "ID of the output storage account results are written to"
-  value       = module.scuba_connect.output_storage_container_id
+output "output_storage_container_url" {
+  description = "URL of the output storage account results are written to"
+  value       = module.scuba_connect.output_storage_container_url
 }
 
-output "input_storage_container_id" {
-  description = "ID of the input storage account configs are read from"
-  value       = module.scuba_connect.output_storage_container_id
+output "input_storage_container_url" {
+  description = "URL of the input storage account configs are read from"
+  value       = module.scuba_connect.output_storage_container_url
 }
 
 output "sp_object_id" {

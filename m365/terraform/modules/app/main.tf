@@ -20,50 +20,14 @@ resource "azurerm_key_vault" "vault" {
   enabled_for_template_deployment = false
   enable_rbac_authorization       = false
 
-  dynamic "contact" {
-    for_each = var.contact_emails
-    content {
-      email = contact.value
-    }
-  }
-
   dynamic "network_acls" {
-    for_each = var.allowed_access_ips == null ? [] : [1]
+    for_each = var.allowed_access_ips == null && var.aci_subnet_id == null ? [] : [1]
     content {
       default_action             = "Deny"
       ip_rules                   = var.allowed_access_ips
-      virtual_network_subnet_ids = []
+      virtual_network_subnet_ids = var.aci_subnet_id == null ? [] : [var.aci_subnet_id]
       bypass                     = "None"
     }
-  }
-
-
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azuread_client_config.current.object_id
-
-    certificate_permissions = [
-      "Create",
-      "Delete",
-      "Recover",
-      "Get",
-      "GetIssuers",
-      "Import",
-      "List",
-      "ListIssuers",
-      "ManageContacts",
-      "Purge",
-      "Update",
-    ]
-
-    secret_permissions = [
-      "Delete",
-      "Get",
-      "List",
-      "Purge",
-      "Recover",
-      "Set",
-    ]
   }
 
   lifecycle {
@@ -71,9 +35,51 @@ resource "azurerm_key_vault" "vault" {
   }
 }
 
+resource "azurerm_key_vault_access_policy" "kv_access" {
+  key_vault_id = azurerm_key_vault.vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azuread_client_config.current.object_id
+
+  certificate_permissions = [
+    "Create",
+    "Delete",
+    "Recover",
+    "Get",
+    "GetIssuers",
+    "Import",
+    "List",
+    "ListIssuers",
+    "ManageContacts",
+    "Purge",
+    "Update",
+  ]
+
+  secret_permissions = [
+    "Delete",
+    "Get",
+    "List",
+    "Purge",
+    "Recover",
+    "Set",
+  ]
+}
+
+resource "azurerm_key_vault_certificate_contacts" "contacts" {
+  key_vault_id = azurerm_key_vault.vault.id
+
+  dynamic "contact" {
+    for_each = var.contact_emails
+    content {
+      email = contact.value
+    }
+  }
+
+  depends_on = [azurerm_key_vault_access_policy.kv_access]
+}
+
 # note this requires terraform to be run regularly
 resource "time_rotating" "cert_rotation" {
-  rotation_days = var.certificate_rotation_period_days
+  rotation_days = 9 * 30
 }
 
 # Generate the app registration certificate
@@ -100,7 +106,7 @@ resource "azurerm_key_vault_certificate" "cert" {
       }
 
       trigger {
-        days_before_expiry = 7
+        days_before_expiry = 60
       }
     }
 
@@ -117,11 +123,12 @@ resource "azurerm_key_vault_certificate" "cert" {
         "keyEncipherment",
       ]
 
-      subject = "CN=${var.app_name}"
-      # min 1 month; approx. twice length of rotation period
-      validity_in_months = max(1, ceil(var.certificate_rotation_period_days * 2 / 30))
+      subject            = "CN=${var.app_name}"
+      validity_in_months = 12
     }
   }
+
+  depends_on = [azurerm_key_vault_access_policy.kv_access]
 }
 
 // note: if terraform isn't creating the app, a user must manually add the cert to the app
@@ -146,7 +153,3 @@ resource "local_file" "scuba_pem_file" {
   filename = "${path.cwd}/${var.app_name}.pem"
 }
 
-data "azurerm_key_vault_secret" "pfx_b64" {
-  name         = azurerm_key_vault_certificate.cert.name
-  key_vault_id = azurerm_key_vault.vault.id
-}
