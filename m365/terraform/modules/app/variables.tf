@@ -3,7 +3,7 @@ variable "app_name" {
   description = "App name. Displayed in Azure console on installed tenants"
 }
 
-variable "resource_prefix" {
+variable "kv_prefix" {
   type        = string
   description = "Prefix to use in resource names"
 }

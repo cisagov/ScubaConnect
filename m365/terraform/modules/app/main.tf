@@ -2,7 +2,7 @@ data "azurerm_client_config" "current" {}
 data "azuread_client_config" "current" {}
 
 locals {
-  kv_prefix    = "${var.resource_prefix}-kv-"
+  kv_prefix    = "${var.kv_prefix}-kv-"
   kv_unique_id = substr(replace((var.create_app ? azuread_application.app[0].client_id : data.azuread_application.app[0].client_id), "-", ""), 0, 24 - length(local.kv_prefix))
 }
 
@@ -85,7 +85,7 @@ resource "time_rotating" "cert_rotation" {
 # Generate the app registration certificate
 resource "azurerm_key_vault_certificate" "cert" {
   # Name change forces recreating certificate
-  name         = "${var.resource_prefix}-app-cert-${formatdate("YYYY-MM-DD", time_rotating.cert_rotation.rfc3339)}"
+  name         = "${var.app_name}-app-cert-${formatdate("YYYY-MM-DD", time_rotating.cert_rotation.rfc3339)}"
   key_vault_id = azurerm_key_vault.vault.id
 
   certificate_policy {

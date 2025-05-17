@@ -44,7 +44,7 @@ module "app" {
   source              = "./modules/app"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
-  resource_prefix     = local.name
+  kv_prefix           = "${local.name}-${var.serial_number}"
   app_name            = var.app_name
   image_path          = var.image_path
   create_app          = var.create_app
