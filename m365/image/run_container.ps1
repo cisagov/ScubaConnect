@@ -2,11 +2,47 @@
 $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (500, 25)
 $ErrorActionPreference = "Stop"
 
+if ($Env:DEBUG_LOG -eq "true") {
+    Get-ChildItem env:
+}
+
+Write-Output "Getting certificate from keyvault"
+# Retrieve an Access Token
+if (($Env:IS_VNET -eq "true") -and $Env:IDENTITY_ENDPOINT -like "http://10.92.0.*:2377/metadata/identity/oauth2/token?api-version=1.0") {
+    $identityEndpoint = "http://169.254.128.1:2377/metadata/identity/oauth2/token?api-version=1.0"
+} else {
+    $identityEndpoint = $Env:IDENTITY_ENDPOINT
+}
+
+if ($Env:IS_GOV -eq "true") {
+    $VaultURL = "https://$($Env:VAULT_NAME).vault.usgovcloudapi.net"
+    $RawVaultURL = "https%3A%2F%2F" + "vault.usgovcloudapi.net"
+}
+else {
+    $VaultURL = "https://$($Env:VAULT_NAME).vault.azure.net"
+    $RawVaultURL = "https%3A%2F%2F" + "vault.azure.net"    
+}
+
+$uri = $identityEndpoint + '&resource=' + $RawVaultURL + '&principalId=' + $Env:MI_PRINCIPAL_ID
+$headers = @{
+    secret = $Env:IDENTITY_HEADER
+    "Content-Type" = "application/x-www-form-urlencoded"
+}
+
+$response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+
+# Access values from Key Vault with token
+$accessToken = $Response.access_token
+$headers2 = @{
+    Authorization = "Bearer $accessToken"
+}
+
+$PrivKey = (Invoke-RestMethod -Uri "$($VaultURL)/Secrets/$($Env:CERT_NAME)/?api-version=7.4" -Headers $headers2).Value
+$PFX_BYTES = [Convert]::FromBase64String($PrivKey)
 Write-Output "Installing cert"
 # Install certificate by decoding env variable
 $PFX_FILE = '.\certificate.pfx'
-$BYTES = [Convert]::FromBase64String($Env:PFX_B64)
-[IO.File]::WriteAllBytes($PFX_FILE, $BYTES)
+[IO.File]::WriteAllBytes($PFX_FILE, $PFX_BYTES)
 $CertificateThumbPrint = (Import-PfxCertificate -FilePath $PFX_FILE -CertStoreLocation cert:\CurrentUser\My).Thumbprint
 Write-Output "  CERT: $CertificateThumbPrint"
 
@@ -16,6 +52,7 @@ $Env:AZCOPY_SPA_APPLICATION_ID= $Env:APP_ID
 $Env:AZCOPY_TENANT_ID=$Env:TENANT_ID
 $Env:AZCOPY_AUTO_LOGIN_TYPE="SPN"
 $Env:AZCOPY_SPA_CERT_PATH=$PFX_FILE
+$Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://login.microsoftonline.us"} else {"https://login.microsoftonline.com"}
 
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version

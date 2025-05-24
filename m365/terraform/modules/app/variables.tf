@@ -3,7 +3,7 @@ variable "app_name" {
   description = "App name. Displayed in Azure console on installed tenants"
 }
 
-variable "resource_prefix" {
+variable "kv_prefix" {
   type        = string
   description = "Prefix to use in resource names"
 }
@@ -52,5 +52,11 @@ variable "app_multi_tenant" {
 variable "allowed_access_ips" {
   type        = list(string)
   description = "List of IP addresses/subnets in CIDR format that should be able to access keyvault"
+  default     = null
+}
+
+variable "aci_subnet_id" {
+  type        = string
+  description = "ID of subnet ACI is in"
   default     = null
 }

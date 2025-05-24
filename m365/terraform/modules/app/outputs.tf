@@ -13,7 +13,11 @@ output "sp_object_id" {
   value       = var.create_app ? azuread_service_principal.app[0].object_id : data.azuread_service_principal.app[0].object_id
 }
 
-output "certificate_pfx_b64" {
-  sensitive = true
-  value     = data.azurerm_key_vault_secret.pfx_b64.value
+output "cert_info" {
+  description = "Info for cert and its associated keyvault"
+  value = {
+    vault_id   = azurerm_key_vault.vault.id
+    vault_name = azurerm_key_vault.vault.name
+    cert_name  = azurerm_key_vault_certificate.cert.name
+  }
 }
