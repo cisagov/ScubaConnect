@@ -97,7 +97,8 @@ Advanced::
 `create_app` (bool) [default=True]::: If true, the app will be created. If false, the app will be imported
 `prefix_override` (string) [default=None]::: Prefix for resource names. If null, one will be generated from app_name
 `input_storage_container_url` (string) [default=None]::: If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container
-`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container
+`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account or use SAS). Otherwise by default will create storage container. Expect an https url pointing to a container
+`output_storage_container_sas` (string) [default=None]::: If not null, shared access signature token (query string) to use when writing results to the output storage container. Set this when the container is in an external tenant (the owner of that container will provide the value).
 `tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
 `container_registry` (object) [default={'server': 'ghcr.io'}]::: Credentials for logging into registry with container image
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.

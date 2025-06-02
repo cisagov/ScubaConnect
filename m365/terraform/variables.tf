@@ -102,7 +102,14 @@ variable "input_storage_container_url" {
 variable "output_storage_container_url" {
   default     = null
   type        = string
-  description = "If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container"
+  description = "If not null, output container to put results in (must give permissions to service account or use SAS). Otherwise by default will create storage container. Expect an https url pointing to a container"
+}
+
+variable "output_storage_container_sas" {
+  default     = null
+  type        = string
+  description = "If not null, shared access signature token (query string) to use when writing results to the output storage container. Set this when the container is in an external tenant (the owner of that container will provide the value)."
+  sensitive   = true
 }
 
 variable "tenants_dir_path" {
