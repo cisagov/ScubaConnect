@@ -91,6 +91,9 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
+        if ($Env:REPORT_SAS -ne "") {
+            $OutPath += "?$($Env:REPORT_SAS)"
+        }
         .\azcopy copy $ResultsFile.FullName $OutPath --output-level essential
         if ($LASTEXITCODE -gt 0) {
             throw "Error transferring files"

@@ -81,6 +81,9 @@ resource "azurerm_container_group" "aci" {
       "DEBUG_LOG"       = "false"
       "MI_PRINCIPAL_ID" = azurerm_user_assigned_identity.container_mi.principal_id
     }
+    secure_environment_variables = {
+      "REPORT_SAS"      = var.output_storage_container_sas != null ? var.output_storage_container_sas : ""
+    }
     dynamic "ports" {
       for_each = var.subnet_ids == null ? [] : [1]
       content {
