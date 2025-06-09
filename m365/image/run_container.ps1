@@ -91,7 +91,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
-        if ($null -ne $Env:REPORT_SAS -and $Env:REPORT_SAS -ne "") {
+        if ($null -ne $Env:REPORT_SAS) {
             $OutPath += "?$($Env:REPORT_SAS)"
         }
         .\azcopy copy $ResultsFile.FullName $OutPath --output-level essential
