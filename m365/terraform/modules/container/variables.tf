@@ -107,9 +107,27 @@ variable "container_memory_gb" {
 }
 
 variable "cert_info" {
+  description = "Information for obtaining to app certificate"
   type = object({
     vault_id   = string
     vault_name = string
     cert_name  = string
   })
+}
+
+variable "secondary_app_info" {
+  description = <<EOF
+    Information for a secondary app. This can be used for one ScubaConnect instance to handle multiple environments (e.g., GCC and GCC High).
+    To use, manually create an app in the other environment and add the certificate created for the primary app to it.
+    Set `environment_to_use` to the environment the manual app is in, either "commericial" or "gcchigh"
+  EOF
+  type = object({
+    app_id = string
+    environment_to_use = string
+  })
+  default = null
+  validation {
+    condition = var.secondary_app_info == null ? true : contains(["commercial", "gcchigh"], var.secondary_app_info.environment_to_use)
+    error_message = "Valid values for create_mode are (Default, PointInTimeRestore, Replica)"
+  }
 }
