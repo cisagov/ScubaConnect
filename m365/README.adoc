@@ -97,12 +97,14 @@ Advanced::
 `create_app` (bool) [default=True]::: If true, the app will be created. If false, the app will be imported
 `prefix_override` (string) [default=None]::: Prefix for resource names. If null, one will be generated from app_name
 `input_storage_container_url` (string) [default=None]::: If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container
-`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account or use SAS). Otherwise by default will create storage container. Expect an https url pointing to a container
-`output_storage_container_sas` (string) [default=None]::: If not null, shared access signature token (query string) to use when writing results to the output storage container. Set this when the container is in an external tenant (the owner of that container will provide the value).
+`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container
 `tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
-`container_registry` (object) [default={'server': 'ghcr.io'}]::: Credentials for logging into registry with container image
+`container_registry` (object) [default=None]::: Credentials for logging into registry with container image
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.
 `container_memory_gb` (number) [default=3]::: Amount of memory to allocate for ScubaGear container. Due to memory leaks in some dependencies, this may need to be increased if running on many tenants
+`secondary_app_info` (object) [default=None]::: Information for a secondary app. This can be used for one ScubaConnect instance to handle multiple environments (e.g., GCC and GCC High).
+    To use, manually create an app in the other environment and add the certificate created for the primary app to it.
+    Set `environment_to_use` to the environment the manual app is in, either "commericial" or "gcchigh"
 
 [#onboard]
 === Onboarding a Tenant

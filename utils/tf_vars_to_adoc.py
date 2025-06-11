@@ -16,4 +16,4 @@ for v in d['variable']:
         t = "object"
     default = f"[default={v[name]['default']}]" if "default" in v[name] else ""
     desc = v[name]["description"]
-    print(f"`{name}` ({t}) {default}::: {desc}")
+    print(f"`{name}` ({t}) {default}::: {desc.strip()}")

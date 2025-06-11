@@ -73,7 +73,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
 
         $params = @{
-            CertificateThumbPrint = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$CertificateThumbPrintSecondary} else {$CertificateThumbPrint};
+            CertificateThumbPrint = $CertificateThumbPrint;
             AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
             Organization = $org;
             OutPath = ".\reports\$($org)"; # The folder path where the output will be stored
