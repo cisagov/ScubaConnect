@@ -107,7 +107,7 @@ variable "container_memory_gb" {
 }
 
 variable "cert_info" {
-  description = "Information for obtaining to app certificate"
+  description = "Information for obtaining app certificate"
   type = object({
     vault_id   = string
     vault_name = string
