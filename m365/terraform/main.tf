@@ -74,4 +74,5 @@ module "container" {
   container_memory_gb          = var.container_memory_gb
   cert_info                    = module.app.cert_info
   depends_on                   = [azurerm_resource_group_policy_assignment.tagging_assignments]
+  secondary_app_info           = var.secondary_app_info
 }

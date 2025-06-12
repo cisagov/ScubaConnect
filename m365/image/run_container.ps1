@@ -73,9 +73,9 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
 
         $params = @{
-            CertificateThumbPrint = $CertificateThumbPrint; # Certificate Hash; Needed for SP auth
-            AppID = $Env:APP_ID; # App ID; Needed for Service Principal Auth
-            Organization = $org; # primary domain of the tenantConfig needed for Service Principal Auth
+            CertificateThumbPrint = $CertificateThumbPrint;
+            AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
+            Organization = $org;
             OutPath = ".\reports\$($org)"; # The folder path where the output will be stored
             OPAPath = "."
             ConfigFilePath = $tenantConfig.FullName
@@ -91,7 +91,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
-        if ($Env:REPORT_SAS -ne $null -and $Env:REPORT_SAS -ne "") {
+        if ($null -ne $Env:REPORT_SAS) {
             $OutPath += "?$($Env:REPORT_SAS)"
         }
         .\azcopy copy $ResultsFile.FullName $OutPath --output-level essential
