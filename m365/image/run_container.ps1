@@ -90,7 +90,8 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
 
         Write-Output "  Starting Upload"
-        $OutPath = "$($Env:REPORT_OUTPUT)/$($ResultsFile.Name)"
+        $DatePath = Get-Date -Format "yyyy/MM/dd"
+        $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($ResultsFile.Name)"
         if ($null -ne $Env:REPORT_SAS) {
             $OutPath += "?$($Env:REPORT_SAS)"
         }
