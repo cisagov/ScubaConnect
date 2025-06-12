@@ -15,4 +15,5 @@ module "scuba_connect" {
   input_storage_container_url  = var.input_storage_container_url
   output_storage_container_url = var.output_storage_container_url
   tags                         = var.tags
+  secondary_app_info           = var.secondary_app_info
 }

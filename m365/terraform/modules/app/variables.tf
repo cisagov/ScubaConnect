@@ -23,16 +23,6 @@ variable "contact_emails" {
   type        = list(string)
 }
 
-variable "certificate_rotation_period_days" {
-  type        = number
-  description = "How many days between when the certificate key should be rotated. Note: rotation requires running terraform"
-  default     = 30
-  validation {
-    condition     = var.certificate_rotation_period_days <= 60 && var.certificate_rotation_period_days >= 3
-    error_message = "Rotation period must be between 3 and 60 days"
-  }
-}
-
 variable "image_path" {
   type        = string
   description = "Path to image used for app logo. Displayed in Azure console on installed tenants. Only needed when create_app=true"
