@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 SHELL ["powershell"]
 
 
-ARG SCUBAGEAR_VERSION=1.5.0
+ARG SCUBAGEAR_VERSION=1.6.0
 ARG OPA_VERSION=1.3.0
 # Get static URL for current version: curl -s -D- https://aka.ms/downloadazcopy-v10-windows | grep ^Location
 # https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10?tabs=dnf#obtain-a-static-download-link
