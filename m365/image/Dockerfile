@@ -3,10 +3,10 @@ SHELL ["powershell"]
 
 
 ARG SCUBAGEAR_VERSION=1.6.0
-ARG OPA_VERSION=1.3.0
+ARG OPA_VERSION=1.6.0
 # Get static URL for current version: curl -s -D- https://aka.ms/downloadazcopy-v10-windows | grep ^Location
 # https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10?tabs=dnf#obtain-a-static-download-link
-ARG AZCOPY_URL=https://azcopyvnext-awgzd8g7aagqhzhe.b02.azurefd.net/releases/release-10.29.0-20250428/azcopy_windows_amd64_10.29.0.zip 
+ARG AZCOPY_URL=https://azcopyvnext-awgzd8g7aagqhzhe.b02.azurefd.net/releases/release-10.29.1-20250515/azcopy_windows_amd64_10.29.1.zip 
 
 LABEL scubagear_version=${SCUBAGEAR_VERSION}
 
