@@ -9,7 +9,7 @@ The ScubaConnect PowerBI Report provides organizations with a comprehensive view
 - Identify areas that require attention or remediation.
 - Share insights with stakeholders through interactive dashboards.
 
-![SCuBA M365 PowerBI Report](./powerbi_report_screenshot.png)
+![SCuBA M365 PowerBI Report](powerbi_report_screenshot.png)
 
 ### **Supported Scenarios**
 
