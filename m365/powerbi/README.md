@@ -63,7 +63,7 @@ Ensure the following requirements are met before proceeding to avoid setup issue
     2. Open Power BI Desktop, then select **File** > **Open** and choose the downloaded `.pbix` file.
 
 2. **Modify the Data Sources**
-   > [!IMPORTANT] If ScubaConnect was deplyed with a virtual network you will need to allow access.
+   > [!IMPORTANT] If ScubaConnect was deployed with a virtual network you will need to allow access.
    > [Allow Access](#gcc-environment-steps)
    1. In Power BI Desktop, go to the **Home** tab.
    2. Click **Transform data** > **Edit parameters**.
@@ -147,8 +147,8 @@ Follow the [General Setup Steps](#general-setup-steps) above.
 1. Ensure your PowerBI Desktop system's IP Address is allowed in the Storage Account network rules.
      - [Steps to Add IP](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#managing-ip-network-rules)
 2. Follow on tasks.
-   - When using a virtual network, you will need to do a manual refresh of the report everytime you want to update the report in the Power BI workspace.
+   - When using a virtual network, you will need to do a manual refresh of the report every time you want to update the report in the Power BI workspace.
      - From the Power BI desktop add select **Home** then  **Refresh**.
-   - If you're not using a virtual network with ScubaConnect, you can create a refresh scedule in the Power BI admin portal or manual refresh if preferred. [Create a Refresh Schedule](https://learn.microsoft.com/en-us/power-bi/connect-data/refresh-scheduled-refresh#scheduled-refresh)
+   - If you're not using a virtual network with ScubaConnect, you can create a refresh schedule in the Power BI admin portal or manual refresh if preferred. [Create a Refresh Schedule](https://learn.microsoft.com/en-us/power-bi/connect-data/refresh-scheduled-refresh#scheduled-refresh)
 
 ---
