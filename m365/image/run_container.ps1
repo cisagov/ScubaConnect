@@ -102,7 +102,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         if ($null -ne $Env:REPORT_SAS) {
             $OutPath += "?$($Env:REPORT_SAS)"
         }
-        .\azcopy copy $InPath $OutPath --output-level essential --recursive true
+        .\azcopy copy $InPath $OutPath --output-level essential --recursive
         if ($LASTEXITCODE -gt 0) {
             throw "Error transferring files"
         }
