@@ -21,17 +21,17 @@ resource "azurerm_resource_group_policy_assignment" "tagging_assignments" {
 }
 
 resource "azurerm_role_assignment" "tag_contributor" {
-  for_each = var.tags
+  for_each             = var.tags
   scope                = azurerm_resource_group.rg.id
   role_definition_name = "Tag Contributor"
   principal_id         = azurerm_resource_group_policy_assignment.tagging_assignments[each.key].identity[0].principal_id
 }
 
 resource "azurerm_resource_group_policy_remediation" "remediation" {
-  for_each = var.tags
-  name                 = "add-tags-policy-remediation-${each.key}"
-  resource_group_id    = azurerm_resource_group.rg.id
-  policy_assignment_id = azurerm_resource_group_policy_assignment.tagging_assignments[each.key].id
+  for_each                = var.tags
+  name                    = "add-tags-policy-remediation-${each.key}"
+  resource_group_id       = azurerm_resource_group.rg.id
+  policy_assignment_id    = azurerm_resource_group_policy_assignment.tagging_assignments[each.key].id
   resource_discovery_mode = "ReEvaluateCompliance"
-  depends_on = [ azurerm_role_assignment.tag_contributor, module.app, module.container, module.networking ]
+  depends_on              = [azurerm_role_assignment.tag_contributor, module.app, module.container, module.networking]
 }

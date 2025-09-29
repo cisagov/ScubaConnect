@@ -68,6 +68,7 @@ module "container" {
   schedule_interval            = var.schedule_interval
   output_storage_container_url = var.output_storage_container_url
   output_storage_container_sas = var.output_storage_container_sas
+  output_all_files             = var.output_all_files
   input_storage_container_url  = var.input_storage_container_url
   contact_emails               = var.contact_emails
   log_analytics_workspace      = azurerm_log_analytics_workspace.monitor_law

@@ -1,7 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 locals {
-  is_us_gov = startswith(lower(var.resource_group.location), "usgov")
+  is_us_gov    = startswith(lower(var.resource_group.location), "usgov")
   aad_endpoint = local.is_us_gov ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
 }
 
@@ -69,23 +69,24 @@ resource "azurerm_container_group" "aci" {
     cpu    = "1"
     memory = var.container_memory_gb
     environment_variables = {
-      "DEBUG_LOG"       = "false"
-      "RUN_TYPE"        = each.key
-      "TENANT_ID"       = data.azurerm_client_config.current.tenant_id
-      "APP_ID"          = var.application_client_id
-      "REPORT_OUTPUT"   = local.output_storage_container_url
-      "TENANT_INPUT"    = local.input_storage_container_url
-      "IS_VNET"         = var.subnet_ids != null
-      "IS_GOV"          = local.is_us_gov
-      "VAULT_NAME"      = var.cert_info.vault_name
-      "CERT_NAME"       = var.cert_info.cert_name
-      "MI_PRINCIPAL_ID" = azurerm_user_assigned_identity.container_mi.principal_id
+      "DEBUG_LOG"        = "false"
+      "RUN_TYPE"         = each.key
+      "TENANT_ID"        = data.azurerm_client_config.current.tenant_id
+      "APP_ID"           = var.application_client_id
+      "REPORT_OUTPUT"    = local.output_storage_container_url
+      "TENANT_INPUT"     = local.input_storage_container_url
+      "IS_VNET"          = var.subnet_ids != null
+      "IS_GOV"           = local.is_us_gov
+      "VAULT_NAME"       = var.cert_info.vault_name
+      "CERT_NAME"        = var.cert_info.cert_name
+      "MI_PRINCIPAL_ID"  = azurerm_user_assigned_identity.container_mi.principal_id
+      "OUTPUT_ALL_FILES" = var.output_all_files
 
-      "SECONDARY_APP_ID" = var.secondary_app_info == null ? null : var.secondary_app_info.app_id
+      "SECONDARY_APP_ID"  = var.secondary_app_info == null ? null : var.secondary_app_info.app_id
       "SECONDARY_APP_TLD" = var.secondary_app_info == null ? null : (var.secondary_app_info.environment_to_use == "commercial" ? "com" : "us")
     }
     secure_environment_variables = {
-      "REPORT_SAS"      = var.output_storage_container_sas
+      "REPORT_SAS" = var.output_storage_container_sas
     }
     dynamic "ports" {
       for_each = var.subnet_ids == null ? [] : [1]

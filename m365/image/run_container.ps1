@@ -91,11 +91,18 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $DatePath = Get-Date -Format "yyyy/MM/dd"
-        $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($ResultsFile.Name)"
+        if ("true" -eq $Env:OUTPUT_ALL_FILES) {
+            $InPath = ".\reports\$($org)\*"
+            $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($org)"
+        }
+        else {
+            $ResultsFile.FullName
+            $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($ResultsFile.Name)"
+        }
         if ($null -ne $Env:REPORT_SAS) {
             $OutPath += "?$($Env:REPORT_SAS)"
         }
-        .\azcopy copy $ResultsFile.FullName $OutPath --output-level essential
+        .\azcopy copy $InPath $OutPath --output-level essential
         if ($LASTEXITCODE -gt 0) {
             throw "Error transferring files"
         }
@@ -108,7 +115,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output $_
     }
 
-    if ($Env:DEBUG_LOG -eq "true") {
+    if ("true" -eq $Env:DEBUG_LOG) {
         Get-Process | Sort-Object -Property WS -Descending | Select-Object -First 10
         (Get-Ciminstance Win32_OperatingSystem).FreePhysicalMemory
     }
