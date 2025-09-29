@@ -18,7 +18,7 @@ resource "azurerm_key_vault" "vault" {
   enabled_for_deployment          = false
   enabled_for_disk_encryption     = false
   enabled_for_template_deployment = false
-  enable_rbac_authorization       = false
+  rbac_authorization_enabled      = false
 
   dynamic "network_acls" {
     for_each = var.allowed_access_ips == null && var.aci_subnet_id == null ? [] : [1]
