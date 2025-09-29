@@ -92,7 +92,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "  Starting Upload"
         $DatePath = Get-Date -Format "yyyy/MM/dd"
         if ("true" -eq $Env:OUTPUT_ALL_FILES) {
-            $InPath = ".\reports\$($org)\*"
+            $InPath = ".\reports\$($org)"
             $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($org)"
         }
         else {
@@ -102,7 +102,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         if ($null -ne $Env:REPORT_SAS) {
             $OutPath += "?$($Env:REPORT_SAS)"
         }
-        .\azcopy copy $InPath $OutPath --output-level essential
+        .\azcopy copy $InPath $OutPath --output-level essential --recursive true
         if ($LASTEXITCODE -gt 0) {
             throw "Error transferring files"
         }
