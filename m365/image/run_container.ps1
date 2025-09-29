@@ -92,11 +92,11 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "  Starting Upload"
         $DatePath = Get-Date -Format "yyyy/MM/dd"
         if ("true" -eq $Env:OUTPUT_ALL_FILES) {
-            $InPath = ".\reports\$($org)\*"
+            $InPath = "$($ResultsFile.DirectoryName)\*"
             $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($org)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
         }
         else {
-            $ResultsFile.FullName
+            $InPath = $ResultsFile.FullName
             $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($ResultsFile.Name)"
         }
         if ($null -ne $Env:REPORT_SAS) {
