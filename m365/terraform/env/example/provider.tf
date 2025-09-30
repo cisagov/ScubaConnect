@@ -17,7 +17,7 @@ terraform {
 provider "azurerm" {
   features {}
   subscription_id = "<YOUR_SUBSCRIPTION_UUID>"
-  environment = "public"
+  environment     = "public"
 }
 
 provider "azuread" {

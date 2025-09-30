@@ -14,6 +14,7 @@ module "scuba_connect" {
   container_registry           = var.container_registry
   input_storage_container_url  = var.input_storage_container_url
   output_storage_container_url = var.output_storage_container_url
+  output_all_files             = var.output_all_files
   tags                         = var.tags
   secondary_app_info           = var.secondary_app_info
 }
