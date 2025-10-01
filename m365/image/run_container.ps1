@@ -58,7 +58,7 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 Invoke-SCuBA -Version
 
 Write-Output "Grabbing tenant config files"
-.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --output-level essential
+.\azcopy copy "$Env:TENANT_INPUT/*" 'input' --include-pattern "*.yaml;*.yml;*.json" --output-level essential
 if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
@@ -66,7 +66,7 @@ if ($LASTEXITCODE -gt 0) {
 $total_count = 0
 $error_count = 0
 
-Foreach ($tenantConfig in $(Get-ChildItem -Path 'input\' -Include "*.yaml", "*.yml", "*.json")) {
+Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     $total_count += 1
     try {
         $org = $tenantConfig.BaseName.split("_")[0]
