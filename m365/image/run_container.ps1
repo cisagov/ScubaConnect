@@ -66,7 +66,7 @@ if ($LASTEXITCODE -gt 0) {
 $total_count = 0
 $error_count = 0
 
-Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
+Foreach ($tenantConfig in $(Get-ChildItem -Path 'input\' -Include "*.yaml", "*.yml", "*.json")) {
     $total_count += 1
     try {
         $org = $tenantConfig.BaseName.split("_")[0]

@@ -3,6 +3,7 @@ data "azurerm_client_config" "current" {}
 locals {
   is_us_gov    = startswith(lower(var.resource_group.location), "usgov")
   aad_endpoint = local.is_us_gov ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
+  container_types = toset(["scheduled", "adhoc"])
 }
 
 resource "azurerm_user_assigned_identity" "container_mi" {
@@ -33,7 +34,7 @@ resource "azurerm_key_vault_access_policy" "mi_kv_access" {
 #   If "Private", a port must be opened on the container. This is dictated by Azure's APIs
 #   The open port is still within the vnet, so nothing is exposed externally
 resource "azurerm_container_group" "aci" {
-  for_each            = toset(["scheduled", "adhoc"])
+  for_each            = local.container_types
   name                = "${var.resource_prefix}-${each.key}-container"
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
@@ -74,7 +75,7 @@ resource "azurerm_container_group" "aci" {
       "TENANT_ID"        = data.azurerm_client_config.current.tenant_id
       "APP_ID"           = var.application_client_id
       "REPORT_OUTPUT"    = local.output_storage_container_url
-      "TENANT_INPUT"     = local.input_storage_container_url
+      "TENANT_INPUT"     = "${local.input_storage_container_url}/${each.key}"
       "IS_VNET"          = var.subnet_ids != null
       "IS_GOV"           = local.is_us_gov
       "VAULT_NAME"       = var.cert_info.vault_name
