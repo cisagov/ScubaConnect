@@ -58,7 +58,7 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 Invoke-SCuBA -Version
 
 Write-Output "Grabbing tenant config files"
-New-Item -Path "input" -ItemType Directory
+New-Item -Path "input" -ItemType Directory | Out-Null
 .\azcopy copy "$Env:TENANT_INPUT/*" 'input' --include-pattern "*.yaml;*.yml;*.json" --output-level essential
 if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
