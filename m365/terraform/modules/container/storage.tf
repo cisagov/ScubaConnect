@@ -60,14 +60,30 @@ resource "azurerm_storage_container" "input" {
   container_access_type = "private"
 }
 
+resource "azurerm_storage_blob" "keep_files" {
+  for_each               = local.container_types
+  name                   = "${each.key}/.keep"
+  storage_account_name   = azurerm_storage_account.storage[0].name
+  storage_container_name = azurerm_storage_container.input[0].name
+  type                   = "Block"
+  source_content         = "File used for keeping directory structure in absence of config files"
+
+  lifecycle {
+    ignore_changes = [
+      cache_control
+    ]
+  }
+}
+
+
 # Blobs containing configuration for each tenant
 resource "azurerm_storage_blob" "tenants" {
-  for_each               = fileset(var.tenants_dir_path, "*")
+  for_each               = { for typeFile in setproduct(local.container_types, fileset(var.tenants_dir_path, "*")): "${typeFile[0]}/${typeFile[1]}" => typeFile[1] }
   name                   = each.key
   storage_account_name   = azurerm_storage_account.storage[0].name
   storage_container_name = azurerm_storage_container.input[0].name
   type                   = "Block"
-  source                 = "${var.tenants_dir_path}/${each.key}"
+  source                 = "${var.tenants_dir_path}/${each.value}"
 
   lifecycle {
     ignore_changes = [
