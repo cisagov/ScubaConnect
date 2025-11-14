@@ -1,4 +1,4 @@
-name: M365 Image Build
+name: GWS Image Build
 
 on:
   schedule:
@@ -7,19 +7,19 @@ on:
     branches: [ "**" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
-    paths-ignore: gws/**
+    paths-ignore: m365/**
   pull_request:
     branches: [ "main" ]
-    paths-ignore: gws/**
+    paths-ignore: m365/**
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}-m365
+  IMAGE_NAME: ${{ github.repository }}-gws
 
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     # This condition prevents duplicate runs.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     # based on https://github.com/orgs/community/discussions/26253#discussioncomment-6745038
@@ -82,32 +82,14 @@ jobs:
             type=ref,event=branch
 
       # Build and push Docker image
-      - name: Build and push Docker image
+      - name: Build and push
+        uses: docker/build-push-action@v6
         id: build-and-push
-        env:
-          TAGS: ${{ steps.meta.outputs.tags }}
-          LABELS: ${{ steps.meta.outputs.labels }}
-          PUSH: ${{ github.event_name != 'pull_request' }}
-          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        shell: powershell
-        run: |
-          $docker_args = New-Object System.Collections.ArrayList
-          $Env:TAGS.Split([Environment]::NewLine) | Where-Object { $_ -ne "" } | ForEach {
-            $docker_args.Add("--tag")
-            $docker_args.Add($_)
-          }
-          $Env:LABELS.Split([Environment]::NewLine) | Where-Object { $_ -ne "" } | ForEach {
-            $docker_args.Add("--label")
-            $docker_args.Add($_)
-          }
-
-          docker build $docker_args m365/image
-          echo "digest=$(docker images --no-trunc --quiet $Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
-          echo "image=$($Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
-          if ($Env:PUSH -eq "true") {
-            docker push $Env:IMAGE.ToLower() --all-tags
-          }
-          exit $LASTEXITCODE
+        with:
+          context: gws/image
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
     
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
@@ -123,11 +105,11 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: |
-          $digest = $Env:DIGEST.Split(" ") | Where-Object { $_ -ne "" } | Select-Object -First 1
-          $Env:TAGS.Split("`n") | Where-Object { $_ -ne "" } | ForEach {
-            cosign sign --yes "$_@$digest"
-          }
-          exit 0
+          images=""
+          for tag in ${TAGS}; do
+            images+="${tag}@${DIGEST} "
+          done
+          cosign sign --yes ${images}
     outputs:
       full-image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
   scan:
@@ -150,4 +132,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
-          category: m365-image
+          category: gws-image
