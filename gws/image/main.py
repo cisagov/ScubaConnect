@@ -107,13 +107,11 @@ if __name__ == '__main__':
 
     logging.info(f"Copying files to GCS bucket: {OUTPUT_BUCKET}")
     rel_paths = glob.glob('output/**', recursive=True)
-    logging.info(rel_paths)
     out_bucket = storage.Client().get_bucket(OUTPUT_BUCKET)
     transferred = 0
     today = datetime.today()
     for local_file in rel_paths:
         if os.path.isfile(local_file) and (OUTPUT_ALL_FILES or ("ScubaResults" in local_file)):
-            logging.info(f"FILE: {local_file}")
             file_parts = local_file.split("/")
             date_str = today.strftime('%Y/%m/%d/')
             if OUTPUT_ALL_FILES:
