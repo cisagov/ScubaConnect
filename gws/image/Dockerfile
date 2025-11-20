@@ -1,5 +1,8 @@
 FROM python:3.13-slim
 
+# needed when installing ScubaGoggles directly from git
+RUN apt-get update && apt-get install -y git
+
 RUN useradd --create-home user
 USER user
 
