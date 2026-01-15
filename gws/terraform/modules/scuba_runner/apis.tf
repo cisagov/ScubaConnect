@@ -4,7 +4,7 @@ locals {
     "admin.googleapis.com",
     "cloudidentity.googleapis.com",
     "groupssettings.googleapis.com",
-    # Needed for GearConnect resources
+    # Needed for GogglesConnect resources
     "artifactregistry.googleapis.com",
     "cloudscheduler.googleapis.com",
     "run.googleapis.com",
