@@ -105,20 +105,25 @@ Advanced::
 [#onboard]
 === Onboarding a Tenant
 
-These instructions require a super admin for the organization.
+==== Tenant
 
+Create a ScubaGoggles configuration file for the tenant following the https://github.com/cisagov/ScubaGoggles/blob/main/scubagoggles/sample-config-files/scuba_compliance.yaml[ScubaGoggles Configuration File documentation].
+**Be sure to uncomment and fill out the lines for `subjectemail` and `customerid`.**
+Name the file `<tenant_fqdn>.yaml` (e.g., `example.com.yaml`).
+
+These instructions require a super admin for the organization::
 . Go to "https://admin.google.com > Security > Access and data control > API controls"
 . Select "MANAGE DOMAIN WIDE DELEGATION" then "Add new"
 . For the "Client ID" paste the Terraform output `scuba_runner_svc_acct_id`.
 . For the "OAuth scopes" paste the Terraform output `oauth_scopes` (you can paste the comma separate list into one line and the webpage will parse on submission)
 . Select "AUTHORIZE"
 
+==== GogglesConnect Host
 
-Once completed, upload a ScubaGoggles configuration file to the `input_storage_bucket` named `<tenant_fqdn>.yaml` (e.g., `example.com.yaml`).
-You may upload the file directly to GCS, or place it in `env/<your_env>/tenants/` and run `terraform apply`.
-Refer to the https://github.com/cisagov/ScubaGoggles/blob/main/scubagoggles/sample-config-files/scuba_compliance.yaml[ScubaGoggles Configuration File documentation] for details on creating the configuration file (**be sure to uncomment lines for `subjectemail` and `customerid`**).
+Upload the tenant's ScubaGoggles configuration file to the `input_storage_bucket` bucket in the `adhoc` and/or `scheduled` folder. 
+(See <<adhoc-v-scheduled,the FAQ>> for an explanation on the folders.)
+You may upload the file directly to GCS, or place it in `env/<your_env>/tenants/` and run `terraform apply` to upload to both folders.
 
-Repeat these steps for each tenant in a multi-tenant architecture.
 
 === Logging / Alerts
 
@@ -138,3 +143,12 @@ An admin may offboard their tenant from the Admin page by deleting the applicati
 This can be done by going to Go to "https://admin.google.com > Security > Access and data control > API controls > DOMAIN WIDE DELEGATION" and deleting the app.
 At this point, the application no longer has permissions to run.
 Additionally, an admin for ScubaConnect should delete the configuration file from the input bucket to prevent future run attempts on the tenant.
+
+[#adhoc-v-scheduled]
+What are the input `adhoc` and `scheduled` folders for?::
+These folders are used to distinguish regularly scheduled runs from one-off tests.
+When you start the `gogglesconnect-runner` Cloud Run Job directly, it will run on each tenant in the `adhoc` folder.
+When the runner is started via Cloud Scheduler, it will use the `scheduled` folder.
+The ScubaResults json file will contain a `RunType` key in the `MetaData`` section stating whether the run was adhoc or scheduled.
++
+A common use case for these folders is to upload a new configuration file to `adhoc`, manually run `gogglesconnect-runner` then move the configuration file to `scheduled` after you have verified the adhoc run worked.
