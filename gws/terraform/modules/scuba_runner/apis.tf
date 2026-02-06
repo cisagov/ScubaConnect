@@ -8,7 +8,8 @@ locals {
     "artifactregistry.googleapis.com",
     "cloudscheduler.googleapis.com",
     "run.googleapis.com",
-    "iamcredentials.googleapis.com"
+    "iam.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
     # This list excludes APIs enabled by default: https://docs.cloud.google.com/service-usage/docs/enabled-service#default
   ]
 }
