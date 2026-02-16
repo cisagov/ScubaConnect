@@ -77,7 +77,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             CertificateThumbPrint = $CertificateThumbPrint;
             AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
             Organization = $org;
-            OutPath = "c:\reports\$($org)"; # The folder path where the output will be stored
+            OutPath = "./reports/$($org)"; # The folder path where the output will be stored
             OPAPath = "."
             ConfigFilePath = $tenantConfig.FullName
             Quiet = $true;
@@ -85,7 +85,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Invoke-SCuBA @params
 
         Write-Output "  Appending metadata"
-        $ResultsFile = Get-ChildItem -Path "c:\reports\$($org)\*\ScubaResults*.json"
+        $ResultsFile = Get-ChildItem -Path ".\reports\$($org)\*\ScubaResults*.json"
         $JsonResults = Get-Content -Path $ResultsFile.FullName | ConvertFrom-Json
         $JsonResults.MetaData | add-member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
