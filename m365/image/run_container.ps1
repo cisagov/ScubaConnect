@@ -77,7 +77,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             CertificateThumbPrint = $CertificateThumbPrint;
             AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
             Organization = $org;
-            OutPath = "./reports/$($org)"; # The folder path where the output will be stored
+            OutPath = "./reports/$($org)"; # ScubaGear 1.7.0 requires forward slashes
             OPAPath = "."
             ConfigFilePath = $tenantConfig.FullName
             Quiet = $true;
