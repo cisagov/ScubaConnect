@@ -72,7 +72,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     try {
         $org = $tenantConfig.BaseName.split("_")[0]
         Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
-        # New-Item -Path ".\reports\$($org)" -ItemType Directory -Force
+        New-Item -Path ".\reports\$($org)" -ItemType Directory -Force
         $params = @{
             CertificateThumbPrint = $CertificateThumbPrint;
             AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
