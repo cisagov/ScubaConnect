@@ -110,7 +110,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             throw "Error transferring files"
         }
         Write-Output "  Finished Upload to $OUT_PATH_PREFIX$RelOutPath"
-        files += $RelOutPath
+        $files += $RelOutPath
         Remove-Item $ResultsFile
     
     } catch {
