@@ -64,7 +64,7 @@ if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
 
-$OUT_PATH_PREFIX = "$($Env:REPORT_OUTPUT)/$($DatePath)/"
+$OUT_PATH_PREFIX = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
 
 $orgs = @()
 $errors = @()
@@ -80,7 +80,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             CertificateThumbPrint = $CertificateThumbPrint;
             AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
             Organization = $org;
-            RelOutPath = ".\reports\$($org)"; # The folder path where the output will be stored
+            OutPath = ".\reports\$($org)"; # The folder path where the output will be stored
             OPAPath = "."
             ConfigFilePath = $tenantConfig.FullName
             Quiet = $true;
@@ -94,7 +94,6 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
 
         Write-Output "  Starting Upload"
-        $DatePath = Get-Date -Format "yyyy/MM/dd"
         if ("true" -eq $Env:OUTPUT_ALL_FILES) {
             $InPath = "$($ResultsFile.DirectoryName)\*"
             $RelOutPath = "$($org)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
@@ -139,9 +138,6 @@ if ("false" -ne $Env:SKIP_SUMMARY_LOG) {
     $summaryJson | Set-Content -Path $summaryPath
 
     .\azcopy copy $summaryPath "$OUT_PATH_PREFIX$summaryPath" --output-level essential --recursive
-    if ($LASTEXITCODE -gt 0) {
-        throw "Error transferring files"
-    }
     Write-Output "Upload summary log to $OUT_PATH_PREFIX$summaryPath"
 }
 
