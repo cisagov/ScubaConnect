@@ -126,7 +126,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     }
 }
 
-if ("true" -eq $Env:SUMMARY_LOG) {
+if ("false" -ne $Env:SKIP_SUMMARY_LOG) {
     $summary = [PSCustomObject]@{
         Timestamp = $(Get-Date -Format o)
         RunType = $Env:RUN_TYPE
