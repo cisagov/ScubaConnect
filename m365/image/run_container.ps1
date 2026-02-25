@@ -64,20 +64,23 @@ if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
 
-$total_count = 0
-$error_count = 0
+$OUT_PATH_PREFIX = "$($Env:REPORT_OUTPUT)/$($DatePath)/"
+
+$orgs = @()
+$errors = @()
+$files = @()
 
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
-    $total_count += 1
     try {
         $org = $tenantConfig.BaseName.split("_")[0]
+        $orgs += $org
         Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
 
         $params = @{
             CertificateThumbPrint = $CertificateThumbPrint;
             AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
             Organization = $org;
-            OutPath = ".\reports\$($org)"; # The folder path where the output will be stored
+            RelOutPath = ".\reports\$($org)"; # The folder path where the output will be stored
             OPAPath = "."
             ConfigFilePath = $tenantConfig.FullName
             Quiet = $true;
@@ -94,24 +97,25 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         $DatePath = Get-Date -Format "yyyy/MM/dd"
         if ("true" -eq $Env:OUTPUT_ALL_FILES) {
             $InPath = "$($ResultsFile.DirectoryName)\*"
-            $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($org)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
+            $RelOutPath = "$($org)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
         }
         else {
             $InPath = $ResultsFile.FullName
-            $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($ResultsFile.Name)"
+            $RelOutPath = $ResultsFile.Name
         }
         if ($null -ne $Env:REPORT_SAS) {
-            $OutPath += "?$($Env:REPORT_SAS)"
+            $RelOutPath += "?$($Env:REPORT_SAS)"
         }
-        .\azcopy copy $InPath $OutPath --output-level essential --recursive
+        .\azcopy copy $InPath "$OUT_PATH_PREFIX$RelOutPath" --output-level essential --recursive
         if ($LASTEXITCODE -gt 0) {
             throw "Error transferring files"
         }
-        Write-Output "  Finished Upload to $OutPath"
+        Write-Output "  Finished Upload to $OUT_PATH_PREFIX$RelOutPath"
+        files += $RelOutPath
         Remove-Item $ResultsFile
     
     } catch {
-        $error_count += 1
+        $errors += @{ $org = $_.Exception.Message }
         Write-Output "Error occurred while running on $($org)"
         Write-Output $_
     }
@@ -122,8 +126,27 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     }
 }
 
-Write-Output "Finished running on $total_count tenants. Encountered $error_count errors"
-if ($error_count -gt 0) {
+if ("true" -eq $Env:SUMMARY_LOG) {
+    $summary = [PSCustomObject]@{
+        Timestamp = $(Get-Date -Format o)
+        RunType = $Env:RUN_TYPE
+        Tenants = $orgs
+        Files = $files
+        Errors = $errors
+    }
+    $summaryJson = $summary | ConvertTo-Json -Depth 4
+    $summaryPath = ".\run_results_$(Get-Date -Format 'yyyy-MM-ddTHH-mm-ss').json"
+    $summaryJson | Set-Content -Path $summaryPath
+
+    .\azcopy copy $summaryPath "$OUT_PATH_PREFIX$summaryPath" --output-level essential --recursive
+    if ($LASTEXITCODE -gt 0) {
+        throw "Error transferring files"
+    }
+    Write-Output "Upload summary log to $OUT_PATH_PREFIX$summaryPath"
+}
+
+Write-Output "Finished running on $($orgs.Count) tenants. Encountered $($errors.Count) errors"
+if ($errors.Count -gt 0) {
     exit 1
 }
 exit 0

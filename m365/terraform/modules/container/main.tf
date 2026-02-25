@@ -71,6 +71,7 @@ resource "azurerm_container_group" "aci" {
     memory = var.container_memory_gb
     environment_variables = {
       "DEBUG_LOG"        = "false"
+      "SUMMARY_LOG"      = "true"
       "RUN_TYPE"         = each.key
       "TENANT_ID"        = data.azurerm_client_config.current.tenant_id
       "APP_ID"           = var.application_client_id
