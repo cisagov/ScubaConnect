@@ -64,7 +64,7 @@ if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
 
-$OUT_PATH_PREFIX = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
+$OutPathPrefix = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
 
 $orgs = @()
 $errors = @()
@@ -105,11 +105,11 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         if ($null -ne $Env:REPORT_SAS) {
             $RelOutPath += "?$($Env:REPORT_SAS)"
         }
-        .\azcopy copy $InPath "$OUT_PATH_PREFIX$RelOutPath" --output-level essential --recursive
+        .\azcopy copy $InPath "$OutPathPrefix$RelOutPath" --output-level essential --recursive
         if ($LASTEXITCODE -gt 0) {
             throw "Error transferring files"
         }
-        Write-Output "  Finished Upload to $OUT_PATH_PREFIX$RelOutPath"
+        Write-Output "  Finished Upload to $OutPathPrefix$RelOutPath"
         $files += $RelOutPath
         Remove-Item $ResultsFile
     
@@ -125,7 +125,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     }
 }
 
-if ("false" -ne $Env:SKIP_SUMMARY_LOG) {
+if ("true" -ne $Env:SKIP_SUMMARY_LOG) {
     $summary = [PSCustomObject]@{
         Timestamp = $(Get-Date -Format o)
         RunType = $Env:RUN_TYPE
@@ -137,8 +137,8 @@ if ("false" -ne $Env:SKIP_SUMMARY_LOG) {
     $summaryPath = ".\run_results_$(Get-Date -Format 'yyyy-MM-ddTHH-mm-ss').json"
     $summaryJson | Set-Content -Path $summaryPath
 
-    .\azcopy copy $summaryPath "$OUT_PATH_PREFIX$summaryPath" --output-level essential --recursive
-    Write-Output "Upload summary log to $OUT_PATH_PREFIX$summaryPath"
+    .\azcopy copy $summaryPath "$OutPathPrefix$summaryPath" --output-level essential --recursive
+    Write-Output "Upload summary log to $OutPathPrefix$summaryPath"
 }
 
 Write-Output "Finished running on $($orgs.Count) tenants. Encountered $($errors.Count) errors"
