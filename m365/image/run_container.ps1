@@ -62,7 +62,7 @@ if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
 
-$OutPathPrefix = "$($Env:REPORT_OUTPUT)\$(Get-Date -Format "yyyy\MM\dd")\"
+$OutPathPrefix = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
 $Organizations = @()
 $Errors = @()
 $Files = @()
