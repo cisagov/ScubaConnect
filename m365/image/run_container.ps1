@@ -2,6 +2,7 @@
 $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (500, 25)
 $ErrorActionPreference = "Stop"
 
+Invoke-SCuBA -Version
 if ($Env:DEBUG_LOG -eq "true") {
     Get-ChildItem env:
 }
@@ -20,7 +21,7 @@ if ($Env:IS_GOV -eq "true") {
 }
 else {
     $VaultURL = "https://$($Env:VAULT_NAME).vault.azure.net"
-    $RawVaultURL = "https%3A%2F%2F" + "vault.azure.net"    
+    $RawVaultURL = "https%3A%2F%2F" + "vault.azure.net"
 }
 
 $uri = $identityEndpoint + '&resource=' + $RawVaultURL + '&principalId=' + $Env:MI_PRINCIPAL_ID
@@ -54,9 +55,6 @@ $Env:AZCOPY_AUTO_LOGIN_TYPE="SPN"
 $Env:AZCOPY_SPA_CERT_PATH=$PFX_FILE
 $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://login.microsoftonline.us"} else {"https://login.microsoftonline.com"}
 
-# Print scuba version to console for debugging
-Invoke-SCuBA -Version
-
 Write-Output "Grabbing tenant config files"
 New-Item -Path "input" -ItemType Directory | Out-Null
 .\azcopy copy "$Env:TENANT_INPUT/*" 'input' --include-pattern "*.yaml;*.yml;*.json" --output-level essential
@@ -64,31 +62,30 @@ if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
 
-$OutPathPrefix = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
-
-$orgs = @()
-$errors = @()
-$files = @()
+$OutPathPrefix = "$($Env:REPORT_OUTPUT)\$(Get-Date -Format "yyyy\MM\dd")\"
+$Organizations = @()
+$Errors = @()
+$Files = @()
 
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     try {
-        $org = $tenantConfig.BaseName.split("_")[0]
-        $orgs += $org
+        $Organization = $tenantConfig.BaseName.split("_")[0]
+        $Organizations += $Organization
         Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
 
-        $params = @{
+        $Params = @{
             CertificateThumbPrint = $CertificateThumbPrint;
-            AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $org.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID}; 
-            Organization = $org;
-            OutPath = ".\reports\$($org)"; # The folder path where the output will be stored
+            AppID = if ($null -ne $Env:SECONDARY_APP_ID -and $Organization.EndsWith($Env:SECONDARY_APP_TLD)) {$Env:SECONDARY_APP_ID} else {$Env:APP_ID};
+            Organization = $Organization;
+            OutPath = ".\reports\$($Organization)"; # The folder path where the output will be stored
             OPAPath = "."
             ConfigFilePath = $tenantConfig.FullName
             Quiet = $true;
         }
-        Invoke-SCuBA @params
+        Invoke-SCuBA @Params
 
         Write-Output "  Appending metadata"
-        $ResultsFile = Get-ChildItem -Path ".\reports\$($org)\*\ScubaResults*.json"
+        $ResultsFile = Get-ChildItem -Path ".\reports\$($Organization)\*\ScubaResults*.json"
         $JsonResults = Get-Content -Path $ResultsFile.FullName | ConvertFrom-Json
         $JsonResults.MetaData | add-member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
@@ -96,7 +93,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "  Starting Upload"
         if ("true" -eq $Env:OUTPUT_ALL_FILES) {
             $InPath = "$($ResultsFile.DirectoryName)\*"
-            $RelOutPath = "$($org)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
+            $RelOutPath = "$($Organization)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
         }
         else {
             $InPath = $ResultsFile.FullName
@@ -110,12 +107,12 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             throw "Error transferring files"
         }
         Write-Output "  Finished Upload to $OutPathPrefix$RelOutPath"
-        $files += $RelOutPath
+        $Files += $RelOutPath
         Remove-Item $ResultsFile
-    
+
     } catch {
-        $errors += @{ $org = $_.Exception.Message }
-        Write-Output "Error occurred while running on $($org)"
+        $Errors += @{ $Organization = $_.Exception.Message }
+        Write-Output "Error occurred while running on $($Organization)"
         Write-Output $_
     }
 
@@ -126,23 +123,23 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 }
 
 if ("true" -ne $Env:SKIP_SUMMARY_LOG) {
-    $summary = [PSCustomObject]@{
+    $Summary = [PSCustomObject]@{
         Timestamp = $(Get-Date -Format o)
         RunType = $Env:RUN_TYPE
-        Tenants = $orgs
+        Tenants = $Organizations
         Files = $files
-        Errors = $errors
+        Errors = $Errors
     }
-    $summaryJson = $summary | ConvertTo-Json -Depth 4
-    $summaryPath = ".\run_results_$(Get-Date -Format 'yyyy-MM-ddTHH-mm-ss').json"
-    $summaryJson | Set-Content -Path $summaryPath
+    $SummaryJson = $Summary | ConvertTo-Json -Depth 4
+    $SummaryPath = ".\run_results_$(Get-Date -Format 'yyyy-MM-ddTHH-mm-ss').json"
+    $SummaryJson | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $SummaryPath
 
-    .\azcopy copy $summaryPath "$OutPathPrefix$summaryPath" --output-level essential --recursive
-    Write-Output "Upload summary log to $OutPathPrefix$summaryPath"
+    .\azcopy copy $SummaryPath "$OutPathPrefix$SummaryPath" --output-level essential --recursive
+    Write-Output "Upload summary log to $OutPathPrefix$SummaryPath"
 }
 
-Write-Output "Finished running on $($orgs.Count) tenants. Encountered $($errors.Count) errors"
-if ($errors.Count -gt 0) {
+Write-Output "Finished running on $($Organizations.Count) tenants. Encountered $($Errors.Count) Errors"
+if ($Errors.Count -gt 0) {
     exit 1
 }
 exit 0
