@@ -87,7 +87,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Write-Output "  Appending metadata"
         $ResultsFile = Get-ChildItem -Path ".\reports\$($Organization)\*\ScubaResults*.json"
         $JsonResults = Get-Content -Path $ResultsFile.FullName | ConvertFrom-Json
-        $JsonResults.MetaData | add-member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
+        $JsonResults.MetaData | Add-Member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
 
         Write-Output "  Starting Upload"
