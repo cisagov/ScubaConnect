@@ -126,12 +126,10 @@ if ("true" -ne $Env:SKIP_AUDIT_LOG) {
         source = "ScubaConnect"
         filenames = $files
     }
-    $AuditJson = $Audit | ConvertTo-Json -Depth 4
-    $AuditPath = ".\ScubaAudit_$((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH-mm-ss')).json"
-    $AuditJson | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $AuditPath
-
-    .\azcopy copy $AuditPath "$OutPathPrefix$AuditPath" --output-level essential --recursive
-    Write-Output "Uploaded audit log to $OutPathPrefix$AuditPath"
+    $AuditFile = "ScubaAudit_$((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH-mm-ss')).json"
+    $Audit | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $AuditFile
+    .\azcopy copy $AuditFile "$OutPathPrefix$AuditFile" --output-level essential --recursive
+    Write-Output "Uploaded audit log to $OutPathPrefix$AuditFile"
 }
 
 Write-Output "Finished running on $($Files.Count) tenants. Encountered $ErrorCount Errors"
