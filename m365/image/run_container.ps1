@@ -121,14 +121,13 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 }
 
 if ("true" -ne $Env:SKIP_AUDIT_LOG) {
-    $UTCDate = (Get-Date).ToUniversalTime().ToString('s')
     $Audit = [PSCustomObject]@{
-        date = $UTCDate
+        date = (Get-Date).ToUniversalTime().ToString('s')
         source = "ScubaConnect"
         filenames = $files
     }
     $AuditJson = $Audit | ConvertTo-Json -Depth 4
-    $AuditPath = ".\ScubaAudit_$UTCDate.json"
+    $AuditPath = ".\ScubaAudit_$((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH-mm-ss')).json"
     $AuditJson | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $AuditPath
 
     .\azcopy copy $AuditPath "$OutPathPrefix$AuditPath" --output-level essential --recursive
