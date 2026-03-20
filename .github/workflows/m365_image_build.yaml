@@ -4,13 +4,13 @@ on:
   schedule:
     - cron: '16 11 * * 1'
   push:
-    branches: [ "**" ]
+    branches: [ '**' ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
-    paths-ignore: gws/**
+    paths-ignore: [ 'gws/**' ]
   pull_request:
-    branches: [ "main" ]
-    paths-ignore: gws/**
+    branches: [ 'main' ]
+    paths-ignore: [ 'gws/**' ]
 
 env:
   REGISTRY: ghcr.io

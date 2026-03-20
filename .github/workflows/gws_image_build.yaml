@@ -4,13 +4,13 @@ on:
   schedule:
     - cron: '16 11 * * 1'
   push:
-    branches: [ "**" ]
+    branches: [ '**' ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
-    paths-ignore: m365/**
+    paths-ignore: [ 'm365/**' ]
   pull_request:
-    branches: [ "main" ]
-    paths-ignore: m365/**
+    branches: [ 'main' ]
+    paths-ignore: [ 'm365/**' ]
 
 env:
   REGISTRY: ghcr.io
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1  # v0.35.0
         with:
           image-ref: ${{ needs.build.outputs.full-image }}
           format: 'sarif'
