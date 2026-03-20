@@ -122,6 +122,12 @@ variable "cert_info" {
   })
 }
 
+variable "skip_audit_log" {
+  description = "If set to true, will not generate a ScubaAudit.json file after each run"
+  type = bool
+  default = false
+}
+
 variable "secondary_app_info" {
   description = <<EOF
     Information for a secondary app. This can be used for one ScubaConnect instance to handle multiple environments (e.g., GCC and GCC High).

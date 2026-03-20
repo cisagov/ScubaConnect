@@ -63,14 +63,12 @@ if ($LASTEXITCODE -gt 0) {
 }
 
 $OutPathPrefix = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
-$Organizations = @()
-$Errors = @()
 $Files = @()
+$ErrorCount = 0
 
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     try {
         $Organization = $tenantConfig.BaseName.split("_")[0]
-        $Organizations += $Organization
         Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
 
         $Params = @{
@@ -111,7 +109,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Remove-Item $ResultsFile
 
     } catch {
-        $Errors += @{ $Organization = $_.Exception.Message }
+        $ErrorCount += 1
         Write-Output "Error occurred while running on $($Organization)"
         Write-Output $_
     }
@@ -122,23 +120,22 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     }
 }
 
-if ("true" -ne $Env:SKIP_SUMMARY_LOG) {
-    $Summary = [PSCustomObject]@{
-        Timestamp = $(Get-Date -Format o)
-        RunType = $Env:RUN_TYPE
-        Tenants = $Organizations
-        Files = $files
-        Errors = $Errors
+if ("true" -ne $Env:SKIP_AUDIT_LOG) {
+    $UTCDate = (Get-Date).ToUniversalTime().ToString('s')
+    $Audit = [PSCustomObject]@{
+        date = $UTCDate
+        source = "ScubaConnect"
+        filenames = $files
     }
-    $SummaryJson = $Summary | ConvertTo-Json -Depth 4
-    $SummaryPath = ".\run_results_$(Get-Date -Format 'yyyy-MM-ddTHH-mm-ss').json"
-    $SummaryJson | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $SummaryPath
+    $AuditJson = $Audit | ConvertTo-Json -Depth 4
+    $AuditPath = ".\ScubaAudit_$UTCDate.json"
+    $AuditJson | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $AuditPath
 
-    .\azcopy copy $SummaryPath "$OutPathPrefix$SummaryPath" --output-level essential --recursive
-    Write-Output "Upload summary log to $OutPathPrefix$SummaryPath"
+    .\azcopy copy $AuditPath "$OutPathPrefix$AuditPath" --output-level essential --recursive
+    Write-Output "Uploaded audit log to $OutPathPrefix$AuditPath"
 }
 
-Write-Output "Finished running on $($Organizations.Count) tenants. Encountered $($Errors.Count) Errors"
+Write-Output "Finished running on $($Files.Count) tenants. Encountered $ErrorCount Errors"
 if ($Errors.Count -gt 0) {
     exit 1
 }

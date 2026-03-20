@@ -1,8 +1,8 @@
 data "azurerm_client_config" "current" {}
 
 locals {
-  is_us_gov    = startswith(lower(var.resource_group.location), "usgov")
-  aad_endpoint = local.is_us_gov ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
+  is_us_gov       = startswith(lower(var.resource_group.location), "usgov")
+  aad_endpoint    = local.is_us_gov ? "https://login.microsoftonline.us" : "https://login.microsoftonline.com"
   container_types = toset(["scheduled", "adhoc"])
 }
 
@@ -71,7 +71,7 @@ resource "azurerm_container_group" "aci" {
     memory = var.container_memory_gb
     environment_variables = {
       "DEBUG_LOG"        = "false"
-      "SKIP_SUMMARY_LOG" = "false"
+      "SKIP_AUDIT_LOG"   = "false"
       "RUN_TYPE"         = each.key
       "TENANT_ID"        = data.azurerm_client_config.current.tenant_id
       "APP_ID"           = var.application_client_id
