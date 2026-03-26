@@ -63,12 +63,14 @@ if ($LASTEXITCODE -gt 0) {
 }
 
 $OutPathPrefix = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
+$TenantCount = 0
 $Files = @()
-$Errors = @()
+$ErrorTenants = @()
 
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     try {
         $Organization = $tenantConfig.BaseName.split("_")[0]
+        $TenantCount += 1
         Write-Output "Running ScubaGear for $($tenantConfig.BaseName)"
 
         $Params = @{
@@ -109,7 +111,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Remove-Item $ResultsFile
 
     } catch {
-        $Errors += $Organization
+        $ErrorTenants += $Organization
         Write-Output "Error occurred while running on $($Organization)"
         Write-Output $_
     }
@@ -132,9 +134,9 @@ if ("true" -ne $Env:SKIP_AUDIT_LOG) {
     Write-Output "Uploaded audit log to $OutPathPrefix$AuditFile"
 }
 
-Write-Output "Finished running on $($Files.Count) tenants. Encountered $($Errors.Count) Errors"
-if ($Errors.Count -gt 0) {
-    Write-Output "Tenants with errors:`n  $($Errors -join "`n  ")"
+Write-Output "Finished running on $TenantsCount tenants. Encountered $($ErrorTenants.Count) ErrorTenants"
+if ($ErrorTenants.Count -gt 0) {
+    Write-Output "Tenants with errors:`n  $($ErrorTenants -join "`n  ")"
     exit 1
 }
 exit 0
