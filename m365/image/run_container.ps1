@@ -134,7 +134,7 @@ if ("true" -ne $Env:SKIP_AUDIT_LOG) {
     Write-Output "Uploaded audit log to $OutPathPrefix$AuditFile"
 }
 
-Write-Output "Finished running on $TenantsCount tenants. Encountered $($ErrorTenants.Count) ErrorTenants"
+Write-Output "Finished running on $TenantCount tenants. Encountered $($ErrorTenants.Count) ErrorTenants"
 if ($ErrorTenants.Count -gt 0) {
     Write-Output "Tenants with errors:`n  $($ErrorTenants -join "`n  ")"
     exit 1
