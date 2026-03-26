@@ -64,7 +64,7 @@ if ($LASTEXITCODE -gt 0) {
 
 $OutPathPrefix = "$($Env:REPORT_OUTPUT)/$(Get-Date -Format "yyyy/MM/dd")/"
 $Files = @()
-$ErrorCount = 0
+$Errors = @()
 
 Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
     try {
@@ -109,7 +109,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         Remove-Item $ResultsFile
 
     } catch {
-        $ErrorCount += 1
+        $Errors += $Organization
         Write-Output "Error occurred while running on $($Organization)"
         Write-Output $_
     }
@@ -132,8 +132,9 @@ if ("true" -ne $Env:SKIP_AUDIT_LOG) {
     Write-Output "Uploaded audit log to $OutPathPrefix$AuditFile"
 }
 
-Write-Output "Finished running on $($Files.Count) tenants. Encountered $ErrorCount Errors"
+Write-Output "Finished running on $($Files.Count) tenants. Encountered $($Errors.Count) Errors"
 if ($Errors.Count -gt 0) {
+    Write-Output "Tenants with errors:`n  $($Errors -join "`n  ")"
     exit 1
 }
 exit 0
