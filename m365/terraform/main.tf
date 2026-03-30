@@ -16,11 +16,12 @@ locals {
 }
 
 resource "azurerm_log_analytics_workspace" "monitor_law" {
-  name                = "${local.name}-monitor-loganalytics"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  sku                 = "PerGB2018"
-  retention_in_days   = 90
+  name                         = "${local.name}-monitor-loganalytics"
+  location                     = var.location
+  resource_group_name          = azurerm_resource_group.rg.name
+  sku                          = "PerGB2018"
+  retention_in_days            = 90
+  local_authentication_enabled = true
 
   lifecycle {
     ignore_changes = [tags]
