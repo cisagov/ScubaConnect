@@ -1,20 +1,25 @@
 module "scuba_connect" {
   source                       = "../.."
-  app_name                     = var.app_name
-  app_multi_tenant             = var.app_multi_tenant
-  image_path                   = var.image_path
   contact_emails               = var.contact_emails
   resource_group_name          = var.resource_group_name
-  serial_number                = var.serial_number
   location                     = var.location
   schedule_interval            = var.schedule_interval
-  tenants_dir_path             = var.tenants_dir_path
+  app_name                     = var.app_name
+  app_multi_tenant             = var.app_multi_tenant
   vnet                         = var.vnet
-  container_image              = var.container_image
-  container_registry           = var.container_registry
+  firewall                     = var.firewall
+  tags                         = var.tags
+  serial_number                = var.serial_number
+  image_path                   = var.image_path
+  output_all_files             = var.output_all_files
+  create_app                   = var.create_app
+  prefix_override              = var.prefix_override
   input_storage_container_url  = var.input_storage_container_url
   output_storage_container_url = var.output_storage_container_url
-  output_all_files             = var.output_all_files
-  tags                         = var.tags
+  output_storage_container_sas = var.output_storage_container_sas
+  tenants_dir_path             = var.tenants_dir_path
+  container_registry           = var.container_registry
+  container_image              = var.container_image
+  container_memory_gb          = var.container_memory_gb
   secondary_app_info           = var.secondary_app_info
 }
