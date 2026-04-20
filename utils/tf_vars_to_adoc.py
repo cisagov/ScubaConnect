@@ -1,7 +1,10 @@
-import hcl2
+import hcl2  # written for version 8+
+from hcl2 import SerializationOptions
 import argparse
 import re
+import codecs
 
+hcl_opts = SerializationOptions(strip_string_quotes=True, preserve_heredocs=False)
 COMMENT_HEADER_REGEX = r'###\s*(.*?)\s*#*\s*variable\s*"(.*)"'
 
 parser = argparse.ArgumentParser("Converts a variables.tf file to an asciidoc description list. Treats comment blocks starting with ### as section headers")
@@ -9,7 +12,7 @@ parser.add_argument("variables_tf")
 args = parser.parse_args()
 
 with open(args.variables_tf, 'r') as f:
-    d = hcl2.load(f)
+    d = hcl2.load(f, serialization_options=hcl_opts)
     f.seek(0)
     text = '\n'.join(f.readlines())
     category_matches = re.findall(COMMENT_HEADER_REGEX, text, flags=re.MULTILINE)
@@ -23,5 +26,5 @@ for v in d['variable']:
     if t.startswith("object"):
         t = "object"
     default = f"[default={v[name]['default']}]" if "default" in v[name] else ""
-    desc = v[name]["description"]
-    print(f"`{name}` ({t}) {default}::: {desc.strip()}")
+    desc = codecs.decode(v[name]["description"], 'unicode_escape')
+    print(f"`{name}` ({t}) {default}::: {desc}")
