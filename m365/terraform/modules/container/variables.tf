@@ -25,13 +25,22 @@ variable "schedule_interval" {
 variable "input_storage_container_url" {
   default     = null
   type        = string
-  description = "If not null, input container to read configs from (must give permissions to service account). Otherwise by default will create storage container. Expect an https url pointing to a container"
+  description = <<-EOT
+    If not null, input container to read configs from (must assign blob reader role role to service account `sp_object_id` manually).
+    Otherwise by default will create storage container. 
+    Expect a container URL like: https://<account>.blob.core.windows.net/<container>
+    Note that the container must have "adhoc" and "scheduled" directories. These are not created automatically in this case
+  EOT
 }
 
 variable "output_storage_container_url" {
   default     = null
   type        = string
-  description = "If not null, output container to put results in (must give permissions to service account or use SAS). Otherwise by default will create storage container. Expect an https url pointing to a container"
+  description = <<-EOT
+    If not null, output container to put results in (must give permissions to service account `sp_object_id` or use SAS).
+    Otherwise by default will create storage container.
+    Expect a container URL like: https://<account>.blob.core.windows.net/<container>
+  EOT
 }
 
 variable "output_storage_container_sas" {
@@ -123,11 +132,11 @@ variable "cert_info" {
 }
 
 variable "secondary_app_info" {
-  description = <<EOF
+  description = <<-EOT
     Information for a secondary app. This can be used for one ScubaConnect instance to handle multiple environments (e.g., GCC and GCC High).
     To use, manually create an app in the other environment and add the certificate created for the primary app to it.
     Set `environment_to_use` to the environment the manual app is in, either "commericial" or "gcchigh"
-  EOF
+  EOT
   type = object({
     app_id             = string
     environment_to_use = string
