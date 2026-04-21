@@ -8,6 +8,7 @@ from datetime import datetime
 
 import yaml
 from scubagoggles.scuba_constants import API_SCOPES
+from scubagoggles import __version__ as goggles_version
 
 from google.auth import default, iam
 from google.auth.transport.requests import Request
@@ -64,9 +65,11 @@ def get_token(impersonate: str) -> str:
 
 
 if __name__ == '__main__':
+    logging.info(f"ScubaGoggles v{goggles_version}")
     logging.info(f"run type: {RUN_TYPE}")
     os.makedirs(f"input/{RUN_TYPE}", exist_ok=True)
 
+    logging.info(f"Reading files from: {INPUT_BUCKET}/{RUN_TYPE}")
     config_blobs = storage.Client().list_blobs(INPUT_BUCKET, prefix=RUN_TYPE)
     for config in config_blobs:
         if config.name.endswith("/"):
@@ -86,6 +89,7 @@ if __name__ == '__main__':
                     logging.error(f"file {config} missing 'subjectemail' field")
                     continue
                 subject_email = contents["subjectemail"]
+            
             cmd = "scubagoggles gws " + SCUBA_GWS_ARGS.format(org, config, get_token(subject_email))
             result = subprocess.run(shlex.split(cmd), check=True, capture_output=True, text=True)
             if result.stderr is not None and len(result.stderr) > 0:
@@ -123,7 +127,7 @@ if __name__ == '__main__':
                 file_str = file_parts[-1]
             blob = out_bucket.blob(f"{date_str}{dir_str}{file_str}")
             blob.upload_from_filename(local_file)
-            logging.info(f"Uploaded {blob.id}")
+            logging.info(f"Uploaded: {blob.id}")
             transferred += 1
     logging.info(f"Finished. Successes: {successes}/{len(config_files)}. Transferred {transferred} files.")
     log_client.close()
