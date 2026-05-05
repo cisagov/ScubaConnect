@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           ref: ${{ matrix.version.ref }}
 
@@ -52,15 +52,13 @@ jobs:
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
         if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@v3
-        with:
-          cosign-release: 'v2.2.4'
+        uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003  # v4.1.1
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4.1.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -70,7 +68,7 @@ jobs:
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6.0.0
         with:
           context: git
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -83,7 +81,7 @@ jobs:
 
       # Build and push Docker image
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7.1.0
         id: build-and-push
         with:
           context: gws/image
@@ -122,14 +120,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1  # v0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ needs.build.outputs.full-image }}
           format: 'sarif'
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4.35.3
         with:
           sarif_file: 'trivy-results.sarif'
           category: gws-image
