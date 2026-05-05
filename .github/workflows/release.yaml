@@ -29,7 +29,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           path: repo
       - name: Install Azure Signing Tool
@@ -39,7 +39,7 @@ jobs:
           Install-AzureSignTool
       # OpenID Connect (OIDC) login to Azure Public Cloud with AzPowershell
       - name: Login to Azure
-        uses: azure/login@v2
+        uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43  # v3.0.0
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -58,7 +58,7 @@ jobs:
             -RootFolderName "repo"
         # Creates release assets
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda  # v3.0.0
         id: create-release
         with:
           draft: true
