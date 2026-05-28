@@ -15,7 +15,7 @@ resource "google_project_iam_member" "scuba_runner_log_write" {
 
 resource "google_project_iam_member" "scuba_runner_scheduler_run" {
   project = data.google_client_config.this.project
-  role    = "roles/run.developer"
+  role    = "roles/run.invoker"
   member  = "serviceAccount:${google_service_account.scuba_runner_service_account.email}"
 }
 
