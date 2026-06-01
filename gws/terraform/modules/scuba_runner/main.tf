@@ -13,12 +13,6 @@ resource "google_project_iam_member" "scuba_runner_log_write" {
   member  = "serviceAccount:${google_service_account.scuba_runner_service_account.email}"
 }
 
-resource "google_project_iam_member" "scuba_runner_scheduler_run" {
-  project = data.google_client_config.this.project
-  role    = "roles/run.invoker"
-  member  = "serviceAccount:${google_service_account.scuba_runner_service_account.email}"
-}
-
 # allow creating token for self
 resource "google_service_account_iam_member" "gws_sa_impersonate_role" {
   service_account_id = google_service_account.scuba_runner_service_account.id
@@ -105,6 +99,13 @@ resource "google_cloud_run_v2_job" "scuba_runner" {
 
 # CLOUD SCHEDULER
 
+resource "google_cloud_run_v2_job_iam_member" "scuba_runner_scheduler_run" {
+  project = data.google_client_config.this.project
+  role    = "roles/run.jobsExecutorWithOverrides"
+  member  = "serviceAccount:${google_service_account.scuba_runner_service_account.email}"
+  name = google_cloud_run_v2_job.scuba_runner.name
+}
+
 resource "google_cloud_scheduler_job" "scuba_run_scheduler" {
   name        = "${google_cloud_run_v2_job.scuba_runner.name}-scheduler"
   description = "Trigger the ${google_cloud_run_v2_job.scuba_runner.name} job on schedule."
@@ -112,13 +113,13 @@ resource "google_cloud_scheduler_job" "scuba_run_scheduler" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://${google_cloud_run_v2_job.scuba_runner.location}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${data.google_client_config.this.project}/jobs/${google_cloud_run_v2_job.scuba_runner.name}:run"
+    uri         = "https://run.googleapis.com/v2/projects/${data.google_client_config.this.project}/locations/${google_cloud_run_v2_job.scuba_runner.location}/jobs/${google_cloud_run_v2_job.scuba_runner.name}:run"
     body        = base64encode(jsonencode({ "overrides" : { "containerOverrides" : [{ "env" : [{ "name" : "RUN_TYPE", "value" : "scheduled" }] }] } }))
     oauth_token {
       service_account_email = google_service_account.scuba_runner_service_account.email
     }
   }
-  depends_on = [google_project_service.service, google_project_iam_member.scuba_runner_scheduler_run]
+  depends_on = [google_project_service.service, google_cloud_run_v2_job_iam_member.scuba_runner_scheduler_run]
 }
 
 # ALERTS
