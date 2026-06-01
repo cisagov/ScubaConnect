@@ -119,6 +119,9 @@ resource "google_cloud_scheduler_job" "scuba_run_scheduler" {
       service_account_email = google_service_account.scuba_runner_service_account.email
     }
   }
+  retry_config {
+    retry_count = 2
+  }
   depends_on = [google_project_service.service, google_cloud_run_v2_job_iam_member.scuba_runner_scheduler_run]
 }
 
@@ -134,7 +137,7 @@ resource "google_monitoring_notification_channel" "email_alert" {
   force_delete = true
 }
 
-resource "google_monitoring_alert_policy" "log_alert_policy" {
+resource "google_monitoring_alert_policy" "runtime_alert_policy" {
   display_name          = "GogglesConnect Run Errors"
   notification_channels = [for alert in google_monitoring_notification_channel.email_alert : alert.name]
   severity              = "ERROR"
@@ -145,6 +148,28 @@ resource "google_monitoring_alert_policy" "log_alert_policy" {
     # easiest way to build these options is to build an alert in console then select "view code" and translate json
     condition_matched_log {
       filter = "resource.labels.job_name=\"${google_cloud_run_v2_job.scuba_runner.name}\" AND severity>=\"ERROR\""
+    }
+  }
+
+  alert_strategy {
+    notification_rate_limit {
+      period = "3600s"
+    }
+    auto_close = "604800s" # 7 days
+  }
+}
+
+resource "google_monitoring_alert_policy" "scheduler_alert_policy" {
+  display_name          = "GogglesConnect Scheduler Errors"
+  notification_channels = [for alert in google_monitoring_notification_channel.email_alert : alert.name]
+  severity              = "ERROR"
+  combiner              = "OR"
+
+  conditions {
+    display_name = "Error running GogglesConnect via Cloud Scheduler"
+    # easiest way to build these options is to build an alert in console then select "view code" and translate json
+    condition_matched_log {
+      filter = "resource.labels.job_id=\"${google_cloud_scheduler_job.scuba_run_scheduler.name}\" AND severity>=\"ERROR\""
     }
   }
 
