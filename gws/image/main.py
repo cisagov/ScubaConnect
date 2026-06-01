@@ -99,6 +99,7 @@ if __name__ == '__main__':
                 results = json.load(results_file)
                 results['MetaData']['RunType'] = RUN_TYPE
                 results_file.seek(0)
+                results_file.truncate()
                 json.dump(results, results_file)
 
             logging.info(f"Finished for: {org}")
