@@ -6,7 +6,8 @@
 [![License](https://img.shields.io/github/license/cisagov/ScubaConnect)](https://github.com/cisagov/ScubaConnect/blob/main/LICENSE)
 [![GearConnect Workflow Status](https://img.shields.io/github/actions/workflow/status/cisagov/ScubaConnect/m365_image_build.yaml?label=GearConnect%20(M365)%20Image&labelColor=008ad7)
 ](https://github.com/cisagov/ScubaConnect/actions/workflows/m365_image_build.yaml)
-
+[![GogglesConnect Workflow Status](https://img.shields.io/github/actions/workflow/status/cisagov/ScubaConnect/gws_image_build.yaml?label=GogglesConnect%20(GWS)%20Image&labelColor=34a853)
+](https://github.com/cisagov/ScubaConnect/actions/workflows/gws_image_build.yaml)
 
 
 

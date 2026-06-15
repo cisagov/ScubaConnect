@@ -67,5 +67,6 @@ jobs:
           tag_name: v${{ inputs.version }}
           files: |
             GearConnect-${{ inputs.version }}.zip
+            GogglesConnect-${{ inputs.version }}.zip
           generate_release_notes: true
           fail_on_unmatched_files: true
