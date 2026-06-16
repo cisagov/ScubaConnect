@@ -7,6 +7,8 @@
 This directory includes code for automating ScubaGoggles execution in a GCP environment against one or more tenants.
 Note that this document assumes knowledge of https://github.com/cisagov/ScubaGoggles/tree/main[ScubaGoggles].
 
+WARNING: ScubaGoggles is in an alpha state and in active development. Changes to ScubaGoggles may require re-onboarding tenants to GogglesConnect. 
+
 == Overview
 GogglesConnect consists of infrastructure deployed in a host tenant for running ScubaGoggles.
 GogglesConnect is configured to automatically run ScubaGoggles against tenants on a configurable cron schedule (e.g., daily, weekly, or monthly.)
