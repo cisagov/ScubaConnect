@@ -7,7 +7,7 @@ import subprocess
 from datetime import datetime
 
 import yaml
-from scubagoggles.scuba_constants import API_SCOPES
+from scubagoggles.scuba_constants import DWD_SCOPES
 from scubagoggles import __version__ as goggles_version
 
 from google.auth import default, iam
@@ -54,7 +54,7 @@ def get_token(impersonate: str) -> str:
         signer,
         credentials.service_account_email,
         "https://accounts.google.com/o/oauth2/token",
-        scopes=API_SCOPES,
+        scopes=DWD_SCOPES,
         subject=impersonate,
     )
     updated_credentials.refresh(Request())
