@@ -10,9 +10,9 @@ import yaml
 from scubagoggles.scuba_constants import DWD_SCOPES
 from scubagoggles import __version__ as goggles_version
 
-from google.auth import default, iam
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
+# from google.auth import default, iam
+# from google.auth.transport.requests import Request
+# from google.oauth2 import service_account
 from google.cloud import storage
 
 import google.cloud.logging
