@@ -94,6 +94,7 @@ if __name__ == '__main__':
             result = subprocess.run(shlex.split(cmd), check=True, capture_output=True, text=True)
             if result.stderr is not None and len(result.stderr) > 0:
                 logging.warning(f"(scubagoggles) {result.stderr}")
+            logging.info(f"(scubagoggles stdout) {result.stdout}")
             results_file_path = glob.glob(f"output/{org}/*/ScubaResults*.json")[0]
             with open(results_file_path, 'r+') as results_file:
                 results = json.load(results_file)
