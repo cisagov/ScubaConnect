@@ -24,7 +24,7 @@ OUTPUT_BUCKET = os.environ.get('OUTPUT_BUCKET')
 RUN_TYPE = os.environ.get('RUN_TYPE')
 INPUT_BUCKET = os.environ.get('INPUT_BUCKET')
 OUTPUT_ALL_FILES = os.environ.get('OUTPUT_ALL_FILES', "false").lower() == "true"
-SCUBA_GWS_ARGS = '--outputpath output/{} --config {} --defaultauth --quiet'
+SCUBA_GWS_ARGS = '--outputpath output/{} --config {} --usemetadataserverauth --quiet'
 
 
 # def get_token(impersonate: str) -> str:
