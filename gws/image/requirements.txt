@@ -1,4 +1,4 @@
-google-auth==2.55.1
+google-auth==2.53.0
 git+https://github.com/jacdavi/ScubaGoggles.git@feat/metadata_server_auth
 google-cloud-storage==3.12.0
 google-cloud-logging==3.16.0
