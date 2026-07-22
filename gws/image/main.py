@@ -6,63 +6,20 @@ import shlex
 import subprocess
 from datetime import datetime
 
-import yaml
-from scubagoggles.scuba_constants import API_SCOPES
 from scubagoggles import __version__ as goggles_version
 
-from google.auth import default, iam
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
 from google.cloud import storage
-
 import google.cloud.logging
-log_client = google.cloud.logging.Client()
-log_client.setup_logging()
 
 PROJECT_ID = os.environ.get('PROJECT')
 OUTPUT_BUCKET = os.environ.get('OUTPUT_BUCKET')
 RUN_TYPE = os.environ.get('RUN_TYPE')
 INPUT_BUCKET = os.environ.get('INPUT_BUCKET')
 OUTPUT_ALL_FILES = os.environ.get('OUTPUT_ALL_FILES', "false").lower() == "true"
-SCUBA_GWS_ARGS = '--outputpath output/{} --config {} --accesstoken {} --quiet'
+SCUBA_GWS_ARGS = '--outputpath output/{} --config {} --usemetadataserverauth --quiet'
 
-
-def get_token(impersonate: str) -> str:
-    """
-    Gets service account token for authorization. We have to create new credentials for this
-    SA to be able to change the subject to match a user's email for access to the reports api. 
-    See Google example: 
-    https://github.com/GoogleCloudPlatform/professional-services/blob/main/examples/gce-to-adminsdk
-
-    :param impersonate: user to impersonate for request calls
-    :raises Exception: if the credentials are invalid after refresh
-    :return: the valid token
-    """
-    credentials, _ = default()
-    request = Request()
-
-    # Refresh the default credentials. This ensures that the information
-    # about this account, notably the email, is populated.
-    credentials.refresh(request)
-
-    # Create an IAM signer using the default credentials.
-    signer = iam.Signer(request, credentials, credentials.service_account_email)
-
-    # Create OAuth 2.0 Service Account credentials using the IAM-based
-    # signer and the bootstrap_credential's service account email.
-    updated_credentials = service_account.Credentials(
-        signer,
-        credentials.service_account_email,
-        "https://accounts.google.com/o/oauth2/token",
-        scopes=API_SCOPES,
-        subject=impersonate,
-    )
-    updated_credentials.refresh(Request())
-
-    if not updated_credentials.valid:
-        raise Exception(f"Couldn't get valid credentials for {impersonate}")
-    return updated_credentials.token
-
+log_client = google.cloud.logging.Client()
+log_client.setup_logging()
 
 if __name__ == '__main__':
     logging.info(f"ScubaGoggles v{goggles_version}")
@@ -83,17 +40,12 @@ if __name__ == '__main__':
             org = os.path.splitext(os.path.basename(config))[0]
             logging.info(f"Running for: {org}")
             os.makedirs(f"output/{org}", exist_ok=True)
-            with open(config, 'r') as f:
-                contents = yaml.safe_load(f)
-                if "subjectemail" not in contents:
-                    logging.error(f"file {config} missing 'subjectemail' field")
-                    continue
-                subject_email = contents["subjectemail"]
             
-            cmd = "scubagoggles gws " + SCUBA_GWS_ARGS.format(org, config, get_token(subject_email))
+            cmd = "scubagoggles gws " + SCUBA_GWS_ARGS.format(org, config)
             result = subprocess.run(shlex.split(cmd), check=True, capture_output=True, text=True)
             if result.stderr is not None and len(result.stderr) > 0:
                 logging.warning(f"(scubagoggles) {result.stderr}")
+            logging.info(f"(scubagoggles stdout) {result.stdout}")
             results_file_path = glob.glob(f"output/{org}/*/ScubaResults*.json")[0]
             with open(results_file_path, 'r+') as results_file:
                 results = json.load(results_file)

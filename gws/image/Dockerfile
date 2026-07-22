@@ -1,5 +1,8 @@
 FROM python:3.14-slim
 
+# TODO: remove
+RUN apt-get update && apt-get install -y git
+
 RUN useradd --create-home user
 USER user
 
