@@ -1,3 +1,5 @@
-scubagoggles==0.6.0
-google-cloud-storage==3.12.0
-google-cloud-logging==3.16.0
+scubagoggles==1.0.0
+google-cloud-storage==3.13.0
+google-cloud-logging==3.16.1
+# TEMPORARY below due to https://github.com/cisagov/ScubaGoggles/issues/1134
+streamlit==1.60.0

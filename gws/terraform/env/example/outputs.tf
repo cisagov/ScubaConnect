@@ -4,7 +4,7 @@ output "scuba_runner_svc_acct_id" {
 }
 
 output "scuba_runner_svc_acct_email" {
-  description = "Email of the service account used for running ScubaGoggles. May be used for granting permissions to write to a pre-existing bucket"
+  description = "Email of the service account used for running ScubaGoggles. Used for granting roles"
   value       = module.scuba_runner.scuba_runner_service_account.email
 }
 
@@ -25,12 +25,13 @@ output "oauth_scopes" {
     [
       "https://www.googleapis.com/auth/admin.reports.audit.readonly",
       "https://www.googleapis.com/auth/admin.directory.domain.readonly",
+      "https://www.googleapis.com/auth/admin.directory.group.readonly",
       "https://www.googleapis.com/auth/admin.directory.orgunit.readonly",
       "https://www.googleapis.com/auth/admin.directory.user.readonly",
-      "https://www.googleapis.com/auth/admin.directory.group.readonly",
+      "https://www.googleapis.com/auth/admin.directory.rolemanagement.readonly",
       "https://www.googleapis.com/auth/admin.directory.customer.readonly",
-      "https://www.googleapis.com/auth/apps.groups.settings",
-      "https://www.googleapis.com/auth/cloud-identity.policies.readonly"
+      "https://www.googleapis.com/auth/cloud-identity.policies.readonly",
+      "https://www.googleapis.com/auth/cloud-identity.inboundsso.readonly"
     ]
   )
 }

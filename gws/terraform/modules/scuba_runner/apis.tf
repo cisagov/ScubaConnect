@@ -4,6 +4,7 @@ locals {
     "admin.googleapis.com",
     "cloudidentity.googleapis.com",
     "groupssettings.googleapis.com",
+    "licensing.googleapis.com",
     # Needed for GogglesConnect resources
     "artifactregistry.googleapis.com",
     "cloudscheduler.googleapis.com",
