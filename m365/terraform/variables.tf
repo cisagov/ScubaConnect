@@ -110,21 +110,39 @@ variable "input_storage_container_url" {
   EOT
 }
 
-variable "output_storage_container_url" {
-  default     = null
-  type        = string
+variable "create_output_storage" {
+  type        = bool
+  default     = true
   description = <<-EOT
-    If not null, output container to put results in (must give permissions to service account `sp_object_id` or use SAS).
-    Otherwise by default will create storage container.
-    Expect a container URL like: https://<account>.blob.core.windows.net/<container>
+    If true, will create a local storage container and write results there. 
+    Results can be written to additional buckets via extra_output_container_urls
   EOT
 }
 
-variable "output_storage_container_sas" {
-  default     = null
-  type        = string
-  description = "If not null, shared access signature token (query string) to use when writing results to the output storage container. Set this when the container is in an external tenant (the owner of that container will provide the value)."
+variable "extra_output_container_urls" {
+  default     = []
+  type        = list(string)
+  description = <<-EOT
+    Extra output container URLs to write results to. URL format: https://<account>.blob.core.windows.net/<container>    
+    For each container, either:
+    1. Grant write permissions (Storage Blob Data Contributor) to service account `sp_object_id`, OR
+    2. Provide a corresponding SAS token in extra_output_container_sas_tokens (matched by list index)
+  EOT
+}
+
+variable "extra_output_container_sas_tokens" {
+  default     = []
+  type        = list(string)
   sensitive   = true
+  description = <<-EOT
+    Optional SAS tokens for extra output containers. Must match the order of extra_output_container_urls.
+    Use empty string "" for containers that use managed identity authentication.
+  EOT
+
+  validation {
+    condition     = length(var.extra_output_container_sas_tokens) == 0 || length(var.extra_output_container_sas_tokens) == length(var.extra_output_container_urls)
+    error_message = "extra_output_container_sas_tokens must either be empty or have the same length as extra_output_container_urls. Each SAS token corresponds to the URL at the same index. Use empty string \"\" for containers using managed identity."
+  }
 }
 
 variable "tenants_dir_path" {

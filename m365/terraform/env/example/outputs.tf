@@ -3,9 +3,9 @@ output "app_id" {
   value       = module.scuba_connect.app_id
 }
 
-output "output_storage_container_url" {
-  description = "URL of the output storage account results are written to"
-  value       = module.scuba_connect.output_storage_container_url
+output "output_storage_container_urls" {
+  description = "URLs of the output storage accounts results are written to"
+  value       = module.scuba_connect.output_storage_container_urls
 }
 
 output "input_storage_container_url" {

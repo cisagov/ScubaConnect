@@ -64,6 +64,15 @@ if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
 
+# Parse output containers from environment variables
+$OutputUrls = $Env:OUTPUT_CONTAINER_URLS | ConvertFrom-Json
+$OutputSasTokens = $Env:OUTPUT_CONTAINER_SAS_TOKENS | ConvertFrom-Json
+
+# Sanity check: both arrays must have the same length
+if ($OutputUrls.Count -ne $OutputSasTokens.Count) {
+    throw "Configuration error: OUTPUT_CONTAINER_URLS has $($OutputUrls.Count) entries but OUTPUT_CONTAINER_SAS_TOKENS has $($OutputSasTokens.Count) entries. These must match."
+}
+
 $total_count = 0
 $error_count = 0
 
@@ -92,22 +101,48 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
 
         Write-Output "  Starting Upload"
         $DatePath = Get-Date -Format "yyyy/MM/dd"
-        if ("true" -eq $Env:OUTPUT_ALL_FILES) {
-            $InPath = "$($ResultsFile.DirectoryName)\*"
-            $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($org)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
+
+        Write-Output "  Uploading to $($OutputUrls.Count) destination(s)"
+
+        $uploadFailures = @()
+
+        for ($i = 0; $i -lt $OutputUrls.Count; $i++) {
+            $url = $OutputUrls[$i]
+            $sasToken = $OutputSasTokens[$i]
+            
+            # Build paths based on output mode
+            if ("true" -eq $Env:OUTPUT_ALL_FILES) {
+                $InPath = "$($ResultsFile.DirectoryName)\*"
+                $OutPath = "$url/$($DatePath)/$($org)-$([int]$(Get-Date).TimeOfDay.TotalSeconds)"
+            }
+            else {
+                $InPath = $ResultsFile.FullName
+                $OutPath = "$url/$($DatePath)/$($ResultsFile.Name)"
+            }
+            
+            # Append SAS token if provided (non-empty string)
+            if (![string]::IsNullOrEmpty($sasToken)) {
+                $OutPath += "?$sasToken"
+                Write-Output "    -> $url (using SAS token)"
+            } else {
+                Write-Output "    -> $url (using managed identity)"
+            }
+            
+            .\azcopy copy $InPath $OutPath --output-level essential --recursive
+            if ($LASTEXITCODE -gt 0) {
+                $uploadFailures += $url
+                Write-Output "    ERROR: Failed to upload to $url"
+            } else {
+                Write-Output "    SUCCESS: Uploaded to $url"
+            }
         }
-        else {
-            $InPath = $ResultsFile.FullName
-            $OutPath = "$($Env:REPORT_OUTPUT)/$($DatePath)/$($ResultsFile.Name)"
+
+        # Fail if ANY upload failed - ensures user investigates
+        if ($uploadFailures.Count -gt 0) {
+            throw "Failed to upload results to $($uploadFailures.Count) of $($OutputUrls.Count) destination(s): $($uploadFailures -join ', ')"
         }
-        if ($null -ne $Env:REPORT_SAS) {
-            $OutPath += "?$($Env:REPORT_SAS)"
-        }
-        .\azcopy copy $InPath $OutPath --output-level essential --recursive
-        if ($LASTEXITCODE -gt 0) {
-            throw "Error transferring files"
-        }
-        Write-Output "  Finished Upload to $OutPath"
+
+        Write-Output "  All uploads completed successfully"
         Remove-Item $ResultsFile
     
     } catch {
