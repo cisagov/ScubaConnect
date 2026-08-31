@@ -113,20 +113,10 @@ resource "random_string" "unique_role_id" {
   special = false
 }
 
-# use random string to ensure unique since custom roles are soft-deleted:
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam_custom_role
-resource "google_project_iam_custom_role" "custom_storage_role" {
-  count       = var.create_output_bucket ? 1 : 0
-  role_id     = "gogglesconnect_storage_write_role_${random_string.unique_role_id.result}"
-  title       = "Custom Storage Write Role"
-  description = "Role with minimal permissions for writing to storage bucket"
-  permissions = ["storage.buckets.get", "storage.objects.create"]
-}
-
 resource "google_storage_bucket_iam_member" "scuba_runner_output_storage_perms" {
   count  = var.create_output_bucket ? 1 : 0
   bucket = google_storage_bucket.output_bucket[0].name
-  role   = google_project_iam_custom_role.custom_storage_role[0].name
+  role   = "roles/storage.objectCreator"
   member = "serviceAccount:${google_service_account.scuba_runner_service_account.email}"
 }
 

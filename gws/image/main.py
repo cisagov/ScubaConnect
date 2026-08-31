@@ -76,7 +76,7 @@ if __name__ == '__main__':
     for bucket_name in OUTPUT_BUCKETS:
         try:
             logging.info(f"Uploading to bucket: {bucket_name}")
-            out_bucket = storage_client.get_bucket(bucket_name)
+            out_bucket = storage_client.bucket(bucket_name)
             transferred = 0
             
             for local_file in rel_paths:

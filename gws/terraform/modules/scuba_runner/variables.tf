@@ -1,3 +1,5 @@
+### REQUIRED ###
+
 variable "cron_schedule" {
   description = "Cron schedule defining when to run scuba runner. Format is standard cron syntax"
   type        = string
@@ -53,9 +55,6 @@ variable "extra_output_buckets" {
   default     = []
   description = <<-EOT
     Extra output bucket names to write results to.
-    The service account must be granted storage.objects.create and storage.buckets.get 
-    permissions on these buckets (e.g., via roles/storage.objectCreator).
-    
-    Results will be uploaded to ALL configured buckets (local + extra).
+    The service account must be granted roles/storage.objectCreator.
   EOT
 }
