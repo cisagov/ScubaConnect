@@ -79,8 +79,8 @@ resource "google_cloud_run_v2_job" "scuba_runner" {
           value = var.input_bucket == null ? google_storage_bucket.input_bucket[0].name : var.input_bucket
         }
         env {
-          name  = "OUTPUT_BUCKET"
-          value = var.output_bucket == null ? google_storage_bucket.output_bucket[0].name : var.output_bucket
+          name  = "OUTPUT_BUCKETS"
+          value = jsonencode(local.output_storage_buckets)
         }
         env {
           name  = "OUTPUT_ALL_FILES"
