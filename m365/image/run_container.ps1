@@ -64,13 +64,23 @@ if ($LASTEXITCODE -gt 0) {
     throw "Error reading config files"
 }
 
-# Parse output containers from environment variables
-$OutputUrls = $Env:OUTPUT_CONTAINER_URLS | ConvertFrom-Json
-$OutputSasTokens = $Env:OUTPUT_CONTAINER_SAS_TOKENS | ConvertFrom-Json
+# Parse output containers from environment variables.
+if ($null -ne $Env:OUTPUT_CONTAINER_URLS) {
+    # @(...) forces array context so single-element results aren't unwrapped to a scalar
+    $OutputUrls = @($Env:OUTPUT_CONTAINER_URLS | ConvertFrom-Json)
+    $OutputSasTokens = @($Env:OUTPUT_CONTAINER_SAS_TOKENS | ConvertFrom-Json)
 
-# Sanity check: both arrays must have the same length
-if ($OutputUrls.Count -ne $OutputSasTokens.Count) {
-    throw "Configuration error: OUTPUT_CONTAINER_URLS has $($OutputUrls.Count) entries but OUTPUT_CONTAINER_SAS_TOKENS has $($OutputSasTokens.Count) entries. These must match."
+    # Sanity check: both arrays must have the same length
+    if ($OutputUrls.Count -ne $OutputSasTokens.Count) {
+        throw "Configuration error: OUTPUT_CONTAINER_URLS has $($OutputUrls.Count) entries but OUTPUT_CONTAINER_SAS_TOKENS has $($OutputSasTokens.Count) entries. These must match."
+    }
+} elseif ($null -ne $Env:REPORT_OUTPUT) {
+    # DEPRECATED path: legacy single-output variables used when Terraform has not been updated
+    Write-Output "  WARNING: Using deprecated REPORT_OUTPUT/REPORT_SAS variables. Update your Terraform to use the new output variables."
+    $OutputUrls = @($Env:REPORT_OUTPUT)
+    $OutputSasTokens = @($(if ($null -ne $Env:REPORT_SAS) { $Env:REPORT_SAS } else { "" }))
+} else {
+    throw "No output configured. Set OUTPUT_CONTAINER_URLS (or the deprecated REPORT_OUTPUT)."
 }
 
 $total_count = 0

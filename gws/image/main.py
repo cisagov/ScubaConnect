@@ -12,7 +12,6 @@ from google.cloud import storage
 import google.cloud.logging
 
 PROJECT_ID = os.environ.get('PROJECT')
-OUTPUT_BUCKETS = json.loads(os.environ.get('OUTPUT_BUCKETS', '[]'))
 RUN_TYPE = os.environ.get('RUN_TYPE')
 INPUT_BUCKET = os.environ.get('INPUT_BUCKET')
 OUTPUT_ALL_FILES = os.environ.get('OUTPUT_ALL_FILES', "false").lower() == "true"
@@ -24,6 +23,18 @@ log_client.setup_logging()
 if __name__ == '__main__':
     logging.info(f"ScubaGoggles v{goggles_version}")
     logging.info(f"run type: {RUN_TYPE}")
+
+    # Parse output buckets: prefer new OUTPUT_BUCKETS list, fall back to deprecated OUTPUT_BUCKET
+    _output_buckets_env = os.environ.get('OUTPUT_BUCKETS')
+    _output_bucket_legacy = os.environ.get('OUTPUT_BUCKET')
+    if _output_buckets_env is not None:
+        OUTPUT_BUCKETS = json.loads(_output_buckets_env)
+    elif _output_bucket_legacy:
+        # DEPRECATED path: legacy single-output variable used when Terraform has not been updated
+        logging.warning("Using deprecated OUTPUT_BUCKET variable. Update your Terraform to use the new output variables.")
+        OUTPUT_BUCKETS = [_output_bucket_legacy]
+    else:
+        OUTPUT_BUCKETS = []
 
     if not OUTPUT_BUCKETS or len(OUTPUT_BUCKETS) == 0:
         logging.error("No output buckets configured!")
