@@ -56,8 +56,20 @@ variable "input_bucket" {
   default     = null
 }
 
-variable "output_bucket" {
-  type        = string
-  description = "Pre-existing bucket name to output results to. If empty, will create a bucket"
-  default     = null
+variable "create_output_bucket" {
+  type        = bool
+  default     = true
+  description = <<-EOT
+    If true, will create a local storage bucket and write results there.
+    Results can be written to additional buckets via extra_output_buckets.
+  EOT
+}
+
+variable "extra_output_buckets" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    Extra output bucket names to write results to.
+    The service account must be granted roles/storage.objectCreator.
+  EOT
 }

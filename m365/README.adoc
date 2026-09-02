@@ -101,10 +101,14 @@ Advanced::
 Otherwise by default will create storage container. 
 Expect a container URL like: https://<account>.blob.core.windows.net/<container>
 Note that the container must have "adhoc" and "scheduled" directories. These are not created automatically in this case
-`output_storage_container_url` (string) [default=None]::: If not null, output container to put results in (must give permissions to service account `sp_object_id` or use SAS).
-Otherwise by default will create storage container.
-Expect a container URL like: https://<account>.blob.core.windows.net/<container>
-`output_storage_container_sas` (string) [default=None]::: If not null, shared access signature token (query string) to use when writing results to the output storage container. Set this when the container is in an external tenant (the owner of that container will provide the value).
+`create_output_storage` (bool) [default=True]::: If true, will create a local storage container and write results there. 
+Results can be written to additional buckets via extra_output_container_urls
+`extra_output_container_urls` (list(string)) [default=[]]::: Extra output container URLs to write results to. URL format: https://<account>.blob.core.windows.net/<container>    
+For each container, either:
+1. Grant write permissions (Storage Blob Data Contributor) to service account `sp_object_id`, OR
+2. Provide a corresponding SAS token in extra_output_container_sas_tokens (matched by list index)
+`extra_output_container_sas_tokens` (list(string)) [default=[]]::: Optional SAS tokens for extra output containers. Must match the order of extra_output_container_urls.
+Use empty string "" for containers that use service principal authentication.
 `tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
 `container_registry` (object) [default=None]::: Credentials for logging into registry with container image
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.

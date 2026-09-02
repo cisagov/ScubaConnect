@@ -12,7 +12,6 @@ from google.cloud import storage
 import google.cloud.logging
 
 PROJECT_ID = os.environ.get('PROJECT')
-OUTPUT_BUCKET = os.environ.get('OUTPUT_BUCKET')
 RUN_TYPE = os.environ.get('RUN_TYPE')
 INPUT_BUCKET = os.environ.get('INPUT_BUCKET')
 OUTPUT_ALL_FILES = os.environ.get('OUTPUT_ALL_FILES', "false").lower() == "true"
@@ -24,8 +23,24 @@ log_client.setup_logging()
 if __name__ == '__main__':
     logging.info(f"ScubaGoggles v{goggles_version}")
     logging.info(f"run type: {RUN_TYPE}")
-    os.makedirs(f"input/{RUN_TYPE}", exist_ok=True)
 
+    # Parse output buckets: prefer new OUTPUT_BUCKETS list, fall back to deprecated OUTPUT_BUCKET
+    _output_buckets_env = os.environ.get('OUTPUT_BUCKETS')
+    _output_bucket_legacy = os.environ.get('OUTPUT_BUCKET')
+    if _output_buckets_env is not None:
+        OUTPUT_BUCKETS = json.loads(_output_buckets_env)
+    elif _output_bucket_legacy:
+        # DEPRECATED path: legacy single-output variable used when Terraform has not been updated
+        logging.warning("Using deprecated OUTPUT_BUCKET variable. Update your Terraform to use the new output variables.")
+        OUTPUT_BUCKETS = [_output_bucket_legacy]
+    else:
+        OUTPUT_BUCKETS = []
+
+    if not OUTPUT_BUCKETS or len(OUTPUT_BUCKETS) == 0:
+        logging.error("No output buckets configured!")
+        exit(1)
+
+    os.makedirs(f"input/{RUN_TYPE}", exist_ok=True)
     logging.info(f"Reading files from: {INPUT_BUCKET}/{RUN_TYPE}")
     config_blobs = storage.Client().list_blobs(INPUT_BUCKET, prefix=RUN_TYPE)
     for config in config_blobs:
@@ -33,9 +48,10 @@ if __name__ == '__main__':
             continue  # skip directory itself
         config.download_to_filename(f"input/{config.name}")
 
-    successes = 0
+    run_successes = 0
     config_files = glob.glob(f"input/{RUN_TYPE}/*")
     for config in config_files:
+        org = ""
         try:
             org = os.path.splitext(os.path.basename(config))[0]
             logging.info(f"Running for: {org}")
@@ -55,34 +71,54 @@ if __name__ == '__main__':
                 json.dump(results, results_file)
 
             logging.info(f"Finished for: {org}")
-            successes += 1
+            run_successes += 1
         except Exception as e:
             logging.exception(f"Exception running for org {org}")
             if isinstance(e, subprocess.CalledProcessError):
                 if e.stderr is not None and len(e.stderr) > 0:
                     logging.error(f"(scubagoggles) {e.stderr}")
 
-    logging.info(f"Copying files to GCS bucket: {OUTPUT_BUCKET}")
+    logging.info(f"Copying files to {len(OUTPUT_BUCKETS)} GCS bucket(s)")
     rel_paths = glob.glob('output/**', recursive=True)
-    out_bucket = storage.Client().get_bucket(OUTPUT_BUCKET)
-    transferred = 0
+    storage_client = storage.Client()
     today = datetime.today()
-    for local_file in rel_paths:
-        if os.path.isfile(local_file) and (OUTPUT_ALL_FILES or ("ScubaResults" in local_file)):
-            file_parts = local_file.split("/")
-            date_str = today.strftime('%Y/%m/%d/')
-            if OUTPUT_ALL_FILES:
-                seconds_since_midnight = (today - today.replace(hour=0, minute=0, second=0, microsecond=0)).seconds  
-                dir_str = f'{file_parts[1]}_{seconds_since_midnight}/'
-                file_str = '/'.join(file_parts[2:])
-            else:
-                dir_str = ""
-                file_str = file_parts[-1]
-            blob = out_bucket.blob(f"{date_str}{dir_str}{file_str}")
-            blob.upload_from_filename(local_file)
-            logging.info(f"Uploaded: {blob.id}")
-            transferred += 1
-    logging.info(f"Finished. Successes: {successes}/{len(config_files)}. Transferred {transferred} files.")
+    upload_failures = []
+
+    for bucket_name in OUTPUT_BUCKETS:
+        try:
+            logging.info(f"Uploading to bucket: {bucket_name}")
+            out_bucket = storage_client.bucket(bucket_name)
+            transferred = 0
+            
+            for local_file in rel_paths:
+                if os.path.isfile(local_file) and (OUTPUT_ALL_FILES or ("ScubaResults" in local_file)):
+                    file_parts = local_file.split("/")
+                    date_str = today.strftime('%Y/%m/%d/')
+                    if OUTPUT_ALL_FILES:
+                        seconds_since_midnight = (today - today.replace(hour=0, minute=0, second=0, microsecond=0)).seconds  
+                        dir_str = f'{file_parts[1]}_{seconds_since_midnight}/'
+                        file_str = '/'.join(file_parts[2:])
+                    else:
+                        dir_str = ""
+                        file_str = file_parts[-1]
+                    blob = out_bucket.blob(f"{date_str}{dir_str}{file_str}")
+                    blob.upload_from_filename(local_file)
+                    logging.info(f"Uploaded: {blob.id}")
+                    transferred += 1
+            
+            logging.info(f"Successfully uploaded {transferred} files to {bucket_name}")
+        except Exception as e:
+            logging.error(f"Failed to upload to bucket {bucket_name}: {e}")
+            upload_failures.append(bucket_name)
+
+    if upload_failures:
+        logging.error(f"Failed to upload to {len(upload_failures)} of {len(OUTPUT_BUCKETS)} bucket(s): {', '.join(upload_failures)}")
+
+    if run_successes < len(config_files):
+        logging.error(f"ScubaGoggles failed for {len(config_files) - run_successes} of {len(config_files)} organization(s)")
+
+    logging.info(f"Finished. Successes: {run_successes}/{len(config_files)}.")
     log_client.close()
-    if successes < len(config_files):
+
+    if len(upload_failures) > 0 or run_successes < len(config_files):
         exit(1)
