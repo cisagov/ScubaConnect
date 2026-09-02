@@ -108,7 +108,7 @@ For each container, either:
 1. Grant write permissions (Storage Blob Data Contributor) to service account `sp_object_id`, OR
 2. Provide a corresponding SAS token in extra_output_container_sas_tokens (matched by list index)
 `extra_output_container_sas_tokens` (list(string)) [default=[]]::: Optional SAS tokens for extra output containers. Must match the order of extra_output_container_urls.
-Use empty string "" for containers that use managed identity authentication.
+Use empty string "" for containers that use service principal authentication.
 `tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
 `container_registry` (object) [default=None]::: Credentials for logging into registry with container image
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-m365:latest]::: Docker image to use for running ScubaGear.

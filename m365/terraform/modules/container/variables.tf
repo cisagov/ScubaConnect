@@ -59,12 +59,15 @@ variable "extra_output_container_sas_tokens" {
   sensitive   = true
   description = <<-EOT
     Optional SAS tokens for extra output containers. Must match the order of extra_output_container_urls.
-    Use empty string "" for containers that use managed identity authentication.
+    Use empty string "" for containers that use service principal authentication.
   EOT
 
   validation {
     condition     = length(var.extra_output_container_sas_tokens) == 0 || length(var.extra_output_container_sas_tokens) == length(var.extra_output_container_urls)
-    error_message = "extra_output_container_sas_tokens must either be empty or have the same length as extra_output_container_urls. Each SAS token corresponds to the URL at the same index. Use empty string \"\" for containers using managed identity."
+    error_message = <<-EOT
+      extra_output_container_sas_tokens must either be empty or have the same length as extra_output_container_urls. 
+      Each SAS token corresponds to the URL at the same index. Use empty string "" for containers using service principal.
+    EOT
   }
 }
 

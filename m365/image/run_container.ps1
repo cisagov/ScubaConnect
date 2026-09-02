@@ -135,7 +135,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
                 $OutPath += "?$sasToken"
                 Write-Output "    -> $url (using SAS token)"
             } else {
-                Write-Output "    -> $url (using managed identity)"
+                Write-Output "    -> $url (using service principal)"
             }
             
             .\azcopy copy $InPath $OutPath --output-level essential --recursive
