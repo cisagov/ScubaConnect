@@ -34,7 +34,7 @@ variable "app_name" {
   description = "App name. Displayed in Azure console on installed tenants"
   validation {
     condition     = length(var.app_name) <= 17 && length(var.app_name) > 1
-    error_message = "App name cannot exceed 17 characters due to resource name limits. Set a short `prefix_override` to keep a longer app name"
+    error_message = "App name cannot exceed 17 characters due to resource name limits. Either reduce length or set `prefix_override` with a shorter string"
   }
 }
 
