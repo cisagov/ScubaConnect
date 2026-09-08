@@ -32,6 +32,10 @@ variable "app_name" {
   default     = "ScubaConnect"
   type        = string
   description = "App name. Displayed in Azure console on installed tenants"
+  validation {
+    condition     = length(var.app_name) <= 17 && length(var.app_name) > 1
+    error_message = "App name cannot exceed 17 characters due to resource name limits. Set a short `prefix_override` to keep a longer app name"
+  }
 }
 
 variable "app_multi_tenant" {
@@ -97,6 +101,10 @@ variable "prefix_override" {
   default     = null
   type        = string
   description = "Prefix for resource names. If null, one will be generated from app_name"
+    validation {
+    condition     = length(var.prefix_override) <= 17 && length(var.prefix_override) > 1
+    error_message = "Prefix override cannot exceed 17 characters due to resource name limits"
+  }
 }
 
 variable "input_storage_container_url" {
