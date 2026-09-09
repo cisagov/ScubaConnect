@@ -1,10 +1,16 @@
-.DS_Store
+.*
+/*/
+!.gitignore
+!**/.github/
+
 **/.terraform/*
 .terraform
 *.tfstate
 *.tfstate.*
+
 *.secrets
 *.pfx
 *.pem
+
 **/env/*
 !**/env/example

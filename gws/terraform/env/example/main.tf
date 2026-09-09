@@ -8,7 +8,8 @@ module "scuba_runner" {
   output_all_files     = var.output_all_files
   cron_schedule        = var.cron_schedule
   input_bucket         = var.input_bucket
-  output_bucket        = var.output_bucket
+  create_output_bucket = var.create_output_bucket
+  extra_output_buckets = var.extra_output_buckets
   tenants_dir_path     = var.tenants_dir_path
 }
 

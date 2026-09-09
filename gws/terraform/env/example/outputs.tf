@@ -8,9 +8,9 @@ output "scuba_runner_svc_acct_email" {
   value       = module.scuba_runner.scuba_runner_service_account.email
 }
 
-output "output_storage_bucket" {
-  description = "Bucket name where results are written to"
-  value       = module.scuba_runner.output_storage_bucket
+output "output_storage_buckets" {
+  description = "Bucket names where results are written to"
+  value       = module.scuba_runner.output_storage_buckets
 }
 
 output "input_storage_bucket" {

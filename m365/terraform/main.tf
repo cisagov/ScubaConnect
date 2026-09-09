@@ -57,24 +57,25 @@ module "app" {
 }
 
 module "container" {
-  source                       = "./modules/container"
-  resource_prefix              = local.name
-  resource_group               = azurerm_resource_group.rg
-  container_registry           = var.container_registry
-  container_image              = var.container_image
-  application_client_id        = module.app.client_id
-  application_object_id        = module.app.sp_object_id
-  allowed_access_ips           = try(var.vnet.allowed_access_ip_list, null)
-  subnet_ids                   = var.vnet == null ? null : [module.networking[0].aci_subnet_id]
-  schedule_interval            = var.schedule_interval
-  output_storage_container_url = var.output_storage_container_url
-  output_storage_container_sas = var.output_storage_container_sas
-  output_all_files             = var.output_all_files
-  input_storage_container_url  = var.input_storage_container_url
-  contact_emails               = var.contact_emails
-  log_analytics_workspace      = azurerm_log_analytics_workspace.monitor_law
-  container_memory_gb          = var.container_memory_gb
-  cert_info                    = module.app.cert_info
-  depends_on                   = [azurerm_resource_group_policy_assignment.tagging_assignments]
-  secondary_app_info           = var.secondary_app_info
+  source                            = "./modules/container"
+  resource_prefix                   = local.name
+  resource_group                    = azurerm_resource_group.rg
+  container_registry                = var.container_registry
+  container_image                   = var.container_image
+  application_client_id             = module.app.client_id
+  application_object_id             = module.app.sp_object_id
+  allowed_access_ips                = try(var.vnet.allowed_access_ip_list, null)
+  subnet_ids                        = var.vnet == null ? null : [module.networking[0].aci_subnet_id]
+  schedule_interval                 = var.schedule_interval
+  create_output_storage             = var.create_output_storage
+  extra_output_container_urls       = var.extra_output_container_urls
+  extra_output_container_sas_tokens = var.extra_output_container_sas_tokens
+  output_all_files                  = var.output_all_files
+  input_storage_container_url       = var.input_storage_container_url
+  contact_emails                    = var.contact_emails
+  log_analytics_workspace           = azurerm_log_analytics_workspace.monitor_law
+  container_memory_gb               = var.container_memory_gb
+  cert_info                         = module.app.cert_info
+  depends_on                        = [azurerm_resource_group_policy_assignment.tagging_assignments]
+  secondary_app_info                = var.secondary_app_info
 }
