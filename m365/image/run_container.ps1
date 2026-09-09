@@ -66,9 +66,9 @@ if ($LASTEXITCODE -gt 0) {
 
 # Parse output containers from environment variables.
 if ($null -ne $Env:OUTPUT_CONTAINER_URLS) {
-    # @(...) forces array context so single-element results aren't unwrapped to a scalar
-    $OutputUrls = @($Env:OUTPUT_CONTAINER_URLS | ConvertFrom-Json)
-    $OutputSasTokens = @($Env:OUTPUT_CONTAINER_SAS_TOKENS | ConvertFrom-Json)
+    # [string[]] forces a flat array of strings inPowerShell 5.1
+    $OutputUrls = [string[]]@($Env:OUTPUT_CONTAINER_URLS | ConvertFrom-Json)
+    $OutputSasTokens = [string[]]@($Env:OUTPUT_CONTAINER_SAS_TOKENS | ConvertFrom-Json)
 
     # Sanity check: both arrays must have the same length
     if ($OutputUrls.Count -ne $OutputSasTokens.Count) {
@@ -132,7 +132,8 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
             
             # Append SAS token if provided (non-empty string)
             if (![string]::IsNullOrEmpty($sasToken)) {
-                $OutPath += "?$sasToken"
+                # TrimStart handles tokens copied with a leading "?" (e.g. from the Azure portal)
+                $OutPath += "?$($sasToken.TrimStart('?'))"
                 Write-Output "    -> $url (using SAS token)"
             } else {
                 Write-Output "    -> $url (using service principal)"
