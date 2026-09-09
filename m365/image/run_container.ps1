@@ -66,9 +66,10 @@ if ($LASTEXITCODE -gt 0) {
 
 # Parse output containers from environment variables.
 if ($null -ne $Env:OUTPUT_CONTAINER_URLS) {
-    # [string[]] forces a flat array of strings inPowerShell 5.1
-    $OutputUrls = [string[]]@($Env:OUTPUT_CONTAINER_URLS | ConvertFrom-Json)
-    $OutputSasTokens = [string[]]@($Env:OUTPUT_CONTAINER_SAS_TOKENS | ConvertFrom-Json)
+    $ParsedUrls = ConvertFrom-Json $Env:OUTPUT_CONTAINER_URLS
+    $ParsedSasTokens = ConvertFrom-Json $Env:OUTPUT_CONTAINER_SAS_TOKENS
+    $OutputUrls = @($ParsedUrls)
+    $OutputSasTokens = @($ParsedSasTokens)
 
     # Sanity check: both arrays must have the same length
     if ($OutputUrls.Count -ne $OutputSasTokens.Count) {
