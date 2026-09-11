@@ -56,6 +56,7 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version
+$TerraformVersion = if ($Env:CONNECT_TERRAFORM_VERSION) { $Env:CONNECT_TERRAFORM_VERSION } else { "unknown" }
 
 Write-Output "Grabbing tenant config files"
 New-Item -Path "input" -ItemType Directory | Out-Null
@@ -108,6 +109,7 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         $ResultsFile = Get-ChildItem -Path ".\reports\$($org)\*\ScubaResults*.json"
         $JsonResults = Get-Content -Path $ResultsFile.FullName | ConvertFrom-Json
         $JsonResults.MetaData | add-member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
+        $JsonResults.MetaData | add-member -NotePropertyName "ConnectTerraformVersion" -NotePropertyValue $TerraformVersion
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
 
         Write-Output "  Starting Upload"

@@ -199,8 +199,6 @@ function New-ScubaReleaseAsset {
     -CertificateName $CertificateName `
     -FileList $FileListFileName
 
-  # create the M365 GearConnect zip asset
-  $GearConnectAsset = "GearConnect-$ReleaseVersion"
-  Move-Item -Path "$RootFolderName/m365" -Destination $GearConnectAsset -Force
-  Compress-Archive -Path $GearConnectAsset -DestinationPath "$GearConnectAsset.zip"
+  # Copy the signed Install-GearConnect.ps1 to root for release asset publishing
+  Copy-Item -Path "$RootFolderName/m365/Install-GearConnect.ps1" -Destination "Install-GearConnect.ps1" -Force
 }

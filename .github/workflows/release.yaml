@@ -34,12 +34,13 @@ jobs:
           path: repo
       - name: Write VERSION file
         run: |
-          # Write version to VERSION file for GogglesConnect Terraform module
+          # Write version to VERSION files for GogglesConnect and GearConnect Terraform modules
           Set-Content -Path "repo/gws/terraform/VERSION" -Value "${{ inputs.version }}" -NoNewline
+          Set-Content -Path "repo/m365/terraform/VERSION" -Value "${{ inputs.version }}" -NoNewline
           cd repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add gws/terraform/VERSION
+          git add gws/terraform/VERSION m365/terraform/VERSION
           git commit -m "chore: update VERSION to ${{ inputs.version }} for release"
       - name: Install Azure Signing Tool
         run: |
@@ -75,6 +76,6 @@ jobs:
           name: v${{ inputs.version }}
           tag_name: v${{ inputs.version }}
           files: |
-            GearConnect-${{ inputs.version }}.zip
+            Install-GearConnect.ps1
           generate_release_notes: true
           fail_on_unmatched_files: true
