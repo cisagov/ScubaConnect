@@ -1,4 +1,4 @@
-module "scuba_runner" {
+module "scuba_connect" {
   # TODO: pin to latest release tag from https://github.com/cisagov/ScubaConnect/releases
   source = "github.com/cisagov/ScubaConnect.git//gws/terraform?ref=vX.Y.Z"
   # TODO: set email addresses to notify on failures
