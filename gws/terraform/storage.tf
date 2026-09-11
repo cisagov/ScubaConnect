@@ -1,6 +1,10 @@
 locals {
   container_types = ["scheduled", "adhoc"]
   log_bucket_name = "gogglesconnect-storage-logs-${data.google_client_config.this.project}"
+  
+  # Resolve tenants path relative to root module; if null or dir doesn't exist, produce empty map
+  tenants_path = var.tenants_dir_path != null ? "${path.root}/${var.tenants_dir_path}" : null
+  tenant_files = local.tenants_path != null ? try(fileset(local.tenants_path, "*"), []) : []
 }
 
 # STORAGE LOG BUCKET
@@ -65,7 +69,7 @@ resource "google_storage_bucket_iam_member" "scuba_runner_input_storage_perms" {
 }
 
 resource "google_storage_bucket_object" "type_folder" {
-  for_each = toset(local.container_types)
+  for_each = var.input_bucket == null && local.tenants_path != null ? toset(local.container_types) : toset([])
   name     = "${each.key}/"
   content  = " " # content is ignored but should be non-empty
   bucket   = google_storage_bucket.input_bucket[0].name
@@ -74,9 +78,9 @@ resource "google_storage_bucket_object" "type_folder" {
 
 # objects containing configuration for each tenant
 resource "google_storage_bucket_object" "tenants" {
-  for_each = var.input_bucket == null ? { for typeFile in setproduct(local.container_types, fileset(var.tenants_dir_path, "*")) : "${typeFile[0]}/${typeFile[1]}" => typeFile[1] } : {}
+  for_each = var.input_bucket == null && local.tenants_path != null ? { for typeFile in setproduct(local.container_types, local.tenant_files) : "${typeFile[0]}/${typeFile[1]}" => typeFile[1] } : {}
   name     = each.key
-  source   = "${var.tenants_dir_path}/${each.value}"
+  source   = "${local.tenants_path}/${each.value}"
   bucket   = google_storage_bucket.input_bucket[0].name
 }
 

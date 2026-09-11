@@ -15,6 +15,7 @@ PROJECT_ID = os.environ.get('PROJECT')
 RUN_TYPE = os.environ.get('RUN_TYPE')
 INPUT_BUCKET = os.environ.get('INPUT_BUCKET')
 OUTPUT_ALL_FILES = os.environ.get('OUTPUT_ALL_FILES', "false").lower() == "true"
+CONNECT_TERRAFORM_VERSION = os.environ.get('CONNECT_TERRAFORM_VERSION', 'unknown')
 SCUBA_GWS_ARGS = '--outputpath output/{} --config {} --usemetadataserverauth --quiet'
 
 log_client = google.cloud.logging.Client()
@@ -66,6 +67,7 @@ if __name__ == '__main__':
             with open(results_file_path, 'r+') as results_file:
                 results = json.load(results_file)
                 results['MetaData']['RunType'] = RUN_TYPE
+                results['MetaData']['ConnectTerraformVersion'] = CONNECT_TERRAFORM_VERSION
                 results_file.seek(0)
                 results_file.truncate()
                 json.dump(results, results_file)

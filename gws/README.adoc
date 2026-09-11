@@ -42,32 +42,61 @@ This is used for authenticating and interacting with your GCP environment
 [#deploy]
 === Deploying with Terraform
 
-. Run `gcloud auth login` if not already done to configure your credentials
-.. If you access multiple projects, run `gcloud config set project <project>`
-. Prepare a directory for your deployment
-.. Change directories to `gws/terraform/env`
-.. Create a copy of the `example` directory with a name of your choice (e.g., `<myenv>`). **The remaining steps should be completed in this new directory**
-. Update variables and configurations
-.. In your new directory, `<myenv>`, modify the `variables.tfvars` file to configure the deployment for your needs
-... Set `contact_emails` to administrators' emails and set `project` to the project you are deploying in
-... Review the defaults used for optional variables in <<terraform-variables>>. Some of these may need to be modified depending on your environment
-.. (Optional, but recommended) Modify the `provider.tf` file to configure Terraform to store state in GCP. See external https://https://developer.hashicorp.com/terraform/language/backend/gcs[documentation].
-. Run terraform
-.. In your `<myenv>` directory, Run `terraform init`. This only needs to be done once unless providers are updated
-.. In your `<myenv>` directory, Run `terraform apply -var-file=variables.tfvars`. Confirm changes meet your expectations then type "yes"
-. Onboard a tenant following the guidance in <<onboard>>
+==== Terraform Basics
 
-.Example of completing steps 1-3 in bash
+. **Authenticate with GCP**
+.. Run `gcloud auth login` if not already done to configure your credentials
+.. If you access multiple projects, run `gcloud config set project <project>` to set your active project
+
+. **Create your deployment directory**
+.. Create a new directory anywhere on your machine for your Terraform configuration
+.. Copy the example files from `gws/example_deployment/` as a starting template
+
+. **Configure your deployment**
+.. Edit `provider.tf` and set:
+... `project` — your GCP project ID (replace the TODO)
+... `region` — your preferred region (default is `us-east4`)
+.. Edit `main.tf` and set:
+... `contact_emails` — list of email addresses to notify on failures (replace the TODO)
+... `source` ref — pin to the latest release tag from the https://github.com/cisagov/ScubaConnect/releases[Releases page] (replace `vX.Y.Z`)
+.. Review optional module inputs commented out in `main.tf`. To override any, uncomment and modify. See <<terraform-variables>> for the full reference.
+.. (Optional) Create a `tenants/` directory (already present in the example) and add tenant configuration YAML files (see <<onboard>>). If you skip this, you can upload tenant configs directly to GCS later.
+.. (Optional, but recommended) Uncomment and configure the `backend "gcs"` block in `provider.tf` to store Terraform state remotely. See https://developer.hashicorp.com/terraform/language/backend/gcs[Terraform GCS backend documentation].
+
+. **Deploy the infrastructure**
+.. Run `terraform init` in your deployment directory (only needed once, or when providers are updated)
+.. Run `terraform apply` and review the planned changes
+.. Type "yes" to confirm and deploy
+
+. **Note the Terraform outputs** — you'll need `scuba_runner_svc_acct_id` and `scuba_runner_svc_acct_email` for onboarding tenants
+
+. **Onboard a tenant** following the guidance in <<onboard>>
+
+TIP: Always pin the module `ref` parameter to a specific release tag (e.g., `?ref=v2.1.0`) for reproducibility. Check the https://github.com/cisagov/ScubaConnect/releases[Releases page] for the latest version.
+
+.Example deployment workflow
 [source,shell]
 ----
+# Authenticate
 $ gcloud auth login
-$ cd gws/terraform/env
-gws/terraform/env$ cp -r example myenv
-gws/terraform/env$ cd myenv
-gws/terraform/env/myenv$ vim variables.tfvars
-gws/terraform/env/myenv$ vim provider.tf
-gws/terraform/env/myenv$ terraform init # only needed once
-gws/terraform/env/myenv$ terraform apply -var-file=variables.tfvars
+$ gcloud config set project my-gcp-project
+
+# Set up deployment directory
+$ cp -r path/to/ScubaConnect/gws/example_deployment my-goggles-deployment
+$ cd my-goggles-deployment
+
+# Configure
+$ vim provider.tf  # Set project and region
+$ vim main.tf      # Set contact_emails and pin module ref to latest release tag
+# Optional: add tenant YAML files to tenants/ directory
+
+# Deploy
+$ terraform init
+$ terraform apply
+
+# Save outputs for onboarding
+$ terraform output scuba_runner_svc_acct_id
+$ terraform output scuba_runner_svc_acct_email
 ----
 
 === Setting OAuth App Name
@@ -85,25 +114,23 @@ This is important to help administrators recognize the app.
 
 [#terraform-variables]
 ==== Terraform Variables
-This section provides the description for all terraform variables sorted by their likelihood of being changed.
-For a typical deployment, set `contact_emails` and `project` then review the defaults for the optional variables and override in the `tfvars` file as needed.
 
-Required::
-`project` (string) ::: Project name
-`contact_emails` (list(string)) ::: Email addresses to notify of any failures
-Optional::
-`region` (string) [default=us-east4]::: The region resources should be deployed in
-`cron_schedule` (string) [default=0 0 * * 0]::: Cron schedule defining when to run scuba runner. Format is standard cron syntax
-`tenants_dir_path` (string) [default=./tenants]::: Relative path to directory containing tenant configuration files in yaml
-Advanced::
+This section provides the description for all module variables. For a typical deployment, you only need to set `contact_emails` in `main.tf`. To override any optional variables, uncomment and modify them in the `module` block in `main.tf`.
+
+Module Inputs (set in `main.tf` module block)::
+`contact_emails` (list(string), **required**) ::: Email addresses to notify of any failures
+`cron_schedule` (string) [default=0 0 * * 0]::: Cron schedule defining when to run scuba runner. Format is standard cron syntax (default: weekly Sunday at midnight)
+`tenants_dir_path` (string) [default=null]::: Path to a directory of tenant *.yaml config files, relative to your Terraform root directory. If unset or the directory is empty, no tenant files are uploaded (you can upload them directly to GCS instead).
 `container_image` (string) [default=ghcr.io/cisagov/scubaconnect-gws:latest]::: Docker image to use for running ScubaGoggles. Must be hosted in GitHub
 `container_memory_gb` (number) [default=1]::: Number of GB of memory to allocate for the container
-`output_all_files` (bool) [default=False]::: If true, will output all files generated by ScubaGoggles instead of just the ScubaResults.json
-`input_bucket` (string) [default=None]::: Pre-existing bucket name to read tenant config files from containing `adhoc` and `scheduled` directories. If null, will create a bucket and upload local files
-`create_output_bucket` (bool) [default=True]::: If true, will create a local storage bucket and write results there.
-Results can be written to additional buckets via extra_output_buckets.
-`extra_output_buckets` (list(string)) [default=[]]::: Extra output bucket names to write results to.
-The service account must be granted roles/storage.objectCreator.
+`output_all_files` (bool) [default=false]::: If true, will output all files generated by ScubaGoggles instead of just the ScubaResults.json
+`input_bucket` (string) [default=null]::: Pre-existing bucket name to read tenant config files from containing `adhoc` and `scheduled` directories. If null, will create a bucket and upload local files
+`create_output_bucket` (bool) [default=true]::: If true, will create a local storage bucket and write results there. Results can be written to additional buckets via extra_output_buckets.
+`extra_output_buckets` (list(string)) [default=[]]::: Extra output bucket names to write results to. The service account must be granted roles/storage.objectCreator.
+
+Provider Configuration (set in `provider.tf`)::
+`project` (string, **required**) ::: Your GCP project ID
+`region` (string) [default in example=us-east4]::: The region resources should be deployed in
 
 [#onboard]
 === Onboarding a Tenant
@@ -119,7 +146,7 @@ These instructions require a super admin for the organization::
 .. Go to "https://admin.google.com > Security > Access and data control > API controls"
 .. Click btn:[MANAGE DOMAIN WIDE DELEGATION] then btn:[Add new]
 .. For the "Client ID" paste the Terraform output `scuba_runner_svc_acct_id`.
-.. For the "OAuth scopes" paste the Terraform output `oauth_scopes` (you can paste the comma separate list into one line and the webpage will parse on submission)
+.. For the "OAuth scopes" paste the Terraform output `oauth_scopes` (you can paste the comma-separated list into one line and the webpage will parse on submission). These scopes originate from the https://github.com/cisagov/ScubaGoggles/blob/main/docs/authentication/ServiceAccount.md[ScubaGoggles Service Account documentation] and should be kept in sync with ScubaGoggles requirements.
 .. Select "AUTHORIZE"
 . Grant Group Reader role
 .. Go to "https://admin.google.com > Account > Admin Roles"
@@ -142,7 +169,7 @@ Onboarding instructions adapted from https://github.com/cisagov/ScubaGoggles/blo
 
 Upload the tenant's ScubaGoggles configuration file to the `input_storage_bucket` bucket in the `adhoc` and/or `scheduled` folder. 
 (See <<adhoc-v-scheduled,the FAQ>> for an explanation on the folders.)
-You may upload the file directly to GCS, or place it in `env/<your_env>/tenants/` and run `terraform apply` to upload to both folders.
+You may upload the file directly to GCS, or place it in your local `tenants/` directory (if configured via `tenants_dir_path`) and run `terraform apply` to upload to both folders.
 
 
 === Logging / Alerts

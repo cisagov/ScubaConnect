@@ -203,9 +203,4 @@ function New-ScubaReleaseAsset {
   $GearConnectAsset = "GearConnect-$ReleaseVersion"
   Move-Item -Path "$RootFolderName/m365" -Destination $GearConnectAsset -Force
   Compress-Archive -Path $GearConnectAsset -DestinationPath "$GearConnectAsset.zip"
-
-  # create the GWS GogglesConnect zip asset
-  $GogglesConnectAsset = "GogglesConnect-$ReleaseVersion"
-  Move-Item -Path "$RootFolderName/gws" -Destination $GogglesConnectAsset -Force
-  Compress-Archive -Path $GogglesConnectAsset -DestinationPath "$GogglesConnectAsset.zip"
 }

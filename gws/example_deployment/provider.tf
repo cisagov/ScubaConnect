@@ -14,10 +14,9 @@ terraform {
 }
 
 provider "google" {
-  project = var.project
-  region  = var.region
+  project = "TODO-your-gcp-project"  # TODO: set your GCP project ID
+  region  = "us-east4"               # TODO: set your region (default: us-east4 / Virginia)
   default_labels = {
     # add any labels here to apply to all resources
   }
 }
-
