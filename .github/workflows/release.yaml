@@ -43,10 +43,7 @@ jobs:
           git add gws/terraform/VERSION m365/terraform/VERSION
           git commit -m "chore: update VERSION to ${{ inputs.version }} for release"
       - name: Install Azure Signing Tool
-        run: |
-          # Source the function
-          . repo/utils/workflow/Install-AzureSignTool.ps1
-          Install-AzureSignTool
+        run: dotnet tool install --global AzureSignTool --version 6.0.1
       # OpenID Connect (OIDC) login to Azure Public Cloud with AzPowershell
       - name: Login to Azure
         uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43  # v3.0.0
@@ -55,17 +52,24 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
-      # Hardcoded to sign specifically named scripts in Build-SignRelease.ps1
-      # We don't need to sign every script
-      - name: Sign Scripts and Bundle Release Asset(s)
+      # Sign the Install-GearConnect.ps1 script for release
+      - name: Sign Install-GearConnect.ps1
         run: |
-          # Source the function.
-          . repo/utils/workflow/Build-SignRelease.ps1
-          New-ScubaReleaseAsset `
-            -AzureKeyVaultUrl ${{ secrets.AZURE_KEY_VAULT_URL }} `
-            -CertificateName ${{ secrets.AZURE_CERTIFICATE_NAME }} `
-            -ReleaseVersion ${{ inputs.version }} `
-            -RootFolderName "repo"
+          AzureSignTool sign `
+            -coe `
+            -fd sha256 `
+            -tr http://timestamp.digicert.com `
+            -kvu ${{ secrets.AZURE_KEY_VAULT_URL }} `
+            -kvc ${{ secrets.AZURE_CERTIFICATE_NAME }} `
+            -kvm `
+            repo/m365/Install-GearConnect.ps1
+          
+          if ($LASTEXITCODE -ne 0) {
+            throw "Signing failed with exit code $LASTEXITCODE"
+          }
+          
+          # Copy signed script to root for release asset publishing
+          Copy-Item -Path repo/m365/Install-GearConnect.ps1 -Destination Install-GearConnect.ps1 -Force
         # Creates release assets
       - name: Create Release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda  # v3.0.0
