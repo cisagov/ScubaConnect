@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     os.makedirs(f"input/{RUN_TYPE}", exist_ok=True)
     logging.info(f"Reading files from: {INPUT_BUCKET}/{RUN_TYPE}")
-    config_blobs = storage.Client().list_blobs(INPUT_BUCKET, prefix=RUN_TYPE)
+    config_blobs = storage.Client().list_blobs(INPUT_BUCKET, prefix=f"{RUN_TYPE}/")
     for config in config_blobs:
         if config.name.endswith("/"):
             continue  # skip directory itself
