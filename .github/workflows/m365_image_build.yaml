@@ -79,6 +79,7 @@ jobs:
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=semver,pattern={{major}}.{{minor}}
             type=ref,event=branch
+            type=ref,event=pr
 
       # Build and push Docker image
       - name: Build and push Docker image
@@ -88,6 +89,7 @@ jobs:
           LABELS: ${{ steps.meta.outputs.labels }}
           PUSH: ${{ github.event_name != 'pull_request' }}
           IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          IMAGE_REF: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
         shell: powershell
         run: |
           $docker_args = New-Object System.Collections.ArrayList
@@ -105,9 +107,19 @@ jobs:
           echo "image=$($Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
           if ($Env:PUSH -eq "true") {
             docker push $Env:IMAGE.ToLower() --all-tags
+          } else {
+            docker save $Env:IMAGE_REF -o image.tar
           }
           exit $LASTEXITCODE
-    
+      # Save the image as an artifact on PRs
+      - name: Upload image artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: image.tar
+          retention-days: 1
+
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
@@ -138,7 +150,23 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Download image artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp
+
+      - name: Run Trivy vulnerability scanner on image archive
+        if: github.event_name == 'pull_request'
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          input: /tmp/image.tar
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
       - name: Run Trivy vulnerability scanner
+        if: github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ needs.build.outputs.full-image }}

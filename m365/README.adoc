@@ -154,6 +154,7 @@ It will perform the following steps (note that the required permissions/roles co
 . Add the ScubaConnect application to the tenant by presenting a consent page with the needed permissions
 . Grant the ScubaConnect application the Global Reader role
 . Register the ScubaConnect application as a PowerApps Admin
+. Create a security group for the ScubaConnect service principal and guide user to grant that group read-only access to PowerBI
 
 
 Once completed, upload a ScubaGear configuration file to the `input_storage_container_url` named `<tenant_fqdn>.yaml` (e.g., `myorg.onmicrosoft.com.yaml`).
