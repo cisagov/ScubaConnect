@@ -157,11 +157,16 @@ jobs:
           name: docker-image
           path: /tmp
 
-      - name: Load image
+      - name: Run Trivy vulnerability scanner on image archive
         if: github.event_name == 'pull_request'
-        run: docker load -i /tmp/image.tar
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          input: /tmp/image.tar
+          format: 'sarif'
+          output: 'trivy-results.sarif'
 
       - name: Run Trivy vulnerability scanner
+        if: github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ needs.build.outputs.full-image }}
