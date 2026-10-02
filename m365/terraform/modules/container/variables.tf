@@ -168,3 +168,9 @@ variable "secondary_app_info" {
     error_message = "Valid values for create_mode are (Default, PointInTimeRestore, Replica)"
   }
 }
+
+variable "connect_terraform_version" {
+  type        = string
+  default     = "dev"
+  description = "Terraform module version (populated from VERSION file at release)"
+}

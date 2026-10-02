@@ -25,6 +25,7 @@ variable "contact_emails" {
 
 variable "image_path" {
   type        = string
+  default     = null
   description = "Path to image used for app logo. Displayed in Azure console on installed tenants. Only needed when create_app=true"
 }
 
