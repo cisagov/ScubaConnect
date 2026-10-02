@@ -65,7 +65,7 @@ resource "google_storage_bucket_iam_member" "scuba_runner_input_storage_perms" {
 }
 
 resource "google_storage_bucket_object" "type_folder" {
-  for_each = toset(local.container_types)
+  for_each = var.input_bucket == null ? toset(local.container_types) : toset([])
   name     = "${each.key}/"
   content  = " " # content is ignored but should be non-empty
   bucket   = google_storage_bucket.input_bucket[0].name
