@@ -168,9 +168,10 @@ else {
 		RoleDefinitionId = $GLOBAL_READER_ROLE_ID
 	}
 	New-MgRoleManagementDirectoryRoleAssignment -BodyParameter $RoleParams | Out-Null
+	Write-Output "Checking Global Reader role. If added you should see one row of output below without errors"
+	Get-MgRoleManagementDirectoryRoleAssignment -Filter $RoleFilter
 }
-Write-Output "Checking Global Reader role. If added you should see one row of output below without errors"
-Get-MgRoleManagementDirectoryRoleAssignment -Filter $RoleFilter
+
 Write-Output $("#"*50)
 
 ### ADD AS POWERAPPS ADMIN ###
@@ -178,10 +179,15 @@ Write-Output "Adding ScubaConnect app as PowerApps Admin"
 Import-Module Microsoft.PowerApps.Administration.PowerShell -DisableNameChecking
 $EndpointMap = @{commercial = "prod"; gcc = "usgov"; gcchigh = "usgovhigh"}
 Add-PowerAppsAccount -Endpoint $EndpointMap[$M365Environment]
-New-PowerAppManagementApp -ApplicationId $AppID | Out-Null
 
-Write-Output "Checking PowerApps admin. If added correctly you should see the App ID below"
-Get-PowerAppManagementApp -ApplicationId $AppId
+if (Get-PowerAppManagementApp -ApplicationId $AppID) {
+	Write-Output "ScubaConnect is already a PowerApps admin"
+}
+else {
+	New-PowerAppManagementApp -ApplicationId $AppID | Out-Null
+	Write-Output "Checking PowerApps admin. If added correctly you should see the App ID below"
+	Get-PowerAppManagementApp -ApplicationId $AppId
+}
 Write-Output $("#"*50)
 
 ### CONFIGURE POWERBI ACCESS (step 2 requires user interaction) ###
