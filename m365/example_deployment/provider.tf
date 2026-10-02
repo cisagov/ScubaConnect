@@ -1,15 +1,5 @@
 terraform {
   required_version = ">= 1.1.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.46.0"
-    }
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = "~> 3.6.0"
-    }
-  }
 
   # maintain state file in Azure storage. Terraform should automatically use if Azure credentials are set
   # Uncomment and configure for production use. See https://developer.hashicorp.com/terraform/language/backend/azurerm
