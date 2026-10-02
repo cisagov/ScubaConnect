@@ -4,9 +4,7 @@ Install-GearConnect
 
 .DESCRIPTION
 Interactively with user credentials registers the ScubaConnect multi-tenant application within the
-target tenant with the permissions for CISA to run ScubaGear from the application home tenant.
-Also creates a security group containing the ScubaConnect service principal and guides the user
-through enabling Power BI read-only admin API access for that group.
+target tenant with the permissions for the ScubaConnect instance to run ScubaGear from its own tenant.
 
 .Parameter AppID
 This parameter provides the App ID for the application to install.
@@ -188,32 +186,32 @@ Write-Output $("#"*50)
 
 ### CONFIGURE POWERBI ACCESS (step 2 requires user interaction) ###
 Write-Output "Configuring Power BI read-only admin API access"
-$PowerBIGroupName = "ScubaConnectPowerBIGroup"
+$SecurityGroupName = "ScubaConnectSecurityGroup"
 
 # Step 1: plain security group (not role-assignable) containing the ScubaConnect SP
-$PbiGroup = Get-MgGroup -Filter "displayName eq '$PowerBIGroupName'" -Top 1
-if ($null -eq $PbiGroup) {
+$SecGroup = Get-MgGroup -Filter "displayName eq '$SecurityGroupName'" -Top 1
+if ($null -eq $SecGroup) {
 	$GroupParams = @{
-		DisplayName     = $PowerBIGroupName
+		DisplayName     = $SecurityGroupName
 		Description     = "Grants ScubaConnect read-only access to Power BI admin APIs"
 		SecurityEnabled = $true
 		MailEnabled     = $false
-		MailNickname    = $PowerBIGroupName
+		MailNickname    = $SecurityGroupName
 	}
-	$PbiGroup = New-MgGroup -BodyParameter $GroupParams
-	Write-Output "Created security group: $($PbiGroup.Id)"
+	$SecGroup = New-MgGroup -BodyParameter $GroupParams
+	Write-Output "Created security group: $($SecGroup.Id)"
 }
 else {
-	Write-Output "Using existing security group: $($PbiGroup.Id)"
+	Write-Output "Using existing security group: $($SecGroup.Id)"
 }
 
 try {
-	New-MgGroupMember -GroupId $PbiGroup.Id -DirectoryObjectId $AppSpId -ErrorAction Stop
-	Write-Output "Added ScubaConnect SP to $PowerBIGroupName"
+	New-MgGroupMember -GroupId $SecGroup.Id -DirectoryObjectId $AppSpId -ErrorAction Stop
+	Write-Output "Added ScubaConnect SP to $SecurityGroupName"
 }
 catch {
 	if ($_.Exception.Message -like "*already exist*") {
-		Write-Output "ScubaConnect SP is already a member of $PowerBIGroupName"
+		Write-Output "ScubaConnect SP is already a member of $SecurityGroupName"
 	}
 	else {
 		throw
@@ -228,9 +226,9 @@ $PbiPortalMap = @{
 }
 Write-Output @"
 In the Power BI Admin portal (requires Fabric Administrator or Global Administrator):
-  1. Go to Tenant settings > Admin API settings
+  1. Go to 'Tenant settings' then scroll down to 'Admin API settings'
   2. Enable 'Service principals can access read-only admin APIs'
-  3. Under 'Apply to', select 'Specific security groups' and add '$PowerBIGroupName'
+  3. Under 'Apply to', select 'Specific security groups' and add '$SecurityGroupName'
   4. Click Apply
 "@
 Start-Process "$($PbiPortalMap[$M365Environment])/admin-portal/tenantSettings"
