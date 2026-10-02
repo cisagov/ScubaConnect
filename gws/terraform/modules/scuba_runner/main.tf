@@ -1,3 +1,7 @@
+terraform {
+  required_version = ">= 1.2.0"
+}
+
 data "google_client_config" "this" {}
 
 # SA
@@ -94,6 +98,13 @@ resource "google_cloud_run_v2_job" "scuba_runner" {
     }
   }
 
+  lifecycle {
+    precondition {
+      condition     = var.create_output_bucket || length(var.extra_output_buckets) > 0
+      error_message = "At least one output bucket is required. Enable create_output_bucket or provide extra_output_buckets."
+    }
+  }
+
   depends_on = [google_project_service.service, google_artifact_registry_repository.ghcr_remote_repo]
 }
 
@@ -103,7 +114,7 @@ resource "google_cloud_run_v2_job_iam_member" "scuba_runner_scheduler_run" {
   project = data.google_client_config.this.project
   role    = "roles/run.jobsExecutorWithOverrides"
   member  = "serviceAccount:${google_service_account.scuba_runner_service_account.email}"
-  name = google_cloud_run_v2_job.scuba_runner.name
+  name    = google_cloud_run_v2_job.scuba_runner.name
 }
 
 resource "google_cloud_scheduler_job" "scuba_run_scheduler" {
