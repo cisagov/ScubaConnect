@@ -3,7 +3,10 @@
 Install-GearConnect
 
 .DESCRIPTION
-Interactively with user credentials registers the ScubaConnect multi-tenant application within the target tenant with the permissions for CISA to run ScubaGear from the application home tenant.
+Interactively with user credentials registers the ScubaConnect multi-tenant application within the
+target tenant with the permissions for CISA to run ScubaGear from the application home tenant.
+Also creates a security group containing the ScubaConnect service principal and guides the user
+through enabling Power BI read-only admin API access for that group.
 
 .Parameter AppID
 This parameter provides the App ID for the application to install.
@@ -26,12 +29,14 @@ Install-GearConnect -AppID xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -M365Environment
 Registers the ScubaConnect multi-tenant application for a GCCHigh tenant.
 
 .NOTES
-    Author : CISA
-    Version : 0.1
+	Author : CISA
+	Version : 0.2
+	The user running this script needs Global Administrator, or Privileged Role Administrator plus
+	Fabric Administrator, to complete all steps.
 #>
 
 
-param (      
+param (
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string]
@@ -44,9 +49,7 @@ param (
 	$M365Environment = "gcc"
 )
 
-# 
-# Check if necessary dependencies are installed
-# 
+### LOCAL DEPENDENCY CHECK ###
 #Requires -Version 5.1
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'ModuleList')]
@@ -56,61 +59,87 @@ $ModuleList = @(
 		ModuleName = 'PowerShellGet'
 		ModuleVersion = [version] '2.1.0'
 		MaximumVersion = [version] '2.99.99999'
-    },
-    @{
+	},
+	@{
 		# Connect-MgGraph, Disconnect-MgGraph
-        ModuleName = 'Microsoft.Graph.Authentication'
-        ModuleVersion = [version] '2.12.0'
-        MaximumVersion = [version] '2.99.99999'
-    },
+		ModuleName = 'Microsoft.Graph.Authentication'
+		ModuleVersion = [version] '2.12.0'
+		MaximumVersion = [version] '2.99.99999'
+	},
 	@{
 		# Get-MgServicePrincipal
-        ModuleName = 'Microsoft.Graph.Applications'
-        ModuleVersion = [version] '2.12.0'
-        MaximumVersion = [version] '2.99.99999'
-    },
+		ModuleName = 'Microsoft.Graph.Applications'
+		ModuleVersion = [version] '2.12.0'
+		MaximumVersion = [version] '2.99.99999'
+	},
+	@{
+		# Get-MgGroup, New-MgGroup, Get-MgGroupMember, New-MgGroupMember
+		ModuleName = 'Microsoft.Graph.Groups'
+		ModuleVersion = [version] '2.12.0'
+		MaximumVersion = [version] '2.99.99999'
+	},
 	@{
 		# New-MgRoleManagementDirectoryRoleAssignment
-        ModuleName = 'Microsoft.Graph.Identity.Governance'
-        ModuleVersion = [version] '2.12.0'
-        MaximumVersion = [version] '2.99.99999'
-    },
+		ModuleName = 'Microsoft.Graph.Identity.Governance'
+		ModuleVersion = [version] '2.12.0'
+		MaximumVersion = [version] '2.99.99999'
+	},
 	@{
 		# Add-PowerAppsAccount, New-PowerAppManagementApp
-        ModuleName = 'Microsoft.PowerApps.Administration.PowerShell'
-        ModuleVersion = [version] '2.0.0'
-        MaximumVersion = [version] '2.99.99999'
-    }
+		ModuleName = 'Microsoft.PowerApps.Administration.PowerShell'
+		ModuleVersion = [version] '2.0.0'
+		MaximumVersion = [version] '2.99.99999'
+	}
 )
 
 Write-Output "Checking for required script dependencies"
+$GraphVersion = $null
 foreach ($Module in $ModuleList) {
-    $InstalledModuleVersions = Get-Module -ListAvailable -Name $($Module.ModuleName)
-    $FoundAcceptableVersion = $false
+	$IsGraph = $Module.ModuleName -like 'Microsoft.Graph.*'
+	$Installed = Get-Module -ListAvailable -Name $Module.ModuleName |
+		Where-Object { $_.Version -ge $Module.ModuleVersion -and $_.Version -le $Module.MaximumVersion }
+	if ($IsGraph -and $GraphVersion) {
+		$Installed = $Installed | Where-Object Version -eq $GraphVersion
+	}
 
-    foreach ($ModuleVersion in $InstalledModuleVersions) {
-        if ($ModuleVersion.Version -ge $Module.ModuleVersion){
-            $FoundAcceptableVersion = $true
-            break;
-        }
-    }
-    if (-not $FoundAcceptableVersion) {
-		Write-Output "Installing required dependency: $($Module.ModuleName)" 
-		Install-Module -Name $Module.ModuleName `
-		-Force `
-		-AllowClobber `
-		-Scope CurrentUser `
-		-MaximumVersion $Module.MaximumVersion
-    }
+	if (-not $Installed) {
+		Write-Output "Installing required dependency: $($Module.ModuleName)"
+		$InstallParams = @{
+			Name         = $Module.ModuleName
+			Force        = $true
+			AllowClobber = $true
+			Scope        = 'CurrentUser'
+		}
+		if ($IsGraph -and $GraphVersion) {
+			$InstallParams.RequiredVersion = $GraphVersion
+		}
+		else {
+			$InstallParams.MaximumVersion = $Module.MaximumVersion
+		}
+		Install-Module @InstallParams
+	}
+
+	# All Graph submodules must match, so pin the rest to the Authentication version
+	if ($Module.ModuleName -eq 'Microsoft.Graph.Authentication') {
+		$GraphVersion = (Get-Module -ListAvailable -Name $Module.ModuleName |
+			Where-Object { $_.Version -le $Module.MaximumVersion } |
+			Sort-Object Version -Descending | Select-Object -First 1).Version
+	}
 }
 
-# Establish Graph PowerShell connection
+# Import matching versions explicitly so autoloading doesn't pick a newer, mismatched module
+foreach ($Module in $ModuleList | Where-Object { $_.ModuleName -like 'Microsoft.Graph.*' }) {
+	Import-Module $Module.ModuleName -RequiredVersion $GraphVersion
+}
+
+### ESTABLISH GRAPH CONNECTION ###
 Write-Output "Connecting..."
 $EnvMap = @{commercial = "Global"; gcc = "Global"; gcchigh = "USGov"}
-Connect-MgGraph -Scopes "Application.Read.All","RoleManagement.ReadWrite.Directory" -Environment $EnvMap[$M365Environment] -NoWelcome
+Connect-MgGraph -Scopes "Application.Read.All","RoleManagement.ReadWrite.Directory","Group.ReadWrite.All" `
+	-Environment $EnvMap[$M365Environment] -NoWelcome
 Write-Output $("#"*50)
 
-# get service principical ID for ScubaConnect app. If null, open consent page to add app
+### ADD APP TO TENANT IF NEEDED (requires user consent) ###
 $AppSpId = (Get-MgServicePrincipal -Filter "appId eq '$($AppID)'").Id
 if ($null -eq $AppSpId) {
 	Write-Output "App doesn't exist in tenant. Consent to app in browser."
@@ -124,20 +153,29 @@ if ($null -eq $AppSpId) {
 Write-Output "ScubaConnect App Service Principal: $AppSpId"
 Write-Output $("#"*50)
 
+### GRANT GLOBAL READER ###
 Write-Output "Granting ScubaConnect App Global Reader role"
 # static UUID for global reader. See https://learn.microsoft.com/en-us/azure/active-directory/roles/permissions-reference
 $GLOBAL_READER_ROLE_ID = "f2ef992c-3afb-46b9-b7cf-a126ee74c451"
-$RoleParams = @{
-	"@odata.type" = "#microsoft.graph.unifiedRoleAssignment"
-	PrincipalId = $AppSpId
-	DirectoryScopeId = "/"
-	RoleDefinitionId = $GLOBAL_READER_ROLE_ID
+$RoleFilter = "RoleDefinitionId eq '$GLOBAL_READER_ROLE_ID' and PrincipalId eq '$AppSpId'"
+
+if (Get-MgRoleManagementDirectoryRoleAssignment -Filter $RoleFilter) {
+	Write-Output "Global Reader role is already assigned"
 }
-New-MgRoleManagementDirectoryRoleAssignment -BodyParameter $RoleParams | Out-Null
+else {
+	$RoleParams = @{
+		"@odata.type" = "#microsoft.graph.unifiedRoleAssignment"
+		PrincipalId = $AppSpId
+		DirectoryScopeId = "/"
+		RoleDefinitionId = $GLOBAL_READER_ROLE_ID
+	}
+	New-MgRoleManagementDirectoryRoleAssignment -BodyParameter $RoleParams | Out-Null
+}
 Write-Output "Checking Global Reader role. If added you should see one row of output below without errors"
-Get-MgRoleManagementDirectoryRoleAssignment -Filter "RoleDefinitionId eq '$GLOBAL_READER_ROLE_ID' and PrincipalId eq '$AppSpId'"
+Get-MgRoleManagementDirectoryRoleAssignment -Filter $RoleFilter
 Write-Output $("#"*50)
 
+### ADD AS POWERAPPS ADMIN ###
 Write-Output "Adding ScubaConnect app as PowerApps Admin"
 Import-Module Microsoft.PowerApps.Administration.PowerShell -DisableNameChecking
 $EndpointMap = @{commercial = "prod"; gcc = "usgov"; gcchigh = "usgovhigh"}
@@ -146,6 +184,60 @@ New-PowerAppManagementApp -ApplicationId $AppID | Out-Null
 
 Write-Output "Checking PowerApps admin. If added correctly you should see the App ID below"
 Get-PowerAppManagementApp -ApplicationId $AppId
+Write-Output $("#"*50)
+
+### CONFIGURE POWERBI ACCESS (step 2 requires user interaction) ###
+Write-Output "Configuring Power BI read-only admin API access"
+$PowerBIGroupName = "ScubaConnectPowerBIGroup"
+
+# Step 1: plain security group (not role-assignable) containing the ScubaConnect SP
+$PbiGroup = Get-MgGroup -Filter "displayName eq '$PowerBIGroupName'" -Top 1
+if ($null -eq $PbiGroup) {
+	$GroupParams = @{
+		DisplayName     = $PowerBIGroupName
+		Description     = "Grants ScubaConnect read-only access to Power BI admin APIs"
+		SecurityEnabled = $true
+		MailEnabled     = $false
+		MailNickname    = $PowerBIGroupName
+	}
+	$PbiGroup = New-MgGroup -BodyParameter $GroupParams
+	Write-Output "Created security group: $($PbiGroup.Id)"
+}
+else {
+	Write-Output "Using existing security group: $($PbiGroup.Id)"
+}
+
+try {
+	New-MgGroupMember -GroupId $PbiGroup.Id -DirectoryObjectId $AppSpId -ErrorAction Stop
+	Write-Output "Added ScubaConnect SP to $PowerBIGroupName"
+}
+catch {
+	if ($_.Exception.Message -like "*already exist*") {
+		Write-Output "ScubaConnect SP is already a member of $PowerBIGroupName"
+	}
+	else {
+		throw
+	}
+}
+
+# Step 2: no supported API for tenant settings in gov clouds, so this is done in the portal
+$PbiPortalMap = @{
+	commercial = "https://app.powerbi.com"
+	gcc        = "https://app.powerbigov.us"
+	gcchigh    = "https://app.high.powerbigov.us"
+}
+Write-Output @"
+In the Power BI Admin portal (requires Fabric Administrator or Global Administrator):
+  1. Go to Tenant settings > Admin API settings
+  2. Enable 'Service principals can access read-only admin APIs'
+  3. Under 'Apply to', select 'Specific security groups' and add '$PowerBIGroupName'
+  4. Click Apply
+"@
+Start-Process "$($PbiPortalMap[$M365Environment])/admin-portal/tenantSettings"
+Write-Host -NoNewLine 'Once the setting is applied, press any key to continue...'
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+Write-Host
+Write-Output "Note: Power BI setting changes can take up to 15 minutes to take effect."
 
 Write-Output $("#"*50)
 Write-Output "Done! Disconnecting"
