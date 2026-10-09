@@ -42,10 +42,32 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add gws/terraform/VERSION m365/terraform/VERSION
           git commit -m "chore: update VERSION to ${{ inputs.version }} for release"
+      # Code signing is optional so the workflow also works on forks without Azure.
+      # Secrets can't be referenced in `if:` conditions, so check them here and expose an output.
+      - name: Check Code Signing Configuration
+        id: signing
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_KEY_VAULT_URL: ${{ secrets.AZURE_KEY_VAULT_URL }}
+          AZURE_CERTIFICATE_NAME: ${{ secrets.AZURE_CERTIFICATE_NAME }}
+        run: |
+          $Required = @('AZURE_CLIENT_ID', 'AZURE_TENANT_ID', 'AZURE_SUBSCRIPTION_ID', 'AZURE_KEY_VAULT_URL', 'AZURE_CERTIFICATE_NAME')
+          $Missing = $Required | Where-Object { [string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($_)) }
+          if ($Missing) {
+            Write-Output "::warning::Missing secrets: $($Missing -join ', '). Skipping Azure login and code signing; release assets will be unsigned."
+            "enabled=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          }
+          else {
+            "enabled=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          }
       - name: Install Azure Signing Tool
+        if: steps.signing.outputs.enabled == 'true'
         run: dotnet tool install --global AzureSignTool --version 6.0.1
       # OpenID Connect (OIDC) login to Azure Public Cloud with AzPowershell
       - name: Login to Azure
+        if: steps.signing.outputs.enabled == 'true'
         uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43  # v3.0.0
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -54,22 +76,26 @@ jobs:
           enable-AzPSSession: true
       # Sign the Install-GearConnect.ps1 script for release
       - name: Sign Install-GearConnect.ps1
+        if: steps.signing.outputs.enabled == 'true'
+        env:
+          AZURE_KEY_VAULT_URL: ${{ secrets.AZURE_KEY_VAULT_URL }}
+          AZURE_CERTIFICATE_NAME: ${{ secrets.AZURE_CERTIFICATE_NAME }}
         run: |
           AzureSignTool sign `
             -coe `
             -fd sha256 `
             -tr http://timestamp.digicert.com `
-            -kvu ${{ secrets.AZURE_KEY_VAULT_URL }} `
-            -kvc ${{ secrets.AZURE_CERTIFICATE_NAME }} `
+            -kvu $env:AZURE_KEY_VAULT_URL `
+            -kvc $env:AZURE_CERTIFICATE_NAME `
             -kvm `
             repo/m365/Install-GearConnect.ps1
-          
+
           if ($LASTEXITCODE -ne 0) {
             throw "Signing failed with exit code $LASTEXITCODE"
           }
-          
-          # Copy signed script to root for release asset publishing
-          Copy-Item -Path repo/m365/Install-GearConnect.ps1 -Destination Install-GearConnect.ps1 -Force
+      # Copy script (signed or unsigned) to root for release asset publishing
+      - name: Stage Release Assets
+        run: Copy-Item -Path repo/m365/Install-GearConnect.ps1 -Destination Install-GearConnect.ps1 -Force
         # Creates release assets
       - name: Create Release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda  # v3.0.0
