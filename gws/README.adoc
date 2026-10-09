@@ -54,13 +54,13 @@ This is used for authenticating and interacting with your GCP environment
 
 . **Configure your deployment**
 .. Edit `provider.tf` and set:
-... `project` — your GCP project ID (replace the TODO)
-... `region` — your preferred region (default is `us-east4`)
+... `project` — your GCP project ID
+... `region` — your preferred region
 .. Edit `main.tf` and set:
-... `contact_emails` — list of email addresses to notify on failures (replace the TODO)
-... `source` ref — pin to the latest release tag from the https://github.com/cisagov/ScubaConnect/releases[Releases page] (replace `vX.Y.Z`)
-.. Review optional module inputs commented out in `main.tf`. To override any, uncomment and modify. See <<terraform-variables>> for the full reference.
+... `source` — set the final part to the latest release tag from the https://github.com/cisagov/ScubaConnect/releases[Releases page] (replace `X.Y.Z`)
+... `contact_emails` — list of email addresses to notify on failures
 .. (Optional) Create a `tenants/` directory (already present in the example) and add tenant configuration YAML files (see <<onboard>>). If you skip this, you can upload tenant configs directly to GCS later.
+.. Review optional module inputs listed at <<terraform-variables>>. To set any, add them to the block in `main.tf` below the existing variables.
 .. (Optional, but recommended) Uncomment and configure the `backend "gcs"` block in `provider.tf` to store Terraform state remotely. See https://developer.hashicorp.com/terraform/language/backend/gcs[Terraform GCS backend documentation].
 
 . **Deploy the infrastructure**
@@ -72,7 +72,7 @@ This is used for authenticating and interacting with your GCP environment
 
 . **Onboard a tenant** following the guidance in <<onboard>>
 
-TIP: Always pin the module `ref` parameter to a specific release tag (e.g., `?ref=v2.1.0`) for reproducibility. Check the https://github.com/cisagov/ScubaConnect/releases[Releases page] for the latest version.
+TIP: Always pin the module `ref` parameter to a specific release tag (e.g., `?ref=v3.1.0`) for reproducibility. Check the https://github.com/cisagov/ScubaConnect/releases[Releases page] for the latest version.
 
 .Example deployment workflow
 [source,shell]
