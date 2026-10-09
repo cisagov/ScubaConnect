@@ -42,8 +42,6 @@ This is used for authenticating and interacting with your GCP environment
 [#deploy]
 === Deploying with Terraform
 
-==== Terraform Basics
-
 . **Authenticate with GCP**
 .. Run `gcloud auth login` if not already done to configure your credentials
 .. If you access multiple projects, run `gcloud config set project <project>` to set your active project
@@ -85,32 +83,12 @@ $ gcloud config set project my-gcp-project
 $ cp -r path/to/ScubaConnect/gws/example_deployment my-goggles-deployment
 $ cd my-goggles-deployment
 
-# Configure
-$ vim provider.tf  # Set project and region
-$ vim main.tf      # Set contact_emails and pin module ref to latest release tag
-# Optional: add tenant YAML files to tenants/ directory
+# Edit main.tf and provider.tf files in preferred editor
 
 # Deploy
 $ terraform init
 $ terraform apply
-
-# Save outputs for onboarding
-$ terraform output scuba_runner_svc_acct_id
-$ terraform output scuba_runner_svc_acct_email
 ----
-
-=== Setting OAuth App Name
-
-This section will set the name of the app as it appears in Tenant admin consoles once installed.
-This is important to help administrators recognize the app.
-
-. Go to https://console.cloud.google.com/auth/branding[Google Auth Platform > Branding]
-. Fill out name as "ScubaConnect"
-. Fill out remaining required fields. These are only applicable for OAuth (which GogglesConnect does not use), but are required to save the name
-.. Enter an email for user support
-.. Leave Audience as Internal
-.. Enter an email for "Contact Information"
-. Select "Finish"
 
 [#terraform-variables]
 ==== Terraform Variables
@@ -131,6 +109,19 @@ Module Inputs (set in `main.tf` module block)::
 Provider Configuration (set in `provider.tf`)::
 `project` (string, **required**) ::: Your GCP project ID
 `region` (string) [default in example=us-east4]::: The region resources should be deployed in
+
+=== Setting OAuth App Name
+
+This section will set the name of the app as it appears in Tenant admin consoles once installed.
+This is important to help administrators recognize the app.
+
+. Go to https://console.cloud.google.com/auth/branding[Google Auth Platform > Branding]
+. Fill out name as "ScubaConnect"
+. Fill out remaining required fields. These are only applicable for OAuth (which GogglesConnect does not use), but are required to save the name
+.. Enter an email for user support
+.. Leave Audience as Internal
+.. Enter an email for "Contact Information"
+. Select "Finish"
 
 [#onboard]
 === Onboarding a Tenant
