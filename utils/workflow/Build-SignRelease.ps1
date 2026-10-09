@@ -148,19 +148,25 @@ function New-ScubaReleaseAsset {
   The version number of the release (e.g., 1.5.1).
   .PARAMETER $RootFolderName
   The name of the root folder.
+  .PARAMETER $SkipSigning
+  Skip code signing and only bundle the release assets.
   .EXCEPTIONS
   System.IO.DirectoryNotFoundException
   Thrown if $RootFolderName does not exist.
   #>
-  [CmdletBinding()]
+  [CmdletBinding(DefaultParameterSetName = 'Sign')]
   param(
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, ParameterSetName = 'Sign')]
     [string]
     $AzureKeyVaultUrl,
 
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, ParameterSetName = 'Sign')]
     [string]
     $CertificateName,
+
+    [Parameter(Mandatory = $true, ParameterSetName = 'NoSign')]
+    [switch]
+    $SkipSigning,
 
     [Parameter(Mandatory = $true)]
     [string]
@@ -170,8 +176,6 @@ function New-ScubaReleaseAsset {
     [string]
     $RootFolderName
   )
-
-  Write-Warning "Signing the module with AzureSignTool..."
 
   # Verify that $RootFolderName exists
   Write-Warning "The root folder name is $RootFolderName"
@@ -185,19 +189,26 @@ function New-ScubaReleaseAsset {
 
   # Remove non-release files, like the .git dir, required for non-Windows machines
   Remove-Item -Recurse -Force $RootFolderName -Include .git*
-  Write-Warning "Creating an array of the files to sign..."
-  $ArrayOfFilePaths = New-ArrayOfFilePaths `
-    -ModuleDestinationPath $RootFolderName
 
-  Write-Warning "Creating a file with a list of the files to sign..."
-  $FileListFileName = New-FileList `
-    -ArrayOfFilePaths $ArrayOfFilePaths
+  if ($SkipSigning) {
+    Write-Warning "Skipping code signing; release assets will be unsigned."
+  }
+  else {
+    Write-Warning "Signing the module with AzureSignTool..."
+    Write-Warning "Creating an array of the files to sign..."
+    $ArrayOfFilePaths = New-ArrayOfFilePaths `
+      -ModuleDestinationPath $RootFolderName
 
-  Write-Warning "Calling AzureSignTool function to sign scripts, manifest, and modules..."
-  Use-AzureSignTool `
-    -AzureKeyVaultUrl $AzureKeyVaultUrl `
-    -CertificateName $CertificateName `
-    -FileList $FileListFileName
+    Write-Warning "Creating a file with a list of the files to sign..."
+    $FileListFileName = New-FileList `
+      -ArrayOfFilePaths $ArrayOfFilePaths
+
+    Write-Warning "Calling AzureSignTool function to sign scripts, manifest, and modules..."
+    Use-AzureSignTool `
+      -AzureKeyVaultUrl $AzureKeyVaultUrl `
+      -CertificateName $CertificateName `
+      -FileList $FileListFileName
+  }
 
   # create the M365 GearConnect zip asset
   $GearConnectAsset = "GearConnect-$ReleaseVersion"
