@@ -55,14 +55,14 @@ It is expected that this code is deployed by a user with administrator privledge
 
 . **Configure your deployment**
 .. Edit `provider.tf` and set:
-... `subscription_id` — your Azure Subscription ID (replace the TODO; find with `az account show`)
+... `subscription_id` — your Azure Subscription ID (find with `az account show`)
 ... `environment` — use `"public"` for commercial/GCC, or `"usgovernment"` for GCC High (set in both provider blocks)
 .. Edit `main.tf` and set:
-... `contact_emails` — list of email addresses to notify on failures and certificate expiry (replace the TODO)
-... `resource_group_name` — name of the resource group to create (replace the TODO)
-... `source` ref — pin to the latest release tag from the https://github.com/cisagov/ScubaConnect/releases[Releases page] (replace `vX.Y.Z`)
-.. Review optional module inputs commented out in `main.tf`. To override any, uncomment and modify. See <<terraform-variables>> for the full reference.
+... `contact_emails` — list of email addresses to notify on failures and certificate expiry
+... `resource_group_name` — name of the resource group to create
+... `source` — set the final part to the latest release tag from the https://github.com/cisagov/ScubaConnect/releases[Releases page] (replace `X.Y.Z`)
 .. (Optional) Create a `tenants/` directory (already present in the example) and add tenant configuration YAML files (see <<onboard>>). If you skip this, you can upload tenant configs directly to Azure Storage later.
+.. Review optional module inputs listed at <<terraform-variables>>. To set any, add them to the block in `main.tf` below the existing variables.
 .. (Optional, but recommended) Uncomment and configure the `backend "azurerm"` block in `provider.tf` to store Terraform state remotely. See https://developer.hashicorp.com/terraform/language/backend/azurerm[Terraform backend documentation].
 
 . **Deploy the infrastructure**
@@ -86,24 +86,17 @@ $ az login
 $ cp -r path/to/ScubaConnect/m365/example_deployment my-gearconnect-deployment
 $ cd my-gearconnect-deployment
 
-# Configure
-$ vim provider.tf  # Set subscription_id and environment
-$ vim main.tf      # Set contact_emails, resource_group_name, and pin module ref to latest release tag
-# Optional: add tenant YAML files to tenants/ directory
+# Edit main.tf and provider.tf files in preferred editor
 
 # Deploy
 $ terraform init
 $ terraform apply
-
-# Save outputs for onboarding
-$ terraform output app_id
-$ terraform output input_storage_container_url
 ----
 
 [#terraform-variables]
 ==== Terraform Variables
 
-This section documents the module's input variables (set in `main.tf`), grouped by their likelihood of customization.
+This section documents the module's input variables (set in `main.tf`).
 Provider configuration (project ID, region, credentials) is set separately in `provider.tf`.
 
 Required::
@@ -183,6 +176,10 @@ Running `terraform apply` will update the certificate for you.
 
 The container will be regularly rebuilt and updated overtime to support new versions of ScubaGear.
 No action is required for container updates as Azure Container Instances will grab the latest image by default.
+
+Updates to Terraform code will be released via GitHub.
+Read the release notes for any special instructions.
+Otherwise, update the `source` field in `main.tf` with the new release version and run `terraform init -upgrade && terraform apply`.
 
 == Frequently Asked Questions
 
