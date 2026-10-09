@@ -189,6 +189,10 @@ When either container is run, they output their respective name to a field in th
 The runbook triggers the `scheduled` container instances and the `adhoc` container instance is intended for manual runs.
 Azure does not allow changing input variables to a container instance, so this is why both are created.
 
+The `scubaconnect-adhoc-container` container instance can be started directly from the Azure console for an ad-hoc run.
+It will take some time to start.
+Once started you can monitor logs from "Settings > Containers > Logs".
+
 How does a tenant offboard from ScubaConnect?::
 An admin may offboard their tenant from the Azure Portal by deleting the application.
 This can be done by going to "https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview[Enterprise Applications] > ScubaConnect > Properties > Delete".

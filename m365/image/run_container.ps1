@@ -57,6 +57,7 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version
 $TerraformVersion = if ($Env:CONNECT_TERRAFORM_VERSION) { $Env:CONNECT_TERRAFORM_VERSION } else { "unknown" }
+Write-Output "Connect Terraform Version: $($TerraformVersion)"
 
 Write-Output "Grabbing tenant config files"
 New-Item -Path "input" -ItemType Directory | Out-Null

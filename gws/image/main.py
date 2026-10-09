@@ -23,8 +23,8 @@ log_client.setup_logging()
 
 if __name__ == '__main__':
     logging.info(f"ScubaGoggles v{goggles_version}")
-    logging.info(f"Terraform version: {CONNECT_TERRAFORM_VERSION}")
-    logging.info(f"run type: {RUN_TYPE}")
+    logging.info(f"Connect Terraform Version: {CONNECT_TERRAFORM_VERSION}")
+    logging.info(f"Run Type: {RUN_TYPE}")
 
     # Parse output buckets: prefer new OUTPUT_BUCKETS list, fall back to deprecated OUTPUT_BUCKET
     _output_buckets_env = os.environ.get('OUTPUT_BUCKETS')
