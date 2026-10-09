@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           path: repo
-      - name: Write VERSION file
+      - name: Write VERSION file and push release tag
         run: |
           # Write version to VERSION files for GogglesConnect and GearConnect Terraform modules
           Set-Content -Path "repo/gws/terraform/VERSION" -Value "${{ inputs.version }}" -NoNewline
@@ -42,6 +42,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add gws/terraform/VERSION m365/terraform/VERSION
           git commit -m "chore: update VERSION to ${{ inputs.version }} for release"
+          # Push only a tag so the VERSION files ship with the release without landing on main.
+          # The release step below picks up this existing tag instead of creating one.
+          git tag "v${{ inputs.version }}"
+          git push origin "v${{ inputs.version }}"
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to push tag v${{ inputs.version }} (exit code $LASTEXITCODE)"
+          }
       # Code signing is optional so the workflow also works on forks without Azure.
       # Secrets can't be referenced in `if:` conditions, so check them here and expose an output.
       - name: Check Code Signing Configuration
