@@ -32,17 +32,27 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           path: repo
-      - name: Write VERSION file and push release tag
+      - name: Set release version and push release tag
         run: |
           # Write version to VERSION files for GogglesConnect and GearConnect Terraform modules
           Set-Content -Path "repo/gws/terraform/VERSION" -Value "${{ inputs.version }}" -NoNewline
           Set-Content -Path "repo/m365/terraform/VERSION" -Value "${{ inputs.version }}" -NoNewline
+          # Pin the example deployments to this release so the source code archive works as-is.
+          $Utf8NoBom = New-Object System.Text.UTF8Encoding $false
+          foreach ($Example in @("repo/gws/example_deployment/main.tf", "repo/m365/example_deployment/main.tf")) {
+            $Path = Join-Path (Get-Location) $Example
+            $Content = [System.IO.File]::ReadAllText($Path)
+            if (-not $Content.Contains("?ref=vX.Y.Z")) {
+              throw "Placeholder '?ref=vX.Y.Z' not found in $Example"
+            }
+            [System.IO.File]::WriteAllText($Path, $Content.Replace("?ref=vX.Y.Z", "?ref=v${{ inputs.version }}"), $Utf8NoBom)
+          }
           cd repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add gws/terraform/VERSION m365/terraform/VERSION
-          git commit -m "chore: update VERSION to ${{ inputs.version }} for release"
-          # Push only a tag so the VERSION files ship with the release without landing on main.
+          git add gws/terraform/VERSION m365/terraform/VERSION gws/example_deployment/main.tf m365/example_deployment/main.tf
+          git commit -m "chore: update VERSION and example deployments to ${{ inputs.version }} for release"
+          # Push only a tag so these changes ship with the release without landing on main.
           # The release step below picks up this existing tag instead of creating one.
           git tag "v${{ inputs.version }}"
           git push origin "v${{ inputs.version }}"
