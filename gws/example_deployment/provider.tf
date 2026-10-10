@@ -1,11 +1,5 @@
 terraform {
   required_version = ">= 1.2.0"
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "7.36.0"
-    }
-  }
 
   # maintain state file in GCS. Terraform should automatically use if gcp credentials are set
   # backend "gcs" {
@@ -14,10 +8,9 @@ terraform {
 }
 
 provider "google" {
-  project = var.project
-  region  = var.region
+  project = "TODO-your-gcp-project"  # TODO: set your GCP project ID
+  region  = "us-east4"               # TODO: set your region (default: us-east4 / Virginia)
   default_labels = {
     # add any labels here to apply to all resources
   }
 }
-
