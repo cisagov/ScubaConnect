@@ -17,7 +17,7 @@ data "azuread_service_principal" "sharepoint" {
 resource "azuread_application" "app" {
   count            = var.create_app ? 1 : 0
   display_name     = var.app_name
-  logo_image       = filebase64(var.image_path)
+  logo_image       = filebase64(var.image_path != null ? var.image_path : "${path.module}/cisa_logo.png")
   sign_in_audience = var.app_multi_tenant ? "AzureADMultipleOrgs" : "AzureADMyOrg"
   web {
     redirect_uris = [local.is_us_gov ? "https://portal.azure.us/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview" : "https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview"]

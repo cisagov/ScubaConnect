@@ -12,7 +12,8 @@ data "azuread_client_config" "current" {}
 data "azurerm_client_config" "current" {}
 
 locals {
-  name = var.prefix_override != null ? var.prefix_override : replace(lower(var.app_name), " ", "-")
+  name                          = var.prefix_override != null ? var.prefix_override : replace(lower(var.app_name), " ", "-")
+  connect_terraform_version     = fileexists("${path.module}/VERSION") ? trimspace(file("${path.module}/VERSION")) : "dev"
 }
 
 resource "azurerm_log_analytics_workspace" "monitor_law" {
@@ -76,6 +77,7 @@ module "container" {
   log_analytics_workspace           = azurerm_log_analytics_workspace.monitor_law
   container_memory_gb               = var.container_memory_gb
   cert_info                         = module.app.cert_info
+  connect_terraform_version         = local.connect_terraform_version
   depends_on                        = [azurerm_resource_group_policy_assignment.tagging_assignments]
   secondary_app_info                = var.secondary_app_info
 }

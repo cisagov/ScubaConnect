@@ -1,21 +1,16 @@
-output "scuba_runner_svc_acct_id" {
-  description = "ID of the service account used for authentication. Other projects will need to add using domain-wide delegation."
-  value       = module.scuba_runner.scuba_runner_service_account.unique_id
-}
-
-output "scuba_runner_svc_acct_email" {
-  description = "Email of the service account used for running ScubaGoggles. Used for granting roles"
-  value       = module.scuba_runner.scuba_runner_service_account.email
+output "scuba_runner_service_account" {
+  value       = google_service_account.scuba_runner_service_account
+  description = "Service account created for running ScubaGoggles against organizations"
 }
 
 output "output_storage_buckets" {
   description = "Bucket names where results are written to"
-  value       = module.scuba_runner.output_storage_buckets
+  value       = local.output_storage_buckets
 }
 
 output "input_storage_bucket" {
   description = "Bucket name where config files are read from"
-  value       = module.scuba_runner.input_storage_bucket
+  value       = local.input_storage_bucket
 }
 
 output "oauth_scopes" {

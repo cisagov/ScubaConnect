@@ -1,0 +1,4 @@
+OrgName: My Org
+OrgUnitName: Division 1
+ProductNames: ['*']
+M365Environment: gcc

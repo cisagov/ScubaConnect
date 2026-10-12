@@ -78,9 +78,9 @@ variable "serial_number" {
 }
 
 variable "image_path" {
-  default     = "./cisa_logo.png"
+  default     = null
   type        = string
-  description = "Path to image used for app logo. Displayed in Azure console on installed tenants"
+  description = "Path to image used for app logo. Displayed in Azure console on installed tenants. If null, uses the bundled CISA logo. If set, path is resolved relative to the calling module's working directory"
 }
 
 variable "output_all_files" {

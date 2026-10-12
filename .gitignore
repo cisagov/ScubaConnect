@@ -12,5 +12,5 @@
 *.pfx
 *.pem
 
+# This line kept to prevent older deployments from pushing configuration
 **/env/*
-!**/env/example

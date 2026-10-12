@@ -4,6 +4,10 @@ terraform {
 
 data "google_client_config" "this" {}
 
+locals {
+  connect_terraform_version = fileexists("${path.module}/VERSION") ? trimspace(file("${path.module}/VERSION")) : "dev"
+}
+
 # SA
 
 resource "google_service_account" "scuba_runner_service_account" {
@@ -77,6 +81,10 @@ resource "google_cloud_run_v2_job" "scuba_runner" {
         env {
           name  = "PROJECT"
           value = data.google_client_config.this.project
+        }
+        env {
+          name  = "CONNECT_TERRAFORM_VERSION"
+          value = local.connect_terraform_version
         }
         env {
           name  = "INPUT_BUCKET"
