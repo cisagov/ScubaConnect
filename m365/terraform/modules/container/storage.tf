@@ -63,8 +63,7 @@ resource "azurerm_storage_container" "input" {
 resource "azurerm_storage_blob" "keep_files" {
   for_each               = toset([for l in local.container_types : l if var.input_storage_container_url == null])
   name                   = "${each.key}/.keep"
-  storage_account_name   = azurerm_storage_account.storage[0].name
-  storage_container_name = azurerm_storage_container.input[0].name
+  storage_container_id = azurerm_storage_container.input[0].id
   type                   = "Block"
   source_content         = "File used for keeping directory structure in absence of config files"
 
@@ -80,8 +79,7 @@ resource "azurerm_storage_blob" "keep_files" {
 resource "azurerm_storage_blob" "tenants" {
   for_each               = { for typeFile in setproduct(local.container_types, fileset(var.tenants_dir_path, "*")) : "${typeFile[0]}/${typeFile[1]}" => typeFile[1] if var.input_storage_container_url == null }
   name                   = each.key
-  storage_account_name   = azurerm_storage_account.storage[0].name
-  storage_container_name = azurerm_storage_container.input[0].name
+  storage_container_id = azurerm_storage_container.input[0].id
   type                   = "Block"
   source                 = "${var.tenants_dir_path}/${each.value}"
 

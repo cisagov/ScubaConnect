@@ -52,7 +52,12 @@ resource "azurerm_subnet" "aci-subnet" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   resource_group_name  = var.resource_group_name
   address_prefixes     = [var.vnet.aci_subnet]
-  service_endpoints    = ["Microsoft.Storage", "Microsoft.KeyVault"]
+  service_endpoint {
+    service = "Microsoft.Storage"
+  }
+  service_endpoint {
+    service = "Microsoft.KeyVault"
+  }
   delegation {
     name = "aci-del"
 
