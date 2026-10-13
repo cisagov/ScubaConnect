@@ -47,7 +47,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
-          ref: ${{ matrix.version.ref }}
+          ref: ${{ matrix.version.ref || matrix.ref }}
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -89,7 +89,7 @@ jobs:
         run: |
           $short_sha = git rev-parse --short HEAD
           $build_date = Get-Date -Format "yyyyMMdd"
-          echo "value=${{ matrix.version.ref }}-$build_date-$short_sha" >> $Env:GITHUB_OUTPUT
+          echo "value=${{ matrix.version.ref || matrix.ref }}-$build_date-$short_sha" >> $Env:GITHUB_OUTPUT
 
       # Build and push Docker image
       - name: Build and push Docker image
