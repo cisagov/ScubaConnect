@@ -2,6 +2,10 @@
 $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (500, 25)
 $ErrorActionPreference = "Stop"
 
+# Read version environment variables with defaults for backwards compatibility
+$ContainerVersion = if ($Env:CONTAINER_VERSION) { $Env:CONTAINER_VERSION } else { "unknown" }
+$TerraformVersion = if ($Env:TERRAFORM_VERSION) { $Env:TERRAFORM_VERSION } else { "unknown" }
+
 if ($Env:DEBUG_LOG -eq "true") {
     Get-ChildItem env:
 }
@@ -58,6 +62,9 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 Invoke-SCuBA -Version
 $TerraformVersion = if ($Env:CONNECT_TERRAFORM_VERSION) { $Env:CONNECT_TERRAFORM_VERSION } else { "unknown" }
 Write-Output "Connect Terraform Version: $($TerraformVersion)"
+Write-Output "Container Version: $ContainerVersion"
+Write-Output "Host ID: $($Env:TENANT_ID)"
+Write-Output "Run Type: $($Env:RUN_TYPE)"
 
 Write-Output "Grabbing tenant config files"
 New-Item -Path "input" -ItemType Directory | Out-Null
@@ -110,6 +117,8 @@ Foreach ($tenantConfig in $(Get-ChildItem 'input\')) {
         $ResultsFile = Get-ChildItem -Path ".\reports\$($org)\*\ScubaResults*.json"
         $JsonResults = Get-Content -Path $ResultsFile.FullName | ConvertFrom-Json
         $JsonResults.MetaData | add-member -NotePropertyName "RunType" -NotePropertyValue $Env:RUN_TYPE
+        $JsonResults.MetaData | add-member -NotePropertyName "ConnectHostId" -NotePropertyValue $Env:TENANT_ID
+        $JsonResults.MetaData | add-member -NotePropertyName "ConnectContainerVersion" -NotePropertyValue $ContainerVersion
         $JsonResults.MetaData | add-member -NotePropertyName "ConnectTerraformVersion" -NotePropertyValue $TerraformVersion
         $JsonResults | ConvertTo-Json -Compress -Depth 100 | Out-File -Encoding UTF8 $ResultsFile.FullName
 

@@ -81,6 +81,15 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
 
+      # Compute a container version with format: <branch>-<date>-<short-sha>
+      # e.g., main-20260930-ab12345
+      - name: Compute container version
+        id: container_version
+        run: |
+          short_sha="$(git rev-parse --short HEAD)"
+          build_date="$(date +%Y%m%d)"
+          echo "value=${{ matrix.version.ref }}-${build_date}-${short_sha}" >> "$GITHUB_OUTPUT"
+
       # Build and push Docker image
       - name: Build and push
         uses: docker/build-push-action@v7.1.0
@@ -91,6 +100,8 @@ jobs:
           load: ${{ github.event_name == 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            CONTAINER_VERSION=${{ steps.container_version.outputs.value }}
 
       # Export image for scanning on PRs
       - name: Export image

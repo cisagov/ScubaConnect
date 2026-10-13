@@ -29,6 +29,12 @@ ENV OPA_NAME="opa_windows_amd64.exe"
 RUN $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://openpolicyagent.org/downloads/v$($Env:OPA_VERSION)/opa_windows_amd64.exe -OutFile $Env:OPA_NAME -UseBasicParsing
 RUN if ((Get-FileHash $Env:OPA_NAME -Algorithm SHA256).Hash -ne ([System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Uri https://openpolicyagent.org/downloads/v$($Env:OPA_VERSION)/opa_windows_amd64.exe.sha256 -UseBasicParsing).Content) -split ' ')[0]) { exit 1 }
 RUN icacls.exe $env:OPA_NAME /grant 'User Manager\ContainerUser:RX'
+
+# Identifies the specific build of this image (e.g. <branch>-<date>-<short sha>).
+# Overridden at build time via --build-arg; defaults to "unknown" for local/manual builds.
+ARG CONTAINER_VERSION=unknown
+ENV CONTAINER_VERSION=${CONTAINER_VERSION}
+
 USER ContainerUser
 
 CMD [ "powershell", ".\\run_container.ps1" ]

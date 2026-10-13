@@ -7,6 +7,12 @@ USER user
 ENV PYTHONUNBUFFERED=True
 ENV APP_HOME=/app
 ENV PATH="/home/user/.local/bin:${PATH}"
+
+# Identifies the specific build of this image (e.g. <branch>-<short sha>).
+# Overridden at build time via --build-arg; defaults to "unknown" for local/manual builds.
+ARG CONTAINER_VERSION=unknown
+ENV CONTAINER_VERSION=${CONTAINER_VERSION}
+
 WORKDIR $APP_HOME
 COPY . ./
 

@@ -13,6 +13,8 @@ import google.cloud.logging
 
 PROJECT_ID = os.environ.get('PROJECT')
 RUN_TYPE = os.environ.get('RUN_TYPE')
+CONTAINER_VERSION = os.environ.get('CONTAINER_VERSION', 'unknown')
+TERRAFORM_VERSION = os.environ.get('TERRAFORM_VERSION', 'unknown')
 INPUT_BUCKET = os.environ.get('INPUT_BUCKET')
 OUTPUT_ALL_FILES = os.environ.get('OUTPUT_ALL_FILES', "false").lower() == "true"
 CONNECT_TERRAFORM_VERSION = os.environ.get('CONNECT_TERRAFORM_VERSION', 'unknown')
@@ -24,6 +26,8 @@ log_client.setup_logging()
 if __name__ == '__main__':
     logging.info(f"ScubaGoggles v{goggles_version}")
     logging.info(f"Connect Terraform Version: {CONNECT_TERRAFORM_VERSION}")
+    logging.info(f"Container Version: {CONTAINER_VERSION}")
+    logging.info(f"Host ID: {PROJECT_ID}")
     logging.info(f"Run Type: {RUN_TYPE}")
 
     # Parse output buckets: prefer new OUTPUT_BUCKETS list, fall back to deprecated OUTPUT_BUCKET
@@ -68,7 +72,9 @@ if __name__ == '__main__':
             with open(results_file_path, 'r+') as results_file:
                 results = json.load(results_file)
                 results['MetaData']['RunType'] = RUN_TYPE
+                results['MetaData']['ConnectHostId'] = PROJECT_ID
                 results['MetaData']['ConnectTerraformVersion'] = CONNECT_TERRAFORM_VERSION
+                results['MetaData']['ConnectContainerVersion'] = CONTAINER_VERSION
                 results_file.seek(0)
                 results_file.truncate()
                 json.dump(results, results_file)
