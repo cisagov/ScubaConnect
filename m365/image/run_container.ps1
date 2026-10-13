@@ -4,7 +4,7 @@ $ErrorActionPreference = "Stop"
 
 # Read version environment variables with defaults for backwards compatibility
 $ContainerVersion = if ($Env:CONTAINER_VERSION) { $Env:CONTAINER_VERSION } else { "unknown" }
-$TerraformVersion = if ($Env:TERRAFORM_VERSION) { $Env:TERRAFORM_VERSION } else { "unknown" }
+$TerraformVersion = if ($Env:CONNECT_TERRAFORM_VERSION) { $Env:CONNECT_TERRAFORM_VERSION } else { "unknown" }
 
 if ($Env:DEBUG_LOG -eq "true") {
     Get-ChildItem env:
@@ -60,7 +60,6 @@ $Env:AZCOPY_ACTIVE_DIRECTORY_ENDPOINT = if ($Env:IS_GOV -eq "true") {"https://lo
 
 # Print scuba version to console for debugging
 Invoke-SCuBA -Version
-$TerraformVersion = if ($Env:CONNECT_TERRAFORM_VERSION) { $Env:CONNECT_TERRAFORM_VERSION } else { "unknown" }
 Write-Output "Connect Terraform Version: $($TerraformVersion)"
 Write-Output "Container Version: $ContainerVersion"
 Write-Output "Host ID: $($Env:TENANT_ID)"

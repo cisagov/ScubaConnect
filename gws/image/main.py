@@ -14,10 +14,9 @@ import google.cloud.logging
 PROJECT_ID = os.environ.get('PROJECT')
 RUN_TYPE = os.environ.get('RUN_TYPE')
 CONTAINER_VERSION = os.environ.get('CONTAINER_VERSION', 'unknown')
-TERRAFORM_VERSION = os.environ.get('TERRAFORM_VERSION', 'unknown')
+CONNECT_TERRAFORM_VERSION = os.environ.get('CONNECT_TERRAFORM_VERSION', 'unknown')
 INPUT_BUCKET = os.environ.get('INPUT_BUCKET')
 OUTPUT_ALL_FILES = os.environ.get('OUTPUT_ALL_FILES', "false").lower() == "true"
-CONNECT_TERRAFORM_VERSION = os.environ.get('CONNECT_TERRAFORM_VERSION', 'unknown')
 SCUBA_GWS_ARGS = '--outputpath output/{} --config {} --usemetadataserverauth --quiet'
 
 log_client = google.cloud.logging.Client()
