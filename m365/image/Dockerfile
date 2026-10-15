@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 SHELL ["powershell"]
 
 
-ARG SCUBAGEAR_VERSION=1.8.0
+ARG SCUBAGEAR_VERSION=pre
 ARG OPA_VERSION=1.20.2
 # Get static URL for current version: curl -s -D- https://aka.ms/downloadazcopy-v10-windows | grep ^Location
 # https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10?tabs=dnf#obtain-a-static-download-link
@@ -20,7 +20,7 @@ RUN Remove-Item AzCopy.zip; Remove-Item -r .\AzCopy
 
 # Needed for setup module installs
 RUN Install-PackageProvider -Name NuGet -Force
-RUN Install-Module -Name ScubaGear -RequiredVersion $Env:SCUBAGEAR_VERSION -Force
+RUN Install-Module -Name ScubaGear -RequiredVersion -AllowPrerelease -Force
 RUN Initialize-SCuBA -Scope AllUsers -NoOPA
 COPY run_container.ps1 .
 
