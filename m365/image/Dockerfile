@@ -18,8 +18,10 @@ RUN Expand-Archive .\AzCopy.zip ./AzCopy -Force
 RUN $item = Get-ChildItem .\AzCopy\*\azcopy.exe; Move-Item -Path $item -Destination .
 RUN Remove-Item AzCopy.zip; Remove-Item -r .\AzCopy
 
-# Needed for setup module installs
+# Needed for setup module installs and prerelease flag
 RUN Install-PackageProvider -Name NuGet -Force
+RUN Install-Module -Name PowerShellGet -Force -AllowClobber
+
 RUN Install-Module -Name ScubaGear -AllowPrerelease -Force
 RUN Initialize-SCuBA -Scope AllUsers -NoOPA
 COPY run_container.ps1 .
