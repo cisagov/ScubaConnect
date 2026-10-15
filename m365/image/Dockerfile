@@ -20,7 +20,7 @@ RUN Remove-Item AzCopy.zip; Remove-Item -r .\AzCopy
 
 # Needed for setup module installs
 RUN Install-PackageProvider -Name NuGet -Force
-RUN Install-Module -Name ScubaGear -RequiredVersion -AllowPrerelease -Force
+RUN Install-Module -Name ScubaGear -AllowPrerelease -Force
 RUN Initialize-SCuBA -Scope AllUsers -NoOPA
 COPY run_container.ps1 .
 
