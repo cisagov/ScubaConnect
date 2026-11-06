@@ -388,7 +388,7 @@ try {
 }
 catch {
 	if ("$_" -like "*FeatureNotAvailable*") {
-		Write-Output "Power BI does not support changing this setting via API in this tenant; complete it manually below."
+		Write-Warning "Power BI does not support changing this setting via API in this tenant; complete it manually below."
 	}
 	else {
 		Write-Warning "Could not update the Power BI tenant setting automatically: $_"
