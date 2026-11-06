@@ -141,13 +141,13 @@ Set `environment_to_use` to the environment the manual app is in, either "commer
 
 To onboard a tenant, a Global Admin for the tenant should download the signed `Install-GearConnect.ps1` script from the https://github.com/cisagov/ScubaConnect/releases[Releases page] and run `./Install-GearConnect.ps1 -AppId <app_id> -M365Environment <env>` where `app_id` is output by Terraform and `env` is one of `commercial`, `gcc`, or `gcchigh` depending on the tenant environment.
 This script must be run even in a single-tenant architecture to actually install the app.
+It requires no PowerShell modules and runs on Windows PowerShell 5.1 or PowerShell 7+ on Windows, macOS, and Linux. Sign-in happens in your default browser.
 It will perform the following steps (note that the required permissions/roles come from https://github.com/cisagov/ScubaGear/blob/main/docs/prerequisites/noninteractive.md[ScubaGear]):
 
-. Install the needed PowerShell dependencies on the local machine running the script
 . Add the ScubaConnect application to the tenant by presenting a consent page with the needed permissions
 . Grant the ScubaConnect application the Global Reader role
 . Register the ScubaConnect application as a PowerApps Admin
-. Create a security group for the ScubaConnect service principal and guide user to grant that group read-only access to PowerBI
+. Create a security group for the ScubaConnect service principal and allow that group in the Power BI tenant setting 'Service principals can access read-only admin APIs' (if this fails, the script guides you through doing it in the Power BI Admin portal)
 
 
 Once completed, upload a ScubaGear configuration file to the `input_storage_container_url` named `<tenant_fqdn>.yaml` (e.g., `myorg.onmicrosoft.com.yaml`).

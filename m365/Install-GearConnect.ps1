@@ -28,9 +28,11 @@ Registers the ScubaConnect multi-tenant application for a GCCHigh tenant.
 
 .NOTES
 	Author : CISA
-	Version : 0.2
+	Version : 0.3
 	The user running this script needs Global Administrator, or Privileged Role Administrator plus
 	Fabric Administrator, to complete all steps.
+	No PowerShell modules are required. Runs on Windows PowerShell 5.1 and PowerShell 7+ on
+	Windows, macOS, and Linux. Sign-in happens in the system browser.
 #>
 
 
@@ -47,106 +49,231 @@ param (
 	$M365Environment = "gcc"
 )
 
-### LOCAL DEPENDENCY CHECK ###
 #Requires -Version 5.1
+$ErrorActionPreference = 'Stop'
 
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'ModuleList')]
-$ModuleList = @(
-	@{
-		# Install-Module
-		ModuleName = 'PowerShellGet'
-		ModuleVersion = [version] '2.1.0'
-		MaximumVersion = [version] '2.99.99999'
-	},
-	@{
-		# Connect-MgGraph, Disconnect-MgGraph
-		ModuleName = 'Microsoft.Graph.Authentication'
-		ModuleVersion = [version] '2.12.0'
-		MaximumVersion = [version] '2.99.99999'
-	},
-	@{
-		# Get-MgServicePrincipal
-		ModuleName = 'Microsoft.Graph.Applications'
-		ModuleVersion = [version] '2.12.0'
-		MaximumVersion = [version] '2.99.99999'
-	},
-	@{
-		# Get-MgGroup, New-MgGroup, Get-MgGroupMember, New-MgGroupMember
-		ModuleName = 'Microsoft.Graph.Groups'
-		ModuleVersion = [version] '2.12.0'
-		MaximumVersion = [version] '2.99.99999'
-	},
-	@{
-		# New-MgRoleManagementDirectoryRoleAssignment
-		ModuleName = 'Microsoft.Graph.Identity.Governance'
-		ModuleVersion = [version] '2.12.0'
-		MaximumVersion = [version] '2.99.99999'
-	},
-	@{
-		# Add-PowerAppsAccount, New-PowerAppManagementApp
-		ModuleName = 'Microsoft.PowerApps.Administration.PowerShell'
-		ModuleVersion = [version] '2.0.0'
-		MaximumVersion = [version] '2.99.99999'
-	}
-)
-
-Write-Output "Checking for required script dependencies"
-$GraphVersion = $null
-foreach ($Module in $ModuleList) {
-	$IsGraph = $Module.ModuleName -like 'Microsoft.Graph.*'
-	$Installed = Get-Module -ListAvailable -Name $Module.ModuleName |
-		Where-Object { $_.Version -ge $Module.ModuleVersion -and $_.Version -le $Module.MaximumVersion }
-	if ($IsGraph -and $GraphVersion) {
-		$Installed = $Installed | Where-Object Version -eq $GraphVersion
-	}
-
-	if (-not $Installed) {
-		Write-Output "Installing required dependency: $($Module.ModuleName)"
-		$InstallParams = @{
-			Name         = $Module.ModuleName
-			Force        = $true
-			AllowClobber = $true
-			Scope        = 'CurrentUser'
-		}
-		if ($IsGraph -and $GraphVersion) {
-			$InstallParams.RequiredVersion = $GraphVersion
-		}
-		else {
-			$InstallParams.MaximumVersion = $Module.MaximumVersion
-		}
-		Install-Module @InstallParams
-	}
-
-	# All Graph submodules must match, so pin the rest to the Authentication version
-	if ($Module.ModuleName -eq 'Microsoft.Graph.Authentication') {
-		$GraphVersion = (Get-Module -ListAvailable -Name $Module.ModuleName |
-			Where-Object { $_.Version -le $Module.MaximumVersion } |
-			Sort-Object Version -Descending | Select-Object -First 1).Version
-	}
+if ($PSVersionTable.PSEdition -ne 'Core') {
+	# Windows PowerShell 5.1 does not enable TLS 1.2 by default
+	[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+	# Windows PowerShell 5.1 can serialize arrays as {"value":[...],"Count":n} without this
+	Remove-TypeData System.Array -ErrorAction SilentlyContinue
 }
 
-# Import matching versions explicitly so autoloading doesn't pick a newer, mismatched module
-foreach ($Module in $ModuleList | Where-Object { $_.ModuleName -like 'Microsoft.Graph.*' }) {
-	Import-Module $Module.ModuleName -RequiredVersion $GraphVersion
+### CLOUD ENDPOINTS (match ScubaGear's endpoint catalog) ###
+$Cloud = @{
+	commercial = @{
+		Login         = "https://login.microsoftonline.com"
+		Graph         = "https://graph.microsoft.com"
+		Bap           = "https://api.bap.microsoft.com"
+		BapScope      = "https://service.powerapps.com//.default"
+		PowerBI       = "https://api.powerbi.com"
+		PowerBIScope  = "https://analysis.windows.net/powerbi/api/.default"
+		PowerBIPortal = "https://app.powerbi.com"
+	}
+	gcc = @{
+		Login         = "https://login.microsoftonline.com"
+		Graph         = "https://graph.microsoft.com"
+		Bap           = "https://gov.api.bap.microsoft.us"
+		BapScope      = "https://gov.service.powerapps.us//.default"
+		PowerBI       = "https://api.powerbigov.us"
+		PowerBIScope  = "https://analysis.usgovcloudapi.net/powerbi/api/.default"
+		PowerBIPortal = "https://app.powerbigov.us"
+	}
+	gcchigh = @{
+		Login         = "https://login.microsoftonline.us"
+		Graph         = "https://graph.microsoft.us"
+		Bap           = "https://high.api.bap.microsoft.us"
+		BapScope      = "https://high.service.powerapps.us//.default"
+		PowerBI       = "https://api.high.powerbigov.us"
+		PowerBIScope  = "https://high.analysis.usgovcloudapi.net/powerbi/api/.default"
+		PowerBIPortal = "https://app.high.powerbigov.us"
+	}
+}[$M365Environment]
+
+# Well-known public clients (same as ScubaGear): Microsoft Graph Command Line Tools and Azure PowerShell
+$GraphClientId = "14d82eec-204b-4c2f-b7e8-296a70dab67e"
+$AdminClientId = "1950a258-227b-4e31-a9cf-717495945fc2"
+
+### AUTH HELPERS ###
+$script:TenantId = "organizations"
+$script:LoginHint = $null
+$script:RefreshTokens = @{}
+
+function ConvertTo-Base64Url([byte[]]$Bytes) {
+	[Convert]::ToBase64String($Bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_')
+}
+
+function ConvertFrom-JwtPayload([string]$Jwt) {
+	$Payload = $Jwt.Split('.')[1].Replace('-', '+').Replace('_', '/')
+	$Payload = $Payload.PadRight($Payload.Length + (4 - $Payload.Length % 4) % 4, '=')
+	[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($Payload)) | ConvertFrom-Json
+}
+
+function Get-ApiErrorMessage($ErrorRecord) {
+	if ($ErrorRecord.ErrorDetails.Message) { $ErrorRecord.ErrorDetails.Message } else { $ErrorRecord.Exception.Message }
+}
+
+# Gets an access token. The first call per client opens the system browser (OAuth authorization code + PKCE,
+# redirected to a temporary localhost listener); later calls reuse that client's refresh token silently.
+function Get-GearToken([string]$ClientId, [string]$Scope) {
+	$Scope = "$Scope openid profile offline_access"
+	$TokenUri = "$($Cloud.Login)/$($script:TenantId)/oauth2/v2.0/token"
+
+	if ($script:RefreshTokens[$ClientId]) {
+		$Body = @{
+			client_id     = $ClientId
+			grant_type    = "refresh_token"
+			refresh_token = $script:RefreshTokens[$ClientId]
+			scope         = $Scope
+		}
+	}
+	else {
+		$Bytes = New-Object byte[] 32
+		[Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($Bytes)
+		$Verifier = ConvertTo-Base64Url $Bytes
+		$Challenge = ConvertTo-Base64Url ([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::ASCII.GetBytes($Verifier)))
+		$State = [guid]::NewGuid().ToString()
+
+		# Listen on IPv4 and (if available) IPv6 loopback, since browsers may resolve localhost to either
+		$Listeners = @([Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0))
+		$Listeners[0].Start()
+		$Port = $Listeners[0].LocalEndpoint.Port
+		try {
+			$Listener6 = [Net.Sockets.TcpListener]::new([Net.IPAddress]::IPv6Loopback, $Port)
+			$Listener6.Start()
+			$Listeners += $Listener6
+		}
+		catch { Write-Verbose "IPv6 loopback unavailable: $_" }
+		$RedirectUri = "http://localhost:$Port"
+
+		$Query = @{
+			client_id             = $ClientId
+			response_type         = "code"
+			response_mode         = "query"
+			redirect_uri          = $RedirectUri
+			scope                 = $Scope
+			state                 = $State
+			code_challenge        = $Challenge
+			code_challenge_method = "S256"
+		}
+		if ($script:LoginHint) { $Query.login_hint = $script:LoginHint } else { $Query.prompt = "select_account" }
+		$AuthUri = "$($Cloud.Login)/$($script:TenantId)/oauth2/v2.0/authorize?" +
+			(($Query.GetEnumerator() | ForEach-Object { "$($_.Key)=$([Uri]::EscapeDataString($_.Value))" }) -join '&')
+
+		Write-Host "Opening browser to sign in. If it does not open, browse to:`n$AuthUri"
+		try { Start-Process $AuthUri } catch { Write-Warning "Could not open a browser: $_" }
+
+		$Params = $null
+		$Deadline = (Get-Date).AddMinutes(5)
+		try {
+			while (-not $Params) {
+				if ((Get-Date) -gt $Deadline) { throw "Timed out waiting for browser sign-in." }
+				$Ready = $Listeners | Where-Object { $_.Pending() } | Select-Object -First 1
+				if (-not $Ready) { Start-Sleep -Milliseconds 200; continue }
+
+				$Client = $Ready.AcceptTcpClient()
+				try {
+					$Stream = $Client.GetStream()
+					# Browsers may open idle pre-connect sockets; don't block on them forever
+					$Stream.ReadTimeout = 10000
+					$Reader = New-Object IO.StreamReader($Stream)
+					$RequestLine = $Reader.ReadLine()
+					while ($Reader.ReadLine()) { } # discard headers
+					$Received = @{}
+					$Path = "$RequestLine".Split(' ')[1]
+					if ($Path -and $Path.Contains('?')) {
+						foreach ($Pair in $Path.Substring($Path.IndexOf('?') + 1).Split('&')) {
+							$Key, $Value = $Pair.Split('=', 2)
+							$Received[[Uri]::UnescapeDataString($Key)] = [Uri]::UnescapeDataString("$Value".Replace('+', ' '))
+						}
+					}
+					# Ignore unrelated requests (e.g. favicon)
+					if ($Received.state -eq $State) {
+						$Params = $Received
+						$Status = "200 OK"
+						$Html = "<html><body><p>Sign-in finished. You can close this tab and return to PowerShell.</p></body></html>"
+					}
+					else {
+						$Status = "404 Not Found"
+						$Html = ""
+					}
+					$Response = [Text.Encoding]::UTF8.GetBytes(
+						"HTTP/1.1 $Status`r`nContent-Type: text/html; charset=utf-8`r`n" +
+						"Content-Length: $([Text.Encoding]::UTF8.GetByteCount($Html))`r`nConnection: close`r`n`r`n$Html")
+					$Stream.Write($Response, 0, $Response.Length)
+				}
+				catch { Write-Verbose "Ignoring unusable browser connection: $_" }
+				finally { $Client.Close() }
+			}
+		}
+		finally { $Listeners | ForEach-Object { $_.Stop() } }
+
+		if ($Params.error) { throw "Sign-in failed: $($Params.error): $($Params.error_description)" }
+		$Body = @{
+			client_id     = $ClientId
+			grant_type    = "authorization_code"
+			code          = $Params.code
+			redirect_uri  = $RedirectUri
+			code_verifier = $Verifier
+			scope         = $Scope
+		}
+	}
+
+	try {
+		$Token = Invoke-RestMethod -Method Post -Uri $TokenUri -Body $Body
+	}
+	catch {
+		throw "Token request failed: $(Get-ApiErrorMessage $_)"
+	}
+	if ($Token.refresh_token) { $script:RefreshTokens[$ClientId] = $Token.refresh_token }
+	if ($script:TenantId -eq "organizations" -and $Token.id_token) {
+		$Claims = ConvertFrom-JwtPayload $Token.id_token
+		$script:TenantId = $Claims.tid
+		$script:LoginHint = $Claims.preferred_username
+	}
+	$Token.access_token
+}
+
+# Invokes a REST API with a bearer token, surfacing the API's error message on failure.
+function Invoke-Api {
+	param(
+		[string]$Method = "Get",
+		[Parameter(Mandatory = $true)][string]$Uri,
+		[Parameter(Mandatory = $true)][string]$Token,
+		$Body
+	)
+	$Request = @{ Method = $Method; Uri = $Uri; Headers = @{ Authorization = "Bearer $Token" } }
+	if ($null -ne $Body) {
+		$Request.Body = ConvertTo-Json -InputObject $Body -Depth 10
+		$Request.ContentType = "application/json"
+	}
+	try {
+		Invoke-RestMethod @Request
+	}
+	catch {
+		throw "$($Method.ToUpper()) $Uri failed: $(Get-ApiErrorMessage $_)"
+	}
 }
 
 ### ESTABLISH GRAPH CONNECTION ###
 Write-Output "Connecting..."
-$EnvMap = @{commercial = "Global"; gcc = "Global"; gcchigh = "USGov"}
-Connect-MgGraph -Scopes "Application.Read.All","RoleManagement.ReadWrite.Directory","Group.ReadWrite.All" `
-	-Environment $EnvMap[$M365Environment] -NoWelcome
+$GraphScope = @("Application.Read.All", "RoleManagement.ReadWrite.Directory", "Group.ReadWrite.All" |
+	ForEach-Object { "$($Cloud.Graph)/$_" }) -join ' '
+$GraphToken = Get-GearToken -ClientId $GraphClientId -Scope $GraphScope
+Write-Output "Signed in as $($script:LoginHint) to tenant $($script:TenantId)"
 Write-Output $("#"*50)
 
 ### ADD APP TO TENANT IF NEEDED (requires user consent) ###
-$AppSpId = (Get-MgServicePrincipal -Filter "appId eq '$($AppID)'").Id
+$SpUri = "$($Cloud.Graph)/v1.0/servicePrincipals?`$filter=$([Uri]::EscapeDataString("appId eq '$AppID'"))"
+$AppSpId = (Invoke-Api -Uri $SpUri -Token $GraphToken).value.id
 if ($null -eq $AppSpId) {
 	Write-Output "App doesn't exist in tenant. Consent to app in browser."
-	$TldMap = @{commercial = "com"; gcc = "com"; gcchigh = "us"}
-	Start-Process "https://login.microsoftonline.$($TldMap[$M365Environment])/common/adminconsent?client_id=$($AppID)"
+	Start-Process "$($Cloud.Login)/$($script:TenantId)/adminconsent?client_id=$($AppID)"
 	Write-Host -NoNewLine 'Once app shows in "Enterprise applications" in Azure, press any key to continue...';
 	$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
-	$AppSpId = (Get-MgServicePrincipal -Filter "appId eq '$($AppID)'").Id
+	$AppSpId = (Invoke-Api -Uri $SpUri -Token $GraphToken).value.id
 	Write-Host
+	if ($null -eq $AppSpId) { throw "ScubaConnect app $AppID was not found in the tenant. Complete admin consent and rerun." }
 }
 Write-Output "ScubaConnect App Service Principal: $AppSpId"
 Write-Output $("#"*50)
@@ -155,68 +282,75 @@ Write-Output $("#"*50)
 Write-Output "Granting ScubaConnect App Global Reader role"
 # static UUID for global reader. See https://learn.microsoft.com/en-us/azure/active-directory/roles/permissions-reference
 $GLOBAL_READER_ROLE_ID = "f2ef992c-3afb-46b9-b7cf-a126ee74c451"
-$RoleFilter = "RoleDefinitionId eq '$GLOBAL_READER_ROLE_ID' and PrincipalId eq '$AppSpId'"
+$RoleUri = "$($Cloud.Graph)/v1.0/roleManagement/directory/roleAssignments"
+$RoleFilterUri = "$($RoleUri)?`$filter=$([Uri]::EscapeDataString("roleDefinitionId eq '$GLOBAL_READER_ROLE_ID' and principalId eq '$AppSpId'"))"
 
-if (Get-MgRoleManagementDirectoryRoleAssignment -Filter $RoleFilter) {
+if ((Invoke-Api -Uri $RoleFilterUri -Token $GraphToken).value) {
 	Write-Output "Global Reader role is already assigned"
 }
 else {
 	$RoleParams = @{
 		"@odata.type" = "#microsoft.graph.unifiedRoleAssignment"
-		PrincipalId = $AppSpId
-		DirectoryScopeId = "/"
-		RoleDefinitionId = $GLOBAL_READER_ROLE_ID
+		principalId = $AppSpId
+		directoryScopeId = "/"
+		roleDefinitionId = $GLOBAL_READER_ROLE_ID
 	}
-	New-MgRoleManagementDirectoryRoleAssignment -BodyParameter $RoleParams | Out-Null
+	$null = Invoke-Api -Method Post -Uri $RoleUri -Token $GraphToken -Body $RoleParams
 	Write-Output "Checking Global Reader role. If added you should see one row of output below without errors"
-	Get-MgRoleManagementDirectoryRoleAssignment -Filter $RoleFilter
+	(Invoke-Api -Uri $RoleFilterUri -Token $GraphToken).value | Select-Object id, principalId, roleDefinitionId
 }
 
 Write-Output $("#"*50)
 
 ### ADD AS POWERAPPS ADMIN ###
 Write-Output "Adding ScubaConnect app as PowerApps Admin"
-Import-Module Microsoft.PowerApps.Administration.PowerShell -DisableNameChecking
-$EndpointMap = @{commercial = "prod"; gcc = "usgov"; gcchigh = "usgovhigh"}
-Add-PowerAppsAccount -Endpoint $EndpointMap[$M365Environment]
+$AdminToken = Get-GearToken -ClientId $AdminClientId -Scope $Cloud.BapScope
+$AdminAppsUri = "$($Cloud.Bap)/providers/Microsoft.BusinessAppPlatform/adminApplications"
+$ApiVersion = "api-version=2020-10-01"
+function Test-PowerAppAdmin {
+	(Invoke-Api -Uri "$($AdminAppsUri)?$ApiVersion" -Token $AdminToken).value.applicationId -contains $AppID
+}
 
-if (Get-PowerAppManagementApp -ApplicationId $AppID) {
+if (Test-PowerAppAdmin) {
 	Write-Output "ScubaConnect is already a PowerApps admin"
 }
 else {
-	New-PowerAppManagementApp -ApplicationId $AppID | Out-Null
+	$null = Invoke-Api -Method Put -Uri "$AdminAppsUri/$($AppID)?$ApiVersion" -Token $AdminToken
 	Write-Output "Checking PowerApps admin. If added correctly you should see the App ID below"
-	Get-PowerAppManagementApp -ApplicationId $AppId
+	if (Test-PowerAppAdmin) { $AppID } else { Write-Warning "ScubaConnect app was not found in the PowerApps admin list" }
 }
 Write-Output $("#"*50)
 
-### CONFIGURE POWERBI ACCESS (step 2 requires user interaction) ###
+### CONFIGURE POWERBI ACCESS ###
 Write-Output "Configuring Power BI read-only admin API access"
 $SecurityGroupName = "ScubaConnectSecurityGroup"
 
 # Step 1: plain security group (not role-assignable) containing the ScubaConnect SP
-$SecGroup = Get-MgGroup -Filter "displayName eq '$SecurityGroupName'" -Top 1
+$GroupUri = "$($Cloud.Graph)/v1.0/groups"
+$SecGroup = (Invoke-Api -Uri "$($GroupUri)?`$top=1&`$filter=$([Uri]::EscapeDataString("displayName eq '$SecurityGroupName'"))" -Token $GraphToken).value |
+	Select-Object -First 1
 if ($null -eq $SecGroup) {
 	$GroupParams = @{
-		DisplayName     = $SecurityGroupName
-		Description     = "Grants ScubaConnect read-only access to Power BI admin APIs"
-		SecurityEnabled = $true
-		MailEnabled     = $false
-		MailNickname    = $SecurityGroupName
+		displayName     = $SecurityGroupName
+		description     = "Grants ScubaConnect read-only access to Power BI admin APIs"
+		securityEnabled = $true
+		mailEnabled     = $false
+		mailNickname    = $SecurityGroupName
 	}
-	$SecGroup = New-MgGroup -BodyParameter $GroupParams
-	Write-Output "Created security group: $($SecGroup.Id)"
+	$SecGroup = Invoke-Api -Method Post -Uri $GroupUri -Token $GraphToken -Body $GroupParams
+	Write-Output "Created security group: $($SecGroup.id)"
 }
 else {
-	Write-Output "Using existing security group: $($SecGroup.Id)"
+	Write-Output "Using existing security group: $($SecGroup.id)"
 }
 
 try {
-	New-MgGroupMember -GroupId $SecGroup.Id -DirectoryObjectId $AppSpId -ErrorAction Stop
+	$MemberParams = @{ "@odata.id" = "$($Cloud.Graph)/v1.0/directoryObjects/$AppSpId" }
+	$null = Invoke-Api -Method Post -Uri "$GroupUri/$($SecGroup.id)/members/`$ref" -Token $GraphToken -Body $MemberParams
 	Write-Output "Added ScubaConnect SP to $SecurityGroupName"
 }
 catch {
-	if ($_.Exception.Message -like "*already exist*") {
+	if ("$_" -like "*already exist*") {
 		Write-Output "ScubaConnect SP is already a member of $SecurityGroupName"
 	}
 	else {
@@ -224,25 +358,59 @@ catch {
 	}
 }
 
-# Step 2: no supported API for tenant settings in gov clouds, so this is done in the portal
-$PbiPortalMap = @{
-	commercial = "https://app.powerbi.com"
-	gcc        = "https://app.powerbigov.us"
-	gcchigh    = "https://app.high.powerbigov.us"
+# Step 2: allow the group in the 'Service principals can access read-only admin APIs' tenant setting
+$SettingName = "AllowServicePrincipalsUseReadAdminAPIs"
+try {
+	$PowerBIToken = Get-GearToken -ClientId $AdminClientId -Scope $Cloud.PowerBIScope
+	$Setting = (Invoke-Api -Uri "$($Cloud.PowerBI)/v1/admin/tenantsettings" -Token $PowerBIToken).tenantSettings |
+		Where-Object { $_.settingName -eq $SettingName }
+	$Groups = @(if ($Setting -and $Setting.enabledSecurityGroups) { $Setting.enabledSecurityGroups })
+
+	if ($Setting.enabled -and $Groups.Count -eq 0) {
+		Write-Output "Power BI setting is already enabled for the entire organization"
+	}
+	elseif ($Setting.enabled -and $Groups.graphId -contains $SecGroup.id) {
+		Write-Output "Power BI setting is already enabled for $SecurityGroupName"
+	}
+	else {
+		if ($Groups.graphId -notcontains $SecGroup.id) {
+			$Groups += [PSCustomObject]@{ graphId = $SecGroup.id; name = $SecurityGroupName }
+		}
+		$Update = @{ enabled = $true; enabledSecurityGroups = $Groups }
+		# Preserve the rest of the existing setting
+		foreach ($Property in "excludedSecurityGroups", "properties", "delegateToCapacity", "delegateToDomain", "delegateToWorkspace") {
+			if ($Setting -and $null -ne $Setting.$Property) { $Update[$Property] = $Setting.$Property }
+		}
+		$null = Invoke-Api -Method Post -Uri "$($Cloud.PowerBI)/v1/admin/tenantsettings/$SettingName/update" -Token $PowerBIToken -Body $Update
+		Write-Output "Enabled Power BI setting 'Service principals can access read-only admin APIs' for $SecurityGroupName"
+		Write-Output "Note: Power BI setting changes can take up to 15 minutes to take effect."
+	}
 }
-Write-Output @"
+catch {
+	if ("$_" -like "*FeatureNotAvailable*") {
+		Write-Output "Power BI does not support changing this setting via API in this tenant; complete it manually below."
+	}
+	else {
+		Write-Warning "Could not update the Power BI tenant setting automatically: $_"
+	}
+	Write-Output @"
 In the Power BI Admin portal (requires Fabric Administrator or Global Administrator):
   1. Go to 'Tenant settings' then scroll down to 'Admin API settings'
   2. Enable 'Service principals can access read-only admin APIs'
   3. Under 'Apply to', select 'Specific security groups' and add '$SecurityGroupName'
   4. Click Apply
 "@
-Start-Process "$($PbiPortalMap[$M365Environment])/admin-portal/tenantSettings"
-Write-Host -NoNewLine 'Once the setting is applied, press any key to continue...'
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-Write-Host
-Write-Output "Note: Power BI setting changes can take up to 15 minutes to take effect."
+	Start-Process "$($Cloud.PowerBIPortal)/admin-portal/tenantSettings"
+	Write-Host -NoNewLine 'Press S to skip (e.g. tenant has no Power BI), or any other key once the setting is applied...'
+	$Key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+	Write-Host
+	if ("$($Key.Character)" -eq 's') {
+		Write-Output "Skipped Power BI setup. Rerun this script if Power BI is added later."
+	}
+	else {
+		Write-Output "Note: Power BI setting changes can take up to 15 minutes to take effect."
+	}
+}
 
 Write-Output $("#"*50)
-Write-Output "Done! Disconnecting"
-Disconnect-MgGraph | Out-Null
+Write-Output "Done!"
