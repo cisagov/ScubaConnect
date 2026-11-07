@@ -94,6 +94,25 @@ $Cloud = @{
 $GraphClientId = "14d82eec-204b-4c2f-b7e8-296a70dab67e"
 $AdminClientId = "1950a258-227b-4e31-a9cf-717495945fc2"
 
+### OUTPUT HELPERS ###
+$script:StepCount = 5
+$script:Step = 0
+
+function Write-Step([string]$Message) {
+	$script:Step++
+	Write-Host
+	Write-Host "[$($script:Step)/$($script:StepCount)] $Message" -ForegroundColor Cyan
+}
+
+# Prints a green success line
+function Write-Done([string]$Message) {
+	Write-Host "  [OK] $Message" -ForegroundColor Green
+}
+
+function Write-Note([string]$Message) {
+	Write-Host "  $Message" -ForegroundColor DarkGray
+}
+
 ### AUTH HELPERS ###
 $script:TenantId = "organizations"
 $script:LoginHint = $null
@@ -160,8 +179,9 @@ function Get-GearToken([string]$ClientId, [string]$Scope) {
 		$AuthUri = "$($Cloud.Login)/$($script:TenantId)/oauth2/v2.0/authorize?" +
 			(($Query.GetEnumerator() | ForEach-Object { "$($_.Key)=$([Uri]::EscapeDataString($_.Value))" }) -join '&')
 
-		Write-Host "Opening browser to sign in. If it does not open, browse to:`n$AuthUri"
-		try { Start-Process $AuthUri } catch { Write-Warning "Could not open a browser: $_" }
+		Write-Note "Opening browser to sign in..."
+		try { Start-Process $AuthUri }
+		catch { Write-Warning "Could not open a browser. Sign in by browsing to:`n$AuthUri" }
 
 		$Params = $null
 		$Deadline = (Get-Date).AddMinutes(5)
@@ -256,37 +276,41 @@ function Invoke-Api {
 }
 
 ### ESTABLISH GRAPH CONNECTION ###
-Write-Output "Connecting..."
+Write-Host "ScubaConnect installer ($M365Environment)" -ForegroundColor Cyan
+Write-Step "Signing in"
 $GraphScope = @("Application.Read.All", "RoleManagement.ReadWrite.Directory", "Group.ReadWrite.All" |
 	ForEach-Object { "$($Cloud.Graph)/$_" }) -join ' '
 $GraphToken = Get-GearToken -ClientId $GraphClientId -Scope $GraphScope
-Write-Output "Signed in as $($script:LoginHint) to tenant $($script:TenantId)"
-Write-Output $("#"*50)
+Write-Done "Signed in as $($script:LoginHint) (tenant $($script:TenantId))"
 
 ### ADD APP TO TENANT IF NEEDED (requires user consent) ###
+Write-Step "Adding ScubaConnect app to tenant"
 $SpUri = "$($Cloud.Graph)/v1.0/servicePrincipals?`$filter=$([Uri]::EscapeDataString("appId eq '$AppID'"))"
 $AppSpId = (Invoke-Api -Uri $SpUri -Token $GraphToken).value.id
 if ($null -eq $AppSpId) {
-	Write-Output "App doesn't exist in tenant. Consent to app in browser."
+	Write-Host "  App isn't in the tenant yet. Approve the consent page opening in your browser." -ForegroundColor Yellow
 	Start-Process "$($Cloud.Login)/$($script:TenantId)/adminconsent?client_id=$($AppID)"
-	Write-Host -NoNewLine 'Once app shows in "Enterprise applications" in Azure, press any key to continue...';
+	Write-Host -NoNewLine '  Once app shows in "Enterprise applications" in Azure, press any key to continue...' -ForegroundColor Cyan
 	$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
-	$AppSpId = (Invoke-Api -Uri $SpUri -Token $GraphToken).value.id
 	Write-Host
+	$AppSpId = (Invoke-Api -Uri $SpUri -Token $GraphToken).value.id
 	if ($null -eq $AppSpId) { throw "ScubaConnect app $AppID was not found in the tenant. Complete admin consent and rerun." }
+	Write-Done "App added to tenant"
 }
-Write-Output "ScubaConnect App Service Principal: $AppSpId"
-Write-Output $("#"*50)
+else {
+	Write-Done "App is already in the tenant"
+}
+Write-Note "Service principal: $AppSpId"
 
 ### GRANT GLOBAL READER ###
-Write-Output "Granting ScubaConnect App Global Reader role"
+Write-Step "Granting Global Reader role"
 # static UUID for global reader. See https://learn.microsoft.com/en-us/azure/active-directory/roles/permissions-reference
 $GLOBAL_READER_ROLE_ID = "f2ef992c-3afb-46b9-b7cf-a126ee74c451"
 $RoleUri = "$($Cloud.Graph)/v1.0/roleManagement/directory/roleAssignments"
 $RoleFilterUri = "$($RoleUri)?`$filter=$([Uri]::EscapeDataString("roleDefinitionId eq '$GLOBAL_READER_ROLE_ID' and principalId eq '$AppSpId'"))"
 
 if ((Invoke-Api -Uri $RoleFilterUri -Token $GraphToken).value) {
-	Write-Output "Global Reader role is already assigned"
+	Write-Done "Global Reader role is already assigned"
 }
 else {
 	$RoleParams = @{
@@ -296,14 +320,16 @@ else {
 		roleDefinitionId = $GLOBAL_READER_ROLE_ID
 	}
 	$null = Invoke-Api -Method Post -Uri $RoleUri -Token $GraphToken -Body $RoleParams
-	Write-Output "Checking Global Reader role. If added you should see one row of output below without errors"
-	(Invoke-Api -Uri $RoleFilterUri -Token $GraphToken).value | Select-Object id, principalId, roleDefinitionId
+	if ((Invoke-Api -Uri $RoleFilterUri -Token $GraphToken).value) {
+		Write-Done "Global Reader role assigned"
+	}
+	else {
+		Write-Warning "Global Reader role was assigned but is not visible yet. Verify it in Entra ID."
+	}
 }
 
-Write-Output $("#"*50)
-
 ### ADD AS POWERAPPS ADMIN ###
-Write-Output "Adding ScubaConnect app as PowerApps Admin"
+Write-Step "Registering ScubaConnect app as PowerApps admin"
 $AdminToken = Get-GearToken -ClientId $AdminClientId -Scope $Cloud.BapScope
 $AdminAppsUri = "$($Cloud.Bap)/providers/Microsoft.BusinessAppPlatform/adminApplications"
 $ApiVersion = "api-version=2020-10-01"
@@ -312,20 +338,23 @@ function Test-PowerAppAdmin {
 }
 
 if (Test-PowerAppAdmin) {
-	Write-Output "ScubaConnect is already a PowerApps admin"
+	Write-Done "App is already a PowerApps admin"
 }
 else {
 	$null = Invoke-Api -Method Put -Uri "$AdminAppsUri/$($AppID)?$ApiVersion" -Token $AdminToken
-	Write-Output "Checking PowerApps admin. If added correctly you should see the App ID below"
-	if (Test-PowerAppAdmin) { $AppID } else { Write-Warning "ScubaConnect app was not found in the PowerApps admin list" }
+	if (Test-PowerAppAdmin) {
+		Write-Done "App registered as PowerApps admin"
+	}
+	else {
+		Write-Warning "App was registered but is not in the PowerApps admin list yet. Verify it in the Power Platform admin center."
+	}
 }
-Write-Output $("#"*50)
 
 ### CONFIGURE POWERBI ACCESS ###
-Write-Output "Configuring Power BI read-only admin API access"
+Write-Step "Configuring Power BI read-only admin API access"
 $SecurityGroupName = "ScubaConnectSecurityGroup"
 
-# Step 1: plain security group (not role-assignable) containing the ScubaConnect SP
+# Part 1: plain security group (not role-assignable) containing the ScubaConnect SP
 $GroupUri = "$($Cloud.Graph)/v1.0/groups"
 $SecGroup = (Invoke-Api -Uri "$($GroupUri)?`$top=1&`$filter=$([Uri]::EscapeDataString("displayName eq '$SecurityGroupName'"))" -Token $GraphToken).value |
 	Select-Object -First 1
@@ -338,28 +367,30 @@ if ($null -eq $SecGroup) {
 		mailNickname    = $SecurityGroupName
 	}
 	$SecGroup = Invoke-Api -Method Post -Uri $GroupUri -Token $GraphToken -Body $GroupParams
-	Write-Output "Created security group: $($SecGroup.id)"
+	Write-Done "Created security group $SecurityGroupName"
 }
 else {
-	Write-Output "Using existing security group: $($SecGroup.id)"
+	Write-Done "Using existing security group $SecurityGroupName"
 }
+Write-Note "Group ID: $($SecGroup.id)"
 
 try {
 	$MemberParams = @{ "@odata.id" = "$($Cloud.Graph)/v1.0/directoryObjects/$AppSpId" }
 	$null = Invoke-Api -Method Post -Uri "$GroupUri/$($SecGroup.id)/members/`$ref" -Token $GraphToken -Body $MemberParams
-	Write-Output "Added ScubaConnect SP to $SecurityGroupName"
+	Write-Done "Added app to $SecurityGroupName"
 }
 catch {
 	if ("$_" -like "*already exist*") {
-		Write-Output "ScubaConnect SP is already a member of $SecurityGroupName"
+		Write-Done "App is already a member of $SecurityGroupName"
 	}
 	else {
 		throw
 	}
 }
 
-# Step 2: allow the group in the 'Service principals can access read-only admin APIs' tenant setting
+# Part 2: allow the group in the 'Service principals can access read-only admin APIs' tenant setting
 $SettingName = "AllowServicePrincipalsUseReadAdminAPIs"
+$PropagationNote = "Power BI setting changes can take up to 15 minutes to take effect."
 try {
 	$PowerBIToken = Get-GearToken -ClientId $AdminClientId -Scope $Cloud.PowerBIScope
 	$Setting = (Invoke-Api -Uri "$($Cloud.PowerBI)/v1/admin/tenantsettings" -Token $PowerBIToken).tenantSettings |
@@ -367,10 +398,10 @@ try {
 	$Groups = @(if ($Setting -and $Setting.enabledSecurityGroups) { $Setting.enabledSecurityGroups })
 
 	if ($Setting.enabled -and $Groups.Count -eq 0) {
-		Write-Output "Power BI setting is already enabled for the entire organization"
+		Write-Done "Power BI setting is already enabled for the entire organization"
 	}
 	elseif ($Setting.enabled -and $Groups.graphId -contains $SecGroup.id) {
-		Write-Output "Power BI setting is already enabled for $SecurityGroupName"
+		Write-Done "Power BI setting is already enabled for $SecurityGroupName"
 	}
 	else {
 		if ($Groups.graphId -notcontains $SecGroup.id) {
@@ -382,35 +413,35 @@ try {
 			if ($Setting -and $null -ne $Setting.$Property) { $Update[$Property] = $Setting.$Property }
 		}
 		$null = Invoke-Api -Method Post -Uri "$($Cloud.PowerBI)/v1/admin/tenantsettings/$SettingName/update" -Token $PowerBIToken -Body $Update
-		Write-Output "Enabled Power BI setting 'Service principals can access read-only admin APIs' for $SecurityGroupName"
-		Write-Output "Note: Power BI setting changes can take up to 15 minutes to take effect."
+		Write-Done "Enabled 'Service principals can access read-only admin APIs' for $SecurityGroupName"
+		Write-Note $PropagationNote
 	}
 }
 catch {
 	if ("$_" -like "*FeatureNotAvailable*") {
-		Write-Warning "Power BI does not support changing this setting via API in this tenant; complete it manually below."
+		Write-Host "  Power BI does not support changing this setting via API in this tenant; complete it manually below." -ForegroundColor Yellow
 	}
 	else {
 		Write-Warning "Could not update the Power BI tenant setting automatically: $_"
 	}
-	Write-Output @"
-In the Power BI Admin portal (requires Fabric Administrator or Global Administrator):
-  1. Go to 'Tenant settings' then scroll down to 'Admin API settings'
-  2. Enable 'Service principals can access read-only admin APIs'
-  3. Under 'Apply to', select 'Specific security groups' and add '$SecurityGroupName'
-  4. Click Apply
-"@
+	Write-Host @"
+  In the Power BI Admin portal (requires Fabric Administrator or Global Administrator):
+    1. Go to 'Tenant settings' then scroll down to 'Admin API settings'
+    2. Enable 'Service principals can access read-only admin APIs'
+    3. Under 'Apply to', select 'Specific security groups' and add '$SecurityGroupName'
+    4. Click Apply
+"@ -ForegroundColor Yellow
 	Start-Process "$($Cloud.PowerBIPortal)/admin-portal/tenantSettings"
-	Write-Host -NoNewLine 'Press S to skip (e.g. tenant has no Power BI), or any other key once the setting is applied...'
+	Write-Host -NoNewLine '  Press S to skip (e.g. tenant has no Power BI), or any other key once the setting is applied...' -ForegroundColor Cyan
 	$Key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 	Write-Host
 	if ("$($Key.Character)" -eq 's') {
-		Write-Output "Skipped Power BI setup. Rerun this script if Power BI is added later."
+		Write-Note "Skipped Power BI setup. Rerun this script if Power BI is added later."
 	}
 	else {
-		Write-Output "Note: Power BI setting changes can take up to 15 minutes to take effect."
+		Write-Note $PropagationNote
 	}
 }
 
-Write-Output $("#"*50)
-Write-Output "Done!"
+Write-Host
+Write-Host "Done!" -ForegroundColor Green
