@@ -166,6 +166,9 @@ The container will exit with a non-zero code if it fails to run ScubaGear on any
 A log-based alert is pre-configured to send an email to `contact_emails` when this occurs.
 Looks into the "Last Run Output" logs to determine the cause.
 
+NOTE: During deployment a confirmation email will be sent which must be accepted to receive future emails for errors.
+The verification can be resent from the web console by going to `Monitor -> Alerts -> Alert Rules -> scubaconnect Container Exit Code Alert`.
+
 
 === Maintenance
 
