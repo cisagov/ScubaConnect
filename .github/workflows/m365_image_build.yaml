@@ -49,6 +49,37 @@ jobs:
         with:
           ref: ${{ matrix.version.ref || matrix.ref }}
 
+      # Windows runners occasionally come up with the Docker service not
+      # started/ready yet, which fails later steps with:
+      #   failed to connect to the docker API at npipe:////./pipe/docker_engine
+      # Wait here (and nudge the service) until the daemon actually responds.
+      - name: Ensure Docker daemon is running
+        shell: powershell
+        run: |
+          $deadline = (Get-Date).AddMinutes(3)
+          $ready = $false
+          while ((Get-Date) -lt $deadline) {
+            $service = Get-Service -Name docker -ErrorAction SilentlyContinue
+            if ($service -and $service.Status -ne 'Running') {
+              Write-Host "Docker service status: $($service.Status). Starting it..."
+              Start-Service docker -ErrorAction SilentlyContinue
+            }
+            docker info 2>&1 | Out-Null
+            if ($LASTEXITCODE -eq 0) {
+              $ready = $true
+              break
+            }
+            Write-Host "Docker daemon not ready yet, retrying in 5s..."
+            Start-Sleep -Seconds 5
+          }
+          if (-not $ready) {
+            Write-Host "Docker service status:"
+            Get-Service -Name docker -ErrorAction SilentlyContinue | Format-List *
+            Write-Error "Docker daemon did not become ready within the timeout."
+            exit 1
+          }
+          Write-Host "Docker daemon is ready."
+
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
@@ -105,15 +136,15 @@ jobs:
         run: |
           $docker_args = New-Object System.Collections.ArrayList
           $Env:TAGS.Split([Environment]::NewLine) | Where-Object { $_ -ne "" } | ForEach {
-            $docker_args.Add("--tag")
-            $docker_args.Add($_)
+            $null = $docker_args.Add("--tag")
+            $null = $docker_args.Add($_)
           }
           $Env:LABELS.Split([Environment]::NewLine) | Where-Object { $_ -ne "" } | ForEach {
-            $docker_args.Add("--label")
-            $docker_args.Add($_)
+            $null = $docker_args.Add("--label")
+            $null = $docker_args.Add($_)
           }
-          $docker_args.Add("--build-arg")
-          $docker_args.Add("CONTAINER_VERSION=$Env:CONTAINER_VERSION")
+          $null = $docker_args.Add("--build-arg")
+          $null = $docker_args.Add("CONTAINER_VERSION=$Env:CONTAINER_VERSION")
 
           docker build $docker_args m365/image
           echo "digest=$(docker images --no-trunc --quiet $Env:IMAGE.ToLower())" >> $Env:GITHUB_OUTPUT
